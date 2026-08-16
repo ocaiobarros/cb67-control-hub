@@ -17,6 +17,7 @@ import { Route as AdminInfrastructureHostsRouteImport } from './routes/_admin.in
 import { Route as AdminInfrastructureNetworkRouteImport } from './routes/_admin.infrastructure.network'
 import { Route as AdminInfrastructureServicesRouteImport } from './routes/_admin.infrastructure.services'
 import { Route as AdminInfrastructureStorageRouteImport } from './routes/_admin.infrastructure.storage'
+import { Route as AdminSaasApplicationsRouteImport } from './routes/_admin.saas.applications'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -62,6 +63,11 @@ const AdminInfrastructureStorageRoute =
     path: '/infrastructure/storage',
     getParentRoute: () => AdminRoute,
   } as any)
+const AdminSaasApplicationsRoute = AdminSaasApplicationsRouteImport.update({
+  id: '/saas/applications',
+  path: '/saas/applications',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -71,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/infrastructure/network': typeof AdminInfrastructureNetworkRoute
   '/infrastructure/services': typeof AdminInfrastructureServicesRoute
   '/infrastructure/storage': typeof AdminInfrastructureStorageRoute
+  '/saas/applications': typeof AdminSaasApplicationsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/infrastructure/network': typeof AdminInfrastructureNetworkRoute
   '/infrastructure/services': typeof AdminInfrastructureServicesRoute
   '/infrastructure/storage': typeof AdminInfrastructureStorageRoute
+  '/saas/applications': typeof AdminSaasApplicationsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -91,6 +99,7 @@ export interface FileRoutesById {
   '/_admin/infrastructure/network': typeof AdminInfrastructureNetworkRoute
   '/_admin/infrastructure/services': typeof AdminInfrastructureServicesRoute
   '/_admin/infrastructure/storage': typeof AdminInfrastructureStorageRoute
+  '/_admin/saas/applications': typeof AdminSaasApplicationsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -102,6 +111,7 @@ export interface FileRouteTypes {
     | '/infrastructure/network'
     | '/infrastructure/services'
     | '/infrastructure/storage'
+    | '/saas/applications'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/infrastructure/network'
     | '/infrastructure/services'
     | '/infrastructure/storage'
+    | '/saas/applications'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/_admin/infrastructure/network'
     | '/_admin/infrastructure/services'
     | '/_admin/infrastructure/storage'
+    | '/_admin/saas/applications'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -186,6 +198,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminInfrastructureStorageRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_admin/saas/applications': {
+      id: '/_admin/saas/applications'
+      path: '/saas/applications'
+      fullPath: '/saas/applications'
+      preLoaderRoute: typeof AdminSaasApplicationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
@@ -196,6 +215,7 @@ interface AdminRouteChildren {
   AdminInfrastructureNetworkRoute: typeof AdminInfrastructureNetworkRoute
   AdminInfrastructureServicesRoute: typeof AdminInfrastructureServicesRoute
   AdminInfrastructureStorageRoute: typeof AdminInfrastructureStorageRoute
+  AdminSaasApplicationsRoute: typeof AdminSaasApplicationsRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -205,6 +225,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminInfrastructureNetworkRoute: AdminInfrastructureNetworkRoute,
   AdminInfrastructureServicesRoute: AdminInfrastructureServicesRoute,
   AdminInfrastructureStorageRoute: AdminInfrastructureStorageRoute,
+  AdminSaasApplicationsRoute: AdminSaasApplicationsRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
