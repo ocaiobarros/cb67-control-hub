@@ -15,14 +15,14 @@ import type { Alert, TimeRange } from "@/types";
 export const Route = createFileRoute("/_admin/observability/")({
   head: () => ({
     meta: [
-      { title: "Observability Overview — CB67 Labs Control Center" },
+      { title: "Visão Geral de Observabilidade — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Golden signals for the CB67 Labs platform: traffic, latency, errors and saturation, with the current alert inventory.",
+          "Sinais essenciais da plataforma CB67 Labs: tráfego, latência, erros e saturação, com o inventário atual de alertas.",
       },
-      { property: "og:title", content: "Observability Overview — CB67 Labs Control Center" },
-      { property: "og:description", content: "Traffic, latency, errors, saturation and live alerts." },
+      { property: "og:title", content: "Visão Geral de Observabilidade — CB67 Labs Control Center" },
+      { property: "og:description", content: "Tráfego, latência, erros, saturação e alertas em tempo real." },
     ],
   }),
   component: ObservabilityOverview,
@@ -40,7 +40,7 @@ function ObservabilityOverview() {
   const columns: Column<Alert>[] = [
     {
       id: "name",
-      header: "Alert",
+      header: "Alerta",
       cell: (row) => (
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">{row.name}</p>
@@ -51,20 +51,20 @@ function ObservabilityOverview() {
     },
     {
       id: "severity",
-      header: "Severity",
+      header: "Severidade",
       cell: (row) => <StatusBadge status={row.severity} />,
       sortValue: (row) => row.severity,
     },
     {
       id: "started",
-      header: "Started",
+      header: "Início",
       cell: (row) => <span className="mono-xs text-muted-foreground">{formatRelative(row.startedAt)}</span>,
       sortValue: (row) => row.startedAt,
       align: "right",
     },
     {
       id: "state",
-      header: "State",
+      header: "Estado",
       cell: (row) => <StatusBadge status={row.state} />,
       sortValue: (row) => row.state,
       align: "right",
@@ -74,31 +74,31 @@ function ObservabilityOverview() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Observability Overview"
-        description="Metrics, logs and alerts are collected by the platform stack on the management network. This surface reads that stack; it never queries hosts directly."
+        title="Visão Geral de Observabilidade"
+        description="Métricas, logs e alertas são coletados pela stack da plataforma na rede de gerenciamento. Esta superfície apenas lê essa stack; nunca consulta hosts diretamente."
         actions={<TimeRangeSelect value={range} onChange={setRange} />}
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
-          label="Requests"
+          label="Requisições"
           value={snapshot ? formatCompact(snapshot.requests) : "—"}
           hint={snapshot ? `${snapshot.rps.toFixed(1)} rps` : undefined}
           isLoading={overview.isLoading}
         />
         <MetricCard
-          label="p95 latency"
+          label="Latência p95"
           value={snapshot ? formatMs(snapshot.p95) : "—"}
           isLoading={overview.isLoading}
         />
         <MetricCard
-          label="Error rate"
+          label="Taxa de erro"
           value={snapshot ? formatPercent(snapshot.errorRate) : "—"}
           tone={snapshot && snapshot.errorRate > 1 ? "warn" : "ok"}
           isLoading={overview.isLoading}
         />
         <MetricCard
-          label="Firing alerts"
+          label="Alertas disparando"
           value={firing.length}
           tone={firing.length > 0 ? "crit" : "ok"}
           isLoading={alerts.isLoading}
@@ -107,27 +107,27 @@ function ObservabilityOverview() {
 
       <div className="grid gap-4 xl:grid-cols-2">
         <ChartPanel
-          title="Traffic"
-          description="Requests served by the platform."
+          title="Tráfego"
+          description="Requisições atendidas pela plataforma."
           isLoading={overview.isLoading}
           error={overview.error ?? undefined}
           isEmpty={(snapshot?.charts.requests.length ?? 0) === 0}
         >
           <TimeSeriesChart
             data={snapshot?.charts.requests ?? []}
-            series={[{ key: "value", label: "Requests" }]}
+            series={[{ key: "value", label: "Requisições" }]}
           />
         </ChartPanel>
         <ChartPanel
-          title="Latency"
-          description="Aggregated response time across endpoints."
+          title="Latência"
+          description="Tempo de resposta agregado entre os endpoints."
           isLoading={overview.isLoading}
           error={overview.error ?? undefined}
           isEmpty={(snapshot?.charts.latency.length ?? 0) === 0}
         >
           <TimeSeriesChart
             data={snapshot?.charts.latency ?? []}
-            series={[{ key: "value", label: "Latency" }]}
+            series={[{ key: "value", label: "Latência" }]}
             variant="line"
             unit="ms"
           />
@@ -136,8 +136,8 @@ function ObservabilityOverview() {
 
       <div className="grid gap-4 xl:grid-cols-2">
         <ChartPanel
-          title="Saturation"
-          description="Cluster resource utilisation."
+          title="Saturação"
+          description="Utilização de recursos do cluster."
           isLoading={overview.isLoading}
           error={overview.error ?? undefined}
           isEmpty={(snapshot?.charts.resources.length ?? 0) === 0}
@@ -146,33 +146,33 @@ function ObservabilityOverview() {
             data={snapshot?.charts.resources ?? []}
             series={[
               { key: "cpu", label: "CPU" },
-              { key: "memory", label: "Memory" },
+              { key: "memory", label: "Memória" },
             ]}
             variant="line"
             unit="%"
           />
         </ChartPanel>
         <ChartPanel
-          title="Errors"
-          description="Failure volume in the selected window."
+          title="Erros"
+          description="Volume de falhas na janela selecionada."
           isLoading={overview.isLoading}
           error={overview.error ?? undefined}
           isEmpty={(snapshot?.charts.errors.length ?? 0) === 0}
         >
           <TimeSeriesChart
             data={snapshot?.charts.errors ?? []}
-            series={[{ key: "value", label: "Errors" }]}
+            series={[{ key: "value", label: "Erros" }]}
           />
         </ChartPanel>
       </div>
 
       <div className="space-y-3">
         <SectionTitle
-          title="Alert inventory"
-          description="Firing and acknowledged alerts across the platform."
+          title="Inventário de alertas"
+          description="Alertas disparando e reconhecidos em toda a plataforma."
           actions={
             <AppLink to="/observability/alerts" className="text-xs text-primary hover:underline">
-              All alerts
+              Todos os alertas
             </AppLink>
           }
         />
@@ -188,7 +188,7 @@ function ObservabilityOverview() {
       </div>
 
       <p className="text-xs text-muted-foreground">
-        {(services.data ?? []).length} platform services are reporting health to the collector.
+        {(services.data ?? []).length} serviços da plataforma estão reportando saúde ao coletor.
       </p>
     </div>
   );

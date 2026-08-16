@@ -12,14 +12,14 @@ import type { Lease } from "@/types";
 export const Route = createFileRoute("/_admin/licensing/leases")({
   head: () => ({
     meta: [
-      { title: "Leases — CB67 Labs Control Center" },
+      { title: "Concessões — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Signed licence leases with issue and expiry timestamps, bound installation and the signing key used.",
+          "Concessões de licença assinadas com carimbos de emissão e expiração, instalação vinculada e a chave de assinatura utilizada.",
       },
-      { property: "og:title", content: "Leases — CB67 Labs Control Center" },
-      { property: "og:description", content: "Lease lifecycle, validity and signing key rotation." },
+      { property: "og:title", content: "Concessões — CB67 Labs Control Center" },
+      { property: "og:description", content: "Ciclo de vida da concessão, validade e rotação de chave de assinatura." },
     ],
   }),
   component: LeasesPage,
@@ -39,32 +39,32 @@ function LeasesPage() {
   const columns: Column<Lease>[] = [
     {
       id: "lease",
-      header: "Lease",
+      header: "Concessão",
       cell: (row) => <IdentifierCell value={row.leaseId} label="lease id" />,
       sortValue: (row) => row.leaseId,
     },
     {
       id: "license",
-      header: "Licence",
+      header: "Licença",
       cell: (row) => <code className="mono-xs text-muted-foreground">{row.licenseKey}</code>,
       sortValue: (row) => row.licenseKey,
     },
     {
       id: "installation",
-      header: "Installation",
+      header: "Instalação",
       cell: (row) => <code className="mono-xs text-muted-foreground">{row.installationId}</code>,
       sortValue: (row) => row.installationId,
     },
     {
       id: "issued",
-      header: "Issued",
+      header: "Emitida",
       cell: (row) => <span className="mono-xs">{formatDateTime(row.issuedAt)}</span>,
       sortValue: (row) => row.issuedAt,
       align: "right",
     },
     {
       id: "expires",
-      header: "Expires",
+      header: "Expira",
       cell: (row) => (
         <div className="text-right">
           <span className="mono-xs">{formatDateTime(row.expiresAt)}</span>
@@ -76,7 +76,7 @@ function LeasesPage() {
     },
     {
       id: "keyId",
-      header: "Signing key",
+      header: "Chave de assinatura",
       cell: (row) => <code className="mono-xs text-muted-foreground">{row.keyId}</code>,
       sortValue: (row) => row.keyId,
     },
@@ -92,26 +92,26 @@ function LeasesPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Leases"
-        description="Leases are signed offline-verifiable authorisations. Installations renew them periodically; a revoked licence simply stops receiving new leases."
+        title="Concessões"
+        description="As concessões são autorizações assinadas e verificáveis offline. As instalações as renovam periodicamente; uma licença revogada simplesmente deixa de receber novas concessões."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Leases" value={rows.length} isLoading={leases.isLoading} />
+        <MetricCard label="Concessões" value={rows.length} isLoading={leases.isLoading} />
         <MetricCard
-          label="Valid"
+          label="Válidas"
           value={rows.filter((row) => row.status === "valid").length}
           tone="ok"
           isLoading={leases.isLoading}
         />
         <MetricCard
-          label="Grace"
+          label="Carência"
           value={rows.filter((row) => row.status === "grace").length}
           tone="warn"
           isLoading={leases.isLoading}
         />
         <MetricCard
-          label="Revoked or expired"
+          label="Revogadas ou expiradas"
           value={rows.filter((row) => row.status === "revoked" || row.status === "expired").length}
           tone="crit"
           isLoading={leases.isLoading}
@@ -119,29 +119,29 @@ function LeasesPage() {
       </div>
 
       <section className="panel p-4">
-        <h3 className="text-sm font-semibold">Signing keys in use</h3>
+        <h3 className="text-sm font-semibold">Chaves de assinatura em uso</h3>
         <dl className="mt-2">
           {byKey.map(([keyId, count]) => (
-            <StatRow key={keyId} label={keyId} value={`${count} leases`} />
+            <StatRow key={keyId} label={keyId} value={`${count} concessões`} />
           ))}
           {byKey.length === 0 && (
-            <p className="text-xs text-muted-foreground">No leases issued in this dataset.</p>
+            <p className="text-xs text-muted-foreground">Nenhuma concessão emitida neste conjunto de dados.</p>
           )}
         </dl>
         <p className="mt-3 text-xs text-muted-foreground">
-          Key rotation is handled by the licensing service; installations trust the published key set.
+          A rotação de chaves é gerenciada pelo serviço de licenciamento; as instalações confiam no conjunto de chaves publicado.
         </p>
       </section>
 
       <div className="space-y-3">
-        <SectionTitle title="Lease ledger" description="Ordered by expiry when sorted on that column." />
+        <SectionTitle title="Registro de concessões" description="Ordenado por expiração quando classificado nessa coluna." />
         <DataTable
           data={leases.data}
           columns={columns}
           rowKey={(row) => row.id}
           isLoading={leases.isLoading}
           error={leases.error ?? undefined}
-          searchPlaceholder="Search lease, licence or installation…"
+          searchPlaceholder="Buscar concessão, licença ou instalação…"
           searchValue={(row) => `${row.leaseId} ${row.licenseKey} ${row.installationId}`}
           pageSize={15}
         />

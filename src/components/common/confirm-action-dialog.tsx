@@ -82,7 +82,7 @@ export function ConfirmActionDialog({
         {requireTypedValue && (
           <div className="space-y-1.5">
             <Label htmlFor="confirm-typed">
-              Type <code className="mono-xs">{requireTypedValue}</code> to confirm
+              Digite <code className="mono-xs">{requireTypedValue}</code> para confirmar
             </Label>
             <Input
               id="confirm-typed"
@@ -94,7 +94,7 @@ export function ConfirmActionDialog({
         )}
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={busy}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={busy}>Cancelar</AlertDialogCancel>
           <AlertDialogAction
             disabled={blocked || busy}
             className={cn(destructive && "bg-destructive text-destructive-foreground")}

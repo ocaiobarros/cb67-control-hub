@@ -13,10 +13,10 @@ export const Route = createFileRoute("/_admin/observability/grafana")({
       {
         name: "description",
         content:
-          "Entry points to the CB67 Labs Grafana instance for deep-dive dashboards that live outside the Control Center.",
+          "Pontos de entrada para a instância Grafana da CB67 Labs, com dashboards detalhados que vivem fora do Control Center.",
       },
       { property: "og:title", content: "Grafana — CB67 Labs Control Center" },
-      { property: "og:description", content: "Deep-dive dashboards hosted on the management network." },
+      { property: "og:description", content: "Dashboards detalhados hospedados na rede de gerenciamento." },
     ],
   }),
   component: GrafanaPage,
@@ -25,28 +25,28 @@ export const Route = createFileRoute("/_admin/observability/grafana")({
 const DASHBOARDS = [
   {
     slug: "platform-overview",
-    name: "Platform overview",
-    description: "Golden signals for the API gateway, licensing service and supporting components.",
+    name: "Visão geral da plataforma",
+    description: "Sinais essenciais do gateway de API, serviço de licenciamento e componentes de suporte.",
   },
   {
     slug: "api-performance",
-    name: "API performance",
-    description: "Per-endpoint latency percentiles, throughput and error budget burn.",
+    name: "Desempenho da API",
+    description: "Percentis de latência por endpoint, throughput e consumo do orçamento de erro.",
   },
   {
     slug: "provider-integrations",
-    name: "Provider integrations",
-    description: "Upstream latency, throttling and failure attribution per external provider.",
+    name: "Integrações com provedores",
+    description: "Latência upstream, limitação de taxa e atribuição de falhas por provedor externo.",
   },
   {
     slug: "infrastructure",
-    name: "Infrastructure",
-    description: "Proxmox node CPU, memory, storage and network saturation.",
+    name: "Infraestrutura",
+    description: "CPU, memória, armazenamento e saturação de rede do nó Proxmox.",
   },
   {
     slug: "postgresql",
     name: "PostgreSQL",
-    description: "Connections, transaction throughput, cache hit ratio and lock contention.",
+    description: "Conexões, throughput de transações, taxa de acerto de cache e contenção de locks.",
   },
 ];
 
@@ -57,12 +57,12 @@ function GrafanaPage() {
     <div className="space-y-6">
       <PageHeader
         title="Grafana"
-        description="Long-range analysis and ad-hoc exploration stay in Grafana on the management network. The Control Center links out rather than embedding queries."
+        description="Análises de longo prazo e exploração ad-hoc permanecem no Grafana, na rede de gerenciamento. O Control Center apenas fornece links, sem incorporar consultas."
         actions={
           base ? (
             <Button asChild size="sm" variant="outline">
               <a href={base} target="_blank" rel="noreferrer noopener">
-                Open Grafana
+                Abrir Grafana
                 <ExternalLink className="ml-1 size-3.5" aria-hidden />
               </a>
             </Button>
@@ -71,29 +71,29 @@ function GrafanaPage() {
       />
 
       <section className="panel p-4">
-        <h3 className="text-sm font-semibold">Instance</h3>
+        <h3 className="text-sm font-semibold">Instância</h3>
         <dl className="mt-2">
-          <StatRow label="Expected host" value={platformMeta.grafanaDomain} />
+          <StatRow label="Host esperado" value={platformMeta.grafanaDomain} />
           <StatRow
-            label="Configured URL"
-            value={base ? <code className="mono-xs">{base}</code> : "Not configured"}
+            label="URL configurada"
+            value={base ? <code className="mono-xs">{base}</code> : "Não configurado"}
           />
-          <StatRow label="Configuration key" value={<code className="mono-xs">VITE_GRAFANA_URL</code>} />
-          <StatRow label="Network" value="Management network only; not published to the internet" />
+          <StatRow label="Chave de configuração" value={<code className="mono-xs">VITE_GRAFANA_URL</code>} />
+          <StatRow label="Rede" value="Apenas rede de gerenciamento; não publicada na internet" />
         </dl>
       </section>
 
       {!base ? (
         <EmptyState
-          message="Grafana URL is not configured"
-          hint="Set VITE_GRAFANA_URL in the deployment environment to enable the dashboard links below."
+          message="A URL do Grafana não está configurada"
+          hint="Defina VITE_GRAFANA_URL no ambiente de implantação para habilitar os links de dashboard abaixo."
         />
       ) : null}
 
       <div className="space-y-3">
         <SectionTitle
-          title="Reference dashboards"
-          description="Slugs are provisional and must match the dashboards provisioned on the Grafana instance."
+          title="Dashboards de referência"
+          description="Os slugs são provisórios e devem corresponder aos dashboards provisionados na instância do Grafana."
         />
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {DASHBOARDS.map((dashboard) => (
@@ -110,12 +110,12 @@ function GrafanaPage() {
                     target="_blank"
                     rel="noreferrer noopener"
                   >
-                    Open
+                    Abrir
                     <ExternalLink className="ml-1 size-3.5" aria-hidden />
                   </a>
                 </Button>
               ) : (
-                <span className="text-xs text-muted-foreground">Link unavailable</span>
+                <span className="text-xs text-muted-foreground">Link indisponível</span>
               )}
             </div>
           ))}

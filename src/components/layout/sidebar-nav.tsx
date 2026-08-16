@@ -38,7 +38,7 @@ export function SidebarNav({
 
   return (
     <ScrollArea className="h-full">
-      <nav aria-label="Platform sections" className="space-y-0.5 p-3">
+      <nav aria-label="Seções da plataforma" className="space-y-0.5 p-3">
         {NAVIGATION.map((group) => {
           const Icon = group.icon;
 

@@ -16,14 +16,14 @@ import type { AdminSession } from "@/types";
 export const Route = createFileRoute("/_admin/identity/sessions")({
   head: () => ({
     meta: [
-      { title: "Administrative Sessions — CB67 Labs Control Center" },
+      { title: "Sessões Administrativas — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Open Control Center sessions with originating device, source address, activity and expiry, plus termination controls.",
+          "Sessões abertas do Control Center com dispositivo de origem, endereço de origem, atividade e expiração, além de controles de encerramento.",
       },
-      { property: "og:title", content: "Administrative Sessions — CB67 Labs Control Center" },
-      { property: "og:description", content: "Live operator sessions and termination controls." },
+      { property: "og:title", content: "Sessões Administrativas — CB67 Labs Control Center" },
+      { property: "og:description", content: "Sessões ativas de operadores e controles de encerramento." },
     ],
   }),
   component: SessionsPage,
@@ -38,7 +38,7 @@ function SessionsPage() {
   const columns: Column<AdminSession>[] = [
     {
       id: "administrator",
-      header: "Administrator",
+      header: "Administrador",
       cell: (row) => (
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">{row.administrator}</p>
@@ -49,20 +49,20 @@ function SessionsPage() {
     },
     {
       id: "source",
-      header: "Source",
+      header: "Origem",
       cell: (row) => <code className="mono-xs text-muted-foreground">{row.source}</code>,
       sortValue: (row) => row.source,
     },
     {
       id: "created",
-      header: "Started",
+      header: "Iniciada",
       cell: (row) => <span className="mono-xs">{formatDateTime(row.createdAt)}</span>,
       sortValue: (row) => row.createdAt,
       align: "right",
     },
     {
       id: "activity",
-      header: "Last activity",
+      header: "Última atividade",
       cell: (row) => (
         <span className="mono-xs text-muted-foreground">{formatRelative(row.lastActivityAt)}</span>
       ),
@@ -71,7 +71,7 @@ function SessionsPage() {
     },
     {
       id: "expires",
-      header: "Expires",
+      header: "Expira",
       cell: (row) => <span className="mono-xs">{formatDateTime(row.expiresAt)}</span>,
       sortValue: (row) => row.expiresAt,
       align: "right",
@@ -96,7 +96,7 @@ function SessionsPage() {
               setTarget(row);
             }}
           >
-            Terminate
+            Encerrar
           </Button>
         </Permitted>
       ),
@@ -107,40 +107,40 @@ function SessionsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Administrative Sessions"
-        description="Sessions are short-lived and bound to the originating device fingerprint. Terminating a session is immediate and forces re-authentication."
+        title="Sessões Administrativas"
+        description="As sessões têm vida curta e estão vinculadas à impressão digital do dispositivo de origem. Encerrar uma sessão é imediato e força uma nova autenticação."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Sessions" value={rows.length} isLoading={sessions.isLoading} />
+        <MetricCard label="Sessões" value={rows.length} isLoading={sessions.isLoading} />
         <MetricCard
-          label="Active"
+          label="Ativas"
           value={rows.filter((row) => row.status === "active").length}
           tone="ok"
           isLoading={sessions.isLoading}
         />
         <MetricCard
-          label="Distinct operators"
+          label="Operadores distintos"
           value={new Set(rows.map((row) => row.administrator)).size}
           isLoading={sessions.isLoading}
         />
         <MetricCard
-          label="Distinct sources"
+          label="Origens distintas"
           value={new Set(rows.map((row) => row.source)).size}
-          hint="Originating network addresses"
+          hint="Endereços de rede de origem"
           isLoading={sessions.isLoading}
         />
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Open sessions" description="Sorted by last activity when that column is selected." />
+        <SectionTitle title="Sessões abertas" description="Ordenado por última atividade quando essa coluna é selecionada." />
         <DataTable
           data={sessions.data}
           columns={columns}
           rowKey={(row) => row.id}
           isLoading={sessions.isLoading}
           error={sessions.error ?? undefined}
-          searchPlaceholder="Search administrator, device or source…"
+          searchPlaceholder="Buscar administrador, dispositivo ou origem…"
           searchValue={(row) => `${row.administrator} ${row.device} ${row.source}`}
           pageSize={15}
         />
@@ -151,19 +151,19 @@ function SessionsPage() {
         onOpenChange={(open) => {
           if (!open) setTarget(null);
         }}
-        title="Terminate session"
-        warning="The session is invalidated immediately. Any unsaved work in that browser tab is lost and the operator must sign in again."
+        title="Encerrar sessão"
+        warning="A sessão é invalidada imediatamente. Qualquer trabalho não salvo naquela aba do navegador é perdido e o operador deve fazer login novamente."
         details={
           target
             ? [
-                { label: "Administrator", value: target.administrator },
-                { label: "Device", value: target.device },
-                { label: "Source", value: target.source },
+                { label: "Administrador", value: target.administrator },
+                { label: "Dispositivo", value: target.device },
+                { label: "Origem", value: target.source },
               ]
             : undefined
         }
-        confirmLabel="Terminate session"
-        environmentNotice="Termination is executed and audited server-side."
+        confirmLabel="Encerrar sessão"
+        environmentNotice="O encerramento é executado e auditado no servidor."
         onConfirm={async () => {
           if (!target) return;
           await action.mutateAsync({ action: "session.terminate", resourceId: target.id });

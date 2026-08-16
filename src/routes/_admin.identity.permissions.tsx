@@ -10,14 +10,14 @@ import type { Permission } from "@/types";
 export const Route = createFileRoute("/_admin/identity/permissions")({
   head: () => ({
     meta: [
-      { title: "Permissions — CB67 Labs Control Center" },
+      { title: "Permissões — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Permission matrix showing which administrative roles grant each capability across the CB67 Labs Control Center.",
+          "Matriz de permissões mostrando quais funções administrativas concedem cada capacidade no CB67 Labs Control Center.",
       },
-      { property: "og:title", content: "Permissions — CB67 Labs Control Center" },
-      { property: "og:description", content: "Capability matrix per administrative role." },
+      { property: "og:title", content: "Permissões — CB67 Labs Control Center" },
+      { property: "og:description", content: "Matriz de capacidades por função administrativa." },
     ],
   }),
   component: PermissionsPage,
@@ -31,7 +31,7 @@ function PermissionsPage() {
   const columns: Column<Permission>[] = [
     {
       id: "permission",
-      header: "Permission",
+      header: "Permissão",
       cell: (row) => (
         <div className="min-w-0">
           <code className="mono-xs text-foreground">{row.code}</code>
@@ -45,9 +45,9 @@ function PermissionsPage() {
       header: role,
       cell: (row) =>
         row.roles[role] ? (
-          <Check className="mx-auto size-4 text-ok" aria-label={`${role} granted`} />
+          <Check className="mx-auto size-4 text-ok" aria-label={`${role} concedida`} />
         ) : (
-          <Minus className="mx-auto size-4 text-muted-foreground" aria-label={`${role} not granted`} />
+          <Minus className="mx-auto size-4 text-muted-foreground" aria-label={`${role} não concedida`} />
         ),
       sortValue: (row) => (row.roles[role] ? 1 : 0),
       align: "right",
@@ -57,21 +57,21 @@ function PermissionsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Permissions"
-        description="This matrix documents the authorisation model. The interface hides actions an operator cannot perform, but the backend remains the only enforcement point."
+        title="Permissões"
+        description="Esta matriz documenta o modelo de autorização. A interface oculta ações que um operador não pode executar, mas o backend continua sendo o único ponto de aplicação."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Permissions" value={rows.length} isLoading={permissions.isLoading} />
-        <MetricCard label="Roles compared" value={roleCodes.length} isLoading={permissions.isLoading} />
+        <MetricCard label="Permissões" value={rows.length} isLoading={permissions.isLoading} />
+        <MetricCard label="Funções comparadas" value={roleCodes.length} isLoading={permissions.isLoading} />
         <MetricCard
-          label="Write capabilities"
+          label="Capacidades de escrita"
           value={rows.filter((row) => row.code.includes(":write")).length}
           tone="warn"
           isLoading={permissions.isLoading}
         />
         <MetricCard
-          label="Read capabilities"
+          label="Capacidades de leitura"
           value={rows.filter((row) => row.code.includes(":read")).length}
           isLoading={permissions.isLoading}
         />
@@ -79,8 +79,8 @@ function PermissionsPage() {
 
       <div className="space-y-3">
         <SectionTitle
-          title="Permission matrix"
-          description="A tick means the role grants the capability; a dash means it is denied."
+          title="Matriz de permissões"
+          description="Uma marca indica que a função concede a capacidade; um traço indica que ela é negada."
         />
         <DataTable
           data={permissions.data}
@@ -88,7 +88,7 @@ function PermissionsPage() {
           rowKey={(row) => row.id}
           isLoading={permissions.isLoading}
           error={permissions.error ?? undefined}
-          searchPlaceholder="Search permission…"
+          searchPlaceholder="Buscar permissão…"
           searchValue={(row) => `${row.code} ${row.label}`}
           pageSize={25}
           dense

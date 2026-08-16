@@ -11,14 +11,14 @@ import { isMockMode } from "@/api/client";
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Operator Sign In — CB67 Labs Control Center" },
+      { title: "Login do operador — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Authenticate as a platform operator to access the CB67 Labs Control Center. Access is restricted to the management network.",
+          "Autentique-se como operador da plataforma para acessar o CB67 Labs Control Center. O acesso é restrito à rede de gestão.",
       },
-      { property: "og:title", content: "Operator Sign In — CB67 Labs Control Center" },
-      { property: "og:description", content: "Restricted operator access to the CB67 Labs Control Center." },
+      { property: "og:title", content: "Login do operador — CB67 Labs Control Center" },
+      { property: "og:description", content: "Acesso restrito de operador ao CB67 Labs Control Center." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -61,13 +61,13 @@ function LoginPage() {
           </span>
           <h1 className="text-lg font-semibold tracking-tight">{platformMeta.productName}</h1>
           <p className="text-sm text-muted-foreground">
-            Operator access only. Authentication and authorization are enforced by the platform.
+            Acesso somente para operadores. Autenticação e autorização são aplicadas pela plataforma.
           </p>
         </div>
 
         <form onSubmit={onSubmit} className="liquid-modal edge-light space-y-4 rounded-3xl p-6">
           <div className="space-y-1.5">
-            <Label htmlFor="username">Operator</Label>
+            <Label htmlFor="username">Operador</Label>
             <Input
               id="username"
               name="username"
@@ -78,7 +78,7 @@ function LoginPage() {
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Senha</Label>
             <Input
               id="password"
               name="password"
@@ -97,17 +97,17 @@ function LoginPage() {
           )}
 
           <Button type="submit" className="w-full" disabled={submitting}>
-            {submitting ? "Signing in…" : "Sign in"}
+            {submitting ? "Entrando…" : "Entrar"}
           </Button>
 
           <p className="text-xs text-muted-foreground">
-            Environment: <code className="mono-xs">{env.environment}</code>
-            {isMockMode ? " · mock data; any credentials are accepted" : null}
+            Ambiente: <code className="mono-xs">{env.environment}</code>
+            {isMockMode ? " · dados simulados; qualquer credencial é aceita" : null}
           </p>
         </form>
 
         <p className="text-center text-xs text-muted-foreground">
-          Reachable only from the management network at{" "}
+          Acessível somente a partir da rede de gestão em{" "}
           <code className="mono-xs">{platformMeta.adminDomain}</code>.
         </p>
       </div>

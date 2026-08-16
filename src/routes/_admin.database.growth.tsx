@@ -12,26 +12,26 @@ import type { TimeRange } from "@/types";
 export const Route = createFileRoute("/_admin/database/growth")({
   head: () => ({
     meta: [
-      { title: "Database Growth — CB67 Labs Control Center" },
+      { title: "Crescimento do Banco de Dados — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Storage growth for the platform PostgreSQL cluster with per-domain distribution and retention expectations.",
+          "Crescimento de armazenamento do cluster PostgreSQL da plataforma com distribuição por domínio e expectativas de retenção.",
       },
-      { property: "og:title", content: "Database Growth — CB67 Labs Control Center" },
-      { property: "og:description", content: "Cluster size trend, domain distribution and retention." },
+      { property: "og:title", content: "Crescimento do Banco de Dados — CB67 Labs Control Center" },
+      { property: "og:description", content: "Tendência de tamanho do cluster, distribuição por domínio e retenção." },
     ],
   }),
   component: GrowthPage,
 });
 
 const DOMAIN_SHARE = [
-  { t: "audit", share: 0.42 },
-  { t: "api requests", share: 0.24 },
-  { t: "licensing", share: 0.14 },
-  { t: "identity", share: 0.09 },
+  { t: "auditoria", share: 0.42 },
+  { t: "requisições de api", share: 0.24 },
+  { t: "licenciamento", share: 0.14 },
+  { t: "identidade", share: 0.09 },
   { t: "pki", share: 0.06 },
-  { t: "other", share: 0.05 },
+  { t: "outro", share: 0.05 },
 ];
 
 function GrowthPage() {
@@ -54,41 +54,41 @@ function GrowthPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Database Growth"
-        description="Audit and request history dominate growth. Retention policy is a backend decision; this surface exposes the trend so capacity can be planned on the Proxmox host."
+        title="Crescimento do Banco de Dados"
+        description="Auditoria e histórico de requisições dominam o crescimento. A política de retenção é uma decisão do backend; esta superfície expõe a tendência para planejar a capacidade no host Proxmox."
         actions={<TimeRangeSelect value={range} onChange={setRange} />}
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Cluster size" value={formatBytes(size)} isLoading={health.isLoading} />
+        <MetricCard label="Tamanho do cluster" value={formatBytes(size)} isLoading={health.isLoading} />
         <MetricCard
-          label="Largest domain"
-          value="audit"
+          label="Maior domínio"
+          value="auditoria"
           hint={`≈ ${formatBytes(Math.round(size * 0.42))}`}
           isLoading={health.isLoading}
         />
         <MetricCard
-          label="Window growth"
+          label="Crescimento na janela"
           value={formatBytes(Math.round(size * 0.06))}
           tone="info"
           isLoading={series.isLoading}
         />
-        <MetricCard label="Retention target" value="18 months" hint="audit and request history" />
+        <MetricCard label="Meta de retenção" value="18 meses" hint="histórico de auditoria e requisições" />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-2">
         <ChartPanel
-          title="Size trend"
-          description="Cluster on-disk size across the selected window."
+          title="Tendência de tamanho"
+          description="Tamanho do cluster em disco ao longo da janela selecionada."
           isLoading={series.isLoading}
           error={series.error ?? undefined}
           isEmpty={trend.length === 0}
         >
-          <TimeSeriesChart data={trend} series={[{ key: "value", label: "Size" }]} unit="B" />
+          <TimeSeriesChart data={trend} series={[{ key: "value", label: "Tamanho" }]} unit="B" />
         </ChartPanel>
         <ChartPanel
-          title="Distribution by domain"
-          description="Approximate share of on-disk size per functional domain."
+          title="Distribuição por domínio"
+          description="Participação aproximada do tamanho em disco por domínio funcional."
           isLoading={health.isLoading}
           error={health.error ?? undefined}
           isEmpty={distribution.length === 0}
@@ -98,13 +98,13 @@ function GrowthPage() {
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Capacity notes" description="Assumptions handed to the infrastructure team." />
+        <SectionTitle title="Notas de capacidade" description="Premissas repassadas à equipe de infraestrutura." />
         <section className="panel p-4">
           <dl>
-            <StatRow label="Volume" value="Dedicated LVM volume on the database node" />
-            <StatRow label="Alert threshold" value="Warn at 75% of volume, critical at 90%" />
-            <StatRow label="Partitioning" value="Audit and API request tables partitioned monthly" />
-            <StatRow label="Archival" value="Cold partitions exported with the backup pipeline" />
+            <StatRow label="Volume" value="Volume LVM dedicado no nó do banco de dados" />
+            <StatRow label="Limite de alerta" value="Aviso em 75% do volume, crítico em 90%" />
+            <StatRow label="Particionamento" value="Tabelas de auditoria e requisições de API particionadas mensalmente" />
+            <StatRow label="Arquivamento" value="Partições frias exportadas pelo pipeline de backup" />
           </dl>
         </section>
       </div>

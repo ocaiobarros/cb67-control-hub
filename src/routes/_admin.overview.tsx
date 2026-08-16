@@ -21,16 +21,16 @@ import type { TimeRange } from "@/types";
 export const Route = createFileRoute("/_admin/overview")({
   head: () => ({
     meta: [
-      { title: "Platform Overview — CB67 Labs Control Center" },
+      { title: "Visão Geral da Plataforma — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Executive technical overview of the CB67 Labs platform: traffic, latency, error budget, licensing and infrastructure health.",
+          "Visão técnica executiva da plataforma CB67 Labs: tráfego, latência, orçamento de erros, licenciamento e saúde da infraestrutura.",
       },
-      { property: "og:title", content: "Platform Overview — CB67 Labs Control Center" },
+      { property: "og:title", content: "Visão Geral da Plataforma — CB67 Labs Control Center" },
       {
         property: "og:description",
-        content: "Traffic, latency, error rate, licensing and infrastructure health at a glance.",
+        content: "Tráfego, latência, taxa de erros, licenciamento e saúde da infraestrutura em um só lugar.",
       },
     ],
   }),
@@ -51,36 +51,36 @@ function OverviewPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Platform Overview"
-        description="Consolidated technical state of the platform: request volume, latency distribution, error budget, licensing and node health."
+        title="Visão Geral da Plataforma"
+        description="Estado técnico consolidado da plataforma: volume de requisições, distribuição de latência, orçamento de erros, licenciamento e saúde dos nós."
         meta={data ? <StatusBadge status={data.platformHealth} /> : null}
         actions={<TimeRangeSelect value={range} onChange={setRange} />}
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
-          label="Requests"
+          label="Requisições"
           value={data ? formatCompact(data.requests) : "—"}
-          hint={data ? `${formatNumber(Math.round(data.rps))} req/s current` : undefined}
+          hint={data ? `${formatNumber(Math.round(data.rps))} req/s atual` : undefined}
           isLoading={overview.isLoading}
         />
         <MetricCard
-          label="Latency p95 / p99"
+          label="Latência p95 / p99"
           value={data ? `${formatMs(data.p95)} / ${formatMs(data.p99)}` : "—"}
-          hint="Gateway ingress to response"
+          hint="Do ingresso no gateway até a resposta"
           isLoading={overview.isLoading}
         />
         <MetricCard
-          label="Error rate"
+          label="Taxa de erros"
           value={data ? formatPercent(data.errorRate) : "—"}
           tone={errorTone}
-          hint="5xx over total requests"
+          hint="5xx sobre o total de requisições"
           isLoading={overview.isLoading}
         />
         <MetricCard
-          label="Active licenses"
+          label="Licenças ativas"
           value={data ? formatNumber(data.activeLicenses) : "—"}
-          hint={data ? `${data.activeSaas} SaaS applications online` : undefined}
+          hint={data ? `${data.activeSaas} aplicações SaaS online` : undefined}
           isLoading={overview.isLoading}
         />
       </div>
@@ -88,21 +88,21 @@ function OverviewPage() {
       <div className="grid gap-3 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <ChartPanel
-            title="Request volume"
-            description="Total requests handled by the API gateway in the selected window."
+            title="Volume de requisições"
+            description="Total de requisições processadas pelo gateway de API na janela selecionada."
             isLoading={overview.isLoading}
             isEmpty={data?.charts.requests.length === 0}
             height={260}
           >
             <TimeSeriesChart
               data={data?.charts.requests ?? []}
-              series={[{ key: "requests", label: "Requests" }]}
+              series={[{ key: "requests", label: "Requisições" }]}
             />
           </ChartPanel>
         </div>
         <ChartPanel
-          title="Rejections & errors"
-          description="Responses by status code, excluding successful traffic."
+          title="Rejeições e erros"
+          description="Respostas por código de status, excluindo tráfego bem-sucedido."
           isLoading={overview.isLoading}
           isEmpty={data?.statusCounts.length === 0}
           height={260}
@@ -113,8 +113,8 @@ function OverviewPage() {
 
       <div className="grid gap-3 lg:grid-cols-2">
         <ChartPanel
-          title="Latency percentiles"
-          description="p50, p95 and p99 in milliseconds."
+          title="Percentis de latência"
+          description="p50, p95 e p99 em milissegundos."
           isLoading={overview.isLoading}
           isEmpty={data?.charts.latency.length === 0}
         >
@@ -130,8 +130,8 @@ function OverviewPage() {
           />
         </ChartPanel>
         <ChartPanel
-          title="Requests by SaaS application"
-          description="Top consumers in the selected window."
+          title="Requisições por aplicação SaaS"
+          description="Maiores consumidores na janela selecionada."
           isLoading={overview.isLoading}
           isEmpty={data?.charts.requestsBySaas.length === 0}
         >
@@ -141,14 +141,14 @@ function OverviewPage() {
 
       <section className="space-y-3">
         <SectionTitle
-          title="Node resources"
-          description="Aggregated utilisation across on-premises hosts."
+          title="Recursos dos nós"
+          description="Uso agregado entre os hosts on-premises."
           actions={
             <AppLink
               to="/infrastructure/hosts"
               className="text-xs font-medium text-primary hover:underline"
             >
-              Inspect hosts →
+              Inspecionar hosts →
             </AppLink>
           }
         />
@@ -156,8 +156,8 @@ function OverviewPage() {
           {(
             [
               ["CPU", data?.resources.cpu],
-              ["Memory", data?.resources.memory],
-              ["Storage", data?.resources.storage],
+              ["Memória", data?.resources.memory],
+              ["Armazenamento", data?.resources.storage],
             ] as const
           ).map(([label, value]) => (
             <div key={label} className="panel space-y-2 p-4">
@@ -175,14 +175,14 @@ function OverviewPage() {
 
       <section className="space-y-3">
         <SectionTitle
-          title="Core services"
-          description="Health reported by the platform control plane."
+          title="Serviços principais"
+          description="Saúde reportada pelo plano de controle da plataforma."
           actions={
             <AppLink
               to="/infrastructure/services"
               className="text-xs font-medium text-primary hover:underline"
             >
-              All services →
+              Todos os serviços →
             </AppLink>
           }
         />
@@ -201,16 +201,16 @@ function OverviewPage() {
 
       <div className="grid gap-3 lg:grid-cols-2">
         <ChartPanel
-          title="Licenses by status"
-          description="Active, grace, expired, suspended and revoked."
+          title="Licenças por status"
+          description="Ativas, carência, expiradas, suspensas e revogadas."
           isLoading={overview.isLoading}
           isEmpty={data?.charts.licensesByStatus.length === 0}
         >
           <CategoryBarChart data={data?.charts.licensesByStatus ?? []} colorByIndex />
         </ChartPanel>
         <ChartPanel
-          title="Provider latency"
-          description="Average upstream latency per external provider, in milliseconds."
+          title="Latência dos provedores"
+          description="Latência média upstream por provedor externo, em milissegundos."
           isLoading={overview.isLoading}
           isEmpty={data?.charts.providerLatency.length === 0}
         >
@@ -229,29 +229,29 @@ function OverviewPage() {
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
-          label="Auth failures"
+          label="Falhas de autenticação"
           value={data ? formatNumber(data.authFailures) : "—"}
           tone={data && data.authFailures > 200 ? "warn" : "neutral"}
-          hint="Invalid credentials, tokens and mTLS"
+          hint="Credenciais, tokens e mTLS inválidos"
           isLoading={overview.isLoading}
         />
         <MetricCard
-          label="Rate limited"
+          label="Limitados por taxa"
           value={data ? formatNumber(data.rateLimited) : "—"}
-          hint="429 responses in window"
+          hint="Respostas 429 na janela"
           isLoading={overview.isLoading}
         />
         <MetricCard
-          label="Providers degraded"
+          label="Provedores degradados"
           value={data ? formatNumber(data.providers.filter((p) => p.status !== "healthy").length) : "—"}
           tone={data && data.providers.some((p) => p.status === "unavailable") ? "crit" : "neutral"}
-          hint="External dependencies"
+          hint="Dependências externas"
           isLoading={overview.isLoading}
         />
         <MetricCard
-          label="Active SaaS"
+          label="SaaS ativos"
           value={data ? formatNumber(data.activeSaas) : "—"}
-          hint="Applications consuming the API"
+          hint="Aplicações consumindo a API"
           isLoading={overview.isLoading}
         />
       </div>

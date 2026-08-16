@@ -16,10 +16,10 @@ export const Route = createFileRoute("/_admin/infrastructure/hosts")({
       {
         name: "description",
         content:
-          "On-premises host inventory with role, environment, utilisation and health for the CB67 Labs platform.",
+          "Inventário de hosts on-premises com função, ambiente, uso e saúde para a plataforma CB67 Labs.",
       },
       { property: "og:title", content: "Hosts — CB67 Labs Control Center" },
-      { property: "og:description", content: "Host inventory, utilisation and health." },
+      { property: "og:description", content: "Inventário de hosts, uso e saúde." },
     ],
   }),
   component: HostsPage,
@@ -53,7 +53,7 @@ function HostsPage() {
     },
     {
       id: "environment",
-      header: "Environment",
+      header: "Ambiente",
       cell: (row) => (
         <Badge variant="outline" className="mono-xs">
           {row.environment}
@@ -64,13 +64,13 @@ function HostsPage() {
     { id: "cpu", header: "CPU", cell: (row) => <Utilisation value={row.cpu} />, sortValue: (row) => row.cpu },
     {
       id: "memory",
-      header: "Memory",
+      header: "Memória",
       cell: (row) => <Utilisation value={row.memory} />,
       sortValue: (row) => row.memory,
     },
     {
       id: "storage",
-      header: "Storage",
+      header: "Armazenamento",
       cell: (row) => <Utilisation value={row.storage} />,
       sortValue: (row) => row.storage,
     },
@@ -88,7 +88,7 @@ function HostsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Hosts"
-        description="Physical and virtual nodes running the platform on Proxmox. Utilisation is reported by the node exporter."
+        description="Nós físicos e virtuais executando a plataforma em Proxmox. O uso é reportado pelo node exporter."
       />
       <DataTable
         data={hosts.data}
@@ -96,7 +96,7 @@ function HostsPage() {
         rowKey={(row) => row.id}
         isLoading={hosts.isLoading}
         error={hosts.error ?? undefined}
-        searchPlaceholder="Search hosts, roles…"
+        searchPlaceholder="Buscar hosts, funções…"
       />
     </div>
   );

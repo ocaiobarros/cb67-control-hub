@@ -21,7 +21,7 @@ const mockUser: AuthenticatedUser = {
   id: "adm-1",
   name: "c.moura",
   email: "c.moura@cb67labs.api.br",
-  role: "Platform Owner",
+  role: "Proprietário da Plataforma",
   permissions: ["*"],
 };
 
@@ -35,7 +35,7 @@ export const mockAdapter: PlatformAdapter = {
 
   async login({ username, password }) {
     if (!username.trim() || !password.trim()) {
-      throw new Error("Username and password are required.");
+      throw new Error("Usuário e senha são obrigatórios.");
     }
     if (typeof window !== "undefined") {
       window.sessionStorage.setItem(MOCK_SESSION_KEY, "1");
@@ -363,7 +363,7 @@ export const mockAdapter: PlatformAdapter = {
   async performAction({ action, resourceId }) {
     return delay({
       accepted: true,
-      message: `${action} accepted for ${resourceId}. Backend enforcement pending.`,
+      message: `${action} aceito para ${resourceId}. Aplicação no backend pendente.`,
       }, 600);
   },
 };

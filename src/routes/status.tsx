@@ -11,16 +11,16 @@ import { platformMeta } from "@/config/env";
 export const Route = createFileRoute("/status")({
   head: () => ({
     meta: [
-      { title: "Platform Status — CB67 Labs" },
+      { title: "Status da plataforma — CB67 Labs" },
       {
         name: "description",
         content:
-          "Live availability of CB67 Labs platform services, plus the incident timeline with investigation and resolution updates.",
+          "Disponibilidade em tempo real dos serviços da plataforma CB67 Labs, além da linha do tempo de incidentes com atualizações de investigação e resolução.",
       },
-      { property: "og:title", content: "Platform Status — CB67 Labs" },
+      { property: "og:title", content: "Status da plataforma — CB67 Labs" },
       {
         property: "og:description",
-        content: "Service availability and incident history for the CB67 Labs platform.",
+        content: "Disponibilidade de serviços e histórico de incidentes da plataforma CB67 Labs.",
       },
     ],
   }),
@@ -39,17 +39,17 @@ function StatusPage() {
       <div className="space-y-10">
         <header className="space-y-3 border-b border-border pb-6">
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-2xl font-semibold tracking-tight">Platform Status</h1>
+            <h1 className="text-2xl font-semibold tracking-tight">Status da plataforma</h1>
             {services.length > 0 && <StatusBadge status={allHealthy ? "healthy" : "degraded"} />}
           </div>
           <p className="max-w-2xl text-sm text-muted-foreground">
-            Availability of public services on <code className="mono-xs">{platformMeta.publicDomain}</code>. This
-            page reports observed state; it never exposes customer data or internal identifiers.
+            Disponibilidade dos serviços públicos em <code className="mono-xs">{platformMeta.publicDomain}</code>. Esta
+            página reporta o estado observado; ela nunca expõe dados de clientes ou identificadores internos.
           </p>
         </header>
 
         <section className="space-y-3">
-          <h2 className="text-sm font-semibold tracking-wide uppercase">Services</h2>
+          <h2 className="text-sm font-semibold tracking-wide uppercase">Serviços</h2>
           {status.isLoading ? (
             <div className="space-y-2">
               {[0, 1, 2, 3].map((key) => (
@@ -57,7 +57,7 @@ function StatusPage() {
               ))}
             </div>
           ) : services.length === 0 ? (
-            <EmptyState message="No service state published" />
+            <EmptyState message="Nenhum estado de serviço publicado" />
           ) : (
             <ul className="space-y-2">
               {services.map((service) => (
@@ -74,11 +74,11 @@ function StatusPage() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-sm font-semibold tracking-wide uppercase">Incidents</h2>
+          <h2 className="text-sm font-semibold tracking-wide uppercase">Incidentes</h2>
           {status.isLoading ? (
             <Skeleton className="h-24 w-full" />
           ) : incidents.length === 0 ? (
-            <EmptyState message="No incidents reported" hint="The platform has no recorded incidents in the published window." />
+            <EmptyState message="Nenhum incidente reportado" hint="A plataforma não possui incidentes registrados na janela publicada." />
           ) : (
             <div className="space-y-4">
               {incidents.map((incident) => (
@@ -88,7 +88,7 @@ function StatusPage() {
                     <StatusBadge status={incident.state} />
                   </div>
                   <p className="mono-xs text-muted-foreground">
-                    Started {formatDateTime(incident.startedAt)} · {formatRelative(incident.startedAt)}
+                    Iniciado em {formatDateTime(incident.startedAt)} · {formatRelative(incident.startedAt)}
                   </p>
                   <ol className="space-y-3 border-l border-border pl-4">
                     {incident.updates.map((update) => (

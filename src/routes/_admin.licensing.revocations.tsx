@@ -12,24 +12,24 @@ import type { Revocation } from "@/types";
 export const Route = createFileRoute("/_admin/licensing/revocations")({
   head: () => ({
     meta: [
-      { title: "Revocations — CB67 Labs Control Center" },
+      { title: "Revogações — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Revocation ledger covering licences, installations, machine clients and certificates, with reason and responsible actor.",
+          "Registro de revogações cobrindo licenças, instalações, clientes de máquina e certificados, com motivo e responsável.",
       },
-      { property: "og:title", content: "Revocations — CB67 Labs Control Center" },
-      { property: "og:description", content: "Irreversible revocations with reason and actor." },
+      { property: "og:title", content: "Revogações — CB67 Labs Control Center" },
+      { property: "og:description", content: "Revogações irreversíveis com motivo e responsável." },
     ],
   }),
   component: RevocationsPage,
 });
 
 const TYPE_LABEL: Record<Revocation["type"], string> = {
-  license: "Licence",
-  installation: "Installation",
-  client: "Machine client",
-  certificate: "Certificate",
+  license: "Licença",
+  installation: "Instalação",
+  client: "Cliente de máquina",
+  certificate: "Certificado",
 };
 
 function RevocationsPage() {
@@ -44,7 +44,7 @@ function RevocationsPage() {
   const columns: Column<Revocation>[] = [
     {
       id: "object",
-      header: "Object",
+      header: "Objeto",
       cell: (row) => (
         <div className="min-w-0">
           <code className="mono-xs text-foreground">{row.object}</code>
@@ -55,19 +55,19 @@ function RevocationsPage() {
     },
     {
       id: "reason",
-      header: "Reason",
+      header: "Motivo",
       cell: (row) => <p className="max-w-md text-sm">{row.reason}</p>,
       sortValue: (row) => row.reason,
     },
     {
       id: "actor",
-      header: "Actor",
+      header: "Responsável",
       cell: (row) => <span className="mono-xs text-muted-foreground">{row.actor}</span>,
       sortValue: (row) => row.actor,
     },
     {
       id: "createdAt",
-      header: "Recorded",
+      header: "Registrado",
       cell: (row) => (
         <div className="text-right">
           <span className="mono-xs">{formatDateTime(row.createdAt)}</span>
@@ -89,32 +89,32 @@ function RevocationsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Revocations"
-        description="The revocation ledger is append-only. Entries are published to the distribution points that installations and mTLS consumers consult."
+        title="Revogações"
+        description="O registro de revogações é apenas de anexação. As entradas são publicadas nos pontos de distribuição consultados por instalações e consumidores mTLS."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Entries" value={rows.length} isLoading={revocations.isLoading} />
+        <MetricCard label="Entradas" value={rows.length} isLoading={revocations.isLoading} />
         <MetricCard
-          label="Licences"
+          label="Licenças"
           value={rows.filter((row) => row.type === "license").length}
           isLoading={revocations.isLoading}
         />
         <MetricCard
-          label="Certificates"
+          label="Certificados"
           value={rows.filter((row) => row.type === "certificate").length}
           isLoading={revocations.isLoading}
         />
         <MetricCard
-          label="Machine clients"
+          label="Clientes de máquina"
           value={rows.filter((row) => row.type === "client").length}
           isLoading={revocations.isLoading}
         />
       </div>
 
       <ChartPanel
-        title="Revocations by object type"
-        description="Composition of the ledger in the current dataset."
+        title="Revogações por tipo de objeto"
+        description="Composição do registro no conjunto de dados atual."
         isLoading={revocations.isLoading}
         error={revocations.error ?? undefined}
         isEmpty={byType.every((entry) => entry.value === 0)}
@@ -124,8 +124,8 @@ function RevocationsPage() {
 
       <div className="space-y-3">
         <SectionTitle
-          title="Revocation ledger"
-          description="Every entry is irreversible and mirrored in the audit trail."
+          title="Registro de revogações"
+          description="Toda entrada é irreversível e espelhada na trilha de auditoria."
         />
         <DataTable
           data={revocations.data}
@@ -133,7 +133,7 @@ function RevocationsPage() {
           rowKey={(row) => row.id}
           isLoading={revocations.isLoading}
           error={revocations.error ?? undefined}
-          searchPlaceholder="Search object, reason or actor…"
+          searchPlaceholder="Buscar objeto, motivo ou responsável…"
           searchValue={(row) => `${row.object} ${row.reason} ${row.actor}`}
           pageSize={15}
         />

@@ -13,10 +13,10 @@ export const Route = createFileRoute("/changelog")({
       {
         name: "description",
         content:
-          "Release history for the CB67 Labs API platform: API versions, licensing changes and platform improvements per release.",
+          "Histórico de lançamentos da plataforma de API da CB67 Labs: versões de API, mudanças de licenciamento e melhorias da plataforma por lançamento.",
       },
       { property: "og:title", content: "Changelog — CB67 Labs Platform" },
-      { property: "og:description", content: "Release history for the CB67 Labs API platform." },
+      { property: "og:description", content: "Histórico de lançamentos da plataforma de API da CB67 Labs." },
     ],
   }),
   component: ChangelogPage,
@@ -32,8 +32,8 @@ function ChangelogPage() {
         <header className="space-y-3 border-b border-border pb-6">
           <h1 className="text-2xl font-semibold tracking-tight">Changelog</h1>
           <p className="max-w-2xl text-sm text-muted-foreground">
-            Platform releases follow semantic versioning. Breaking API changes ship as a new API version and
-            the previous version stays available for its announced deprecation window.
+            Os lançamentos da plataforma seguem versionamento semântico. Mudanças incompatíveis de API são lançadas como uma nova versão de API e
+            a versão anterior permanece disponível pela janela de descontinuação anunciada.
           </p>
         </header>
 
@@ -44,7 +44,7 @@ function ChangelogPage() {
             ))}
           </div>
         ) : entries.length === 0 ? (
-          <EmptyState message="No releases published" />
+          <EmptyState message="Nenhum lançamento publicado" />
         ) : (
           <ol className="space-y-6">
             {entries.map((entry) => (

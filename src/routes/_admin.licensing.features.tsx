@@ -10,14 +10,14 @@ import type { LicenseFeature } from "@/types";
 export const Route = createFileRoute("/_admin/licensing/features")({
   head: () => ({
     meta: [
-      { title: "Licence Features — CB67 Labs Control Center" },
+      { title: "Recursos de Licença — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Feature flag catalogue: which licensed products and plans unlock each capability granted through a lease.",
+          "Catálogo de recursos: quais produtos licenciados e planos desbloqueiam cada capacidade concedida por meio de uma concessão.",
       },
-      { property: "og:title", content: "Licence Features — CB67 Labs Control Center" },
-      { property: "og:description", content: "Feature flags mapped to products and plans." },
+      { property: "og:title", content: "Recursos de Licença — CB67 Labs Control Center" },
+      { property: "og:description", content: "Recursos mapeados para produtos e planos." },
     ],
   }),
   component: FeaturesPage,
@@ -30,7 +30,7 @@ function FeaturesPage() {
   const columns: Column<LicenseFeature>[] = [
     {
       id: "name",
-      header: "Feature",
+      header: "Recurso",
       cell: (row) => (
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">{row.name}</p>
@@ -41,19 +41,19 @@ function FeaturesPage() {
     },
     {
       id: "description",
-      header: "Description",
+      header: "Descrição",
       cell: (row) => <p className="max-w-md text-xs text-muted-foreground">{row.description}</p>,
     },
     {
       id: "products",
-      header: "Products",
+      header: "Produtos",
       cell: (row) => (
         <span className="text-xs text-muted-foreground">{row.products.join(" · ")}</span>
       ),
     },
     {
       id: "plans",
-      header: "Plans",
+      header: "Planos",
       cell: (row) => (
         <div className="flex flex-wrap gap-1">
           {row.plans.map((plan) => (
@@ -76,39 +76,39 @@ function FeaturesPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Licence Features"
-        description="Features are the atomic entitlements embedded in each signed lease. Products read them at runtime to enable capabilities."
+        title="Recursos de Licença"
+        description="Os recursos são os direitos atômicos embutidos em cada concessão assinada. Os produtos os lêem em tempo de execução para habilitar capacidades."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Features" value={rows.length} isLoading={features.isLoading} />
+        <MetricCard label="Recursos" value={rows.length} isLoading={features.isLoading} />
         <MetricCard
-          label="Active"
+          label="Ativos"
           value={rows.filter((row) => row.status === "active").length}
           tone="ok"
           isLoading={features.isLoading}
         />
         <MetricCard
-          label="Products covered"
+          label="Produtos cobertos"
           value={new Set(rows.flatMap((row) => row.products)).size}
           isLoading={features.isLoading}
         />
         <MetricCard
-          label="Plans referencing"
+          label="Planos que referenciam"
           value={new Set(rows.flatMap((row) => row.plans)).size}
           isLoading={features.isLoading}
         />
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Feature catalogue" description="Codes are stable identifiers consumed by products." />
+        <SectionTitle title="Catálogo de recursos" description="Os códigos são identificadores estáveis consumidos pelos produtos." />
         <DataTable
           data={features.data}
           columns={columns}
           rowKey={(row) => row.id}
           isLoading={features.isLoading}
           error={features.error ?? undefined}
-          searchPlaceholder="Search feature or code…"
+          searchPlaceholder="Buscar recurso ou código…"
           searchValue={(row) => `${row.name} ${row.code} ${row.description}`}
           pageSize={15}
         />

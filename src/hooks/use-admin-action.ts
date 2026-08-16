@@ -13,7 +13,7 @@ export function useAdminAction() {
     mutationFn: (input: { action: string; resourceId: string; payload?: Record<string, unknown> }) =>
       api.performAction(input),
     onSuccess: (result, variables) => {
-      toast.success(`${variables.action} submitted`, { description: result.message });
+      toast.success(`${variables.action} enviada`, { description: result.message });
       void queryClient.invalidateQueries();
     },
     onError: (error) => {

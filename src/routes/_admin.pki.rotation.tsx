@@ -16,25 +16,25 @@ import type { Certificate } from "@/types";
 export const Route = createFileRoute("/_admin/pki/rotation")({
   head: () => ({
     meta: [
-      { title: "Certificate Rotation — CB67 Labs Control Center" },
+      { title: "Rotação de Certificados — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Rotation planning for the internal PKI: which certificates to reissue next and the operational policy that governs the exchange.",
+          "Planejamento de rotação para a PKI interna: quais certificados reemitir a seguir e a política operacional que rege a troca.",
       },
-      { property: "og:title", content: "Certificate Rotation — CB67 Labs Control Center" },
-      { property: "og:description", content: "Rotation candidates and reissue policy." },
+      { property: "og:title", content: "Rotação de Certificados — CB67 Labs Control Center" },
+      { property: "og:description", content: "Candidatos a rotação e política de reemissão." },
     ],
   }),
   component: RotationPage,
 });
 
 const POLICY = [
-  { label: "Client certificate lifetime", value: "12 months (provisional)" },
-  { label: "Server certificate lifetime", value: "6 months (provisional)" },
-  { label: "Rotation window", value: "30 days before expiry" },
-  { label: "Overlap", value: "Previous certificate stays valid until expiry" },
-  { label: "Key generation", value: "Performed by the issuing host; keys never transit the UI" },
+  { label: "Tempo de vida do certificado de cliente", value: "12 meses (provisório)" },
+  { label: "Tempo de vida do certificado de servidor", value: "6 meses (provisório)" },
+  { label: "Janela de rotação", value: "30 dias antes da expiração" },
+  { label: "Sobreposição", value: "O certificado anterior permanece válido até a expiração" },
+  { label: "Geração de chaves", value: "Realizada pelo host emissor; as chaves nunca transitam pela interface" },
 ];
 
 function RotationPage() {
@@ -48,7 +48,7 @@ function RotationPage() {
   const columns: Column<Certificate>[] = [
     {
       id: "subject",
-      header: "Subject",
+      header: "Sujeito",
       cell: (row) => (
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">{row.subject}</p>
@@ -59,18 +59,18 @@ function RotationPage() {
     },
     {
       id: "type",
-      header: "Type",
+      header: "Tipo",
       cell: (row) => <span className="text-xs text-muted-foreground">{row.type}</span>,
       sortValue: (row) => row.type,
     },
     {
       id: "remaining",
-      header: "Remaining",
+      header: "Restante",
       cell: (row) => {
         const days = daysUntil(row.expiresAt);
         return (
           <span className={days <= 7 ? "tabular text-crit" : days <= 30 ? "tabular text-warn" : "tabular"}>
-            {days <= 0 ? "expired" : `${days} days`}
+            {days <= 0 ? "expirado" : `${days} dias`}
           </span>
         );
       },
@@ -79,7 +79,7 @@ function RotationPage() {
     },
     {
       id: "expires",
-      header: "Expires",
+      header: "Expira",
       cell: (row) => <span className="mono-xs text-muted-foreground">{formatDate(row.expiresAt)}</span>,
       sortValue: (row) => row.expiresAt,
       align: "right",
@@ -104,7 +104,7 @@ function RotationPage() {
               setTarget(row);
             }}
           >
-            Rotate
+            Rotacionar
           </Button>
         </Permitted>
       ),
@@ -115,48 +115,48 @@ function RotationPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Certificate Rotation"
-        description="Rotation is an additive operation: a new certificate is issued while the current one remains valid, giving clients a window to install it without downtime."
+        title="Rotação de Certificados"
+        description="A rotação é uma operação aditiva: um novo certificado é emitido enquanto o atual permanece válido, dando aos clientes uma janela para instalá-lo sem indisponibilidade."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Rotatable certificates" value={rows.length} isLoading={certificates.isLoading} />
+        <MetricCard label="Certificados rotacionáveis" value={rows.length} isLoading={certificates.isLoading} />
         <MetricCard
-          label="Within rotation window"
+          label="Dentro da janela de rotação"
           value={candidates.length}
           tone={candidates.length > 0 ? "warn" : "ok"}
-          hint="60 days or less remaining"
+          hint="60 dias ou menos restantes"
           isLoading={certificates.isLoading}
         />
         <MetricCard
-          label="Client certificates"
+          label="Certificados de cliente"
           value={rows.filter((row) => row.type === "client").length}
           isLoading={certificates.isLoading}
         />
         <MetricCard
-          label="Server certificates"
+          label="Certificados de servidor"
           value={rows.filter((row) => row.type === "server").length}
           isLoading={certificates.isLoading}
         />
       </div>
 
       <section className="panel p-4">
-        <h3 className="text-sm font-semibold">Rotation policy</h3>
+        <h3 className="text-sm font-semibold">Política de rotação</h3>
         <dl className="mt-2">
           {POLICY.map((entry) => (
             <StatRow key={entry.label} label={entry.label} value={entry.value} />
           ))}
         </dl>
         <p className="mt-3 text-xs text-muted-foreground">
-          Lifetimes are provisional until the certificate authority configuration is published by the
-          backend team.
+          Os tempos de vida são provisórios até que a configuração da autoridade certificadora seja publicada pela
+          equipe de backend.
         </p>
       </section>
 
       <div className="space-y-3">
         <SectionTitle
-          title="Rotation candidates"
-          description="Certificates inside the rotation window, closest expiry first."
+          title="Candidatos à rotação"
+          description="Certificados dentro da janela de rotação, expiração mais próxima primeiro."
         />
         <DataTable
           data={[...candidates].sort((a, b) => daysUntil(a.expiresAt) - daysUntil(b.expiresAt))}
@@ -164,8 +164,8 @@ function RotationPage() {
           rowKey={(row) => row.id}
           isLoading={certificates.isLoading}
           error={certificates.error ?? undefined}
-          emptyMessage="No certificate is inside the rotation window."
-          searchPlaceholder="Search subject or client…"
+          emptyMessage="Nenhum certificado está dentro da janela de rotação."
+          searchPlaceholder="Buscar sujeito ou cliente…"
           searchValue={(row) => `${row.subject} ${row.clientId}`}
           pageSize={15}
         />
@@ -176,20 +176,20 @@ function RotationPage() {
         onOpenChange={(open) => {
           if (!open) setTarget(null);
         }}
-        title="Rotate certificate"
-        warning="A replacement certificate is issued for the same subject. The bound client must install it before the current certificate expires, otherwise mTLS authentication will fail."
+        title="Rotacionar certificado"
+        warning="Um certificado substituto é emitido para o mesmo sujeito. O cliente vinculado deve instalá-lo antes que o certificado atual expire, caso contrário a autenticação mTLS falhará."
         details={
           target
             ? [
-                { label: "Subject", value: target.subject },
-                { label: "Serial", value: target.serial },
-                { label: "Expires", value: formatDate(target.expiresAt) },
+                { label: "Sujeito", value: target.subject },
+                { label: "Número de série", value: target.serial },
+                { label: "Expira", value: formatDate(target.expiresAt) },
               ]
             : undefined
         }
-        confirmLabel="Rotate certificate"
+        confirmLabel="Rotacionar certificado"
         destructive={false}
-        environmentNotice="Issuance happens on the certificate authority host and is recorded in the audit trail."
+        environmentNotice="A emissão ocorre no host da autoridade certificadora e é registrada na trilha de auditoria."
         onConfirm={async () => {
           if (!target) return;
           await action.mutateAsync({ action: "certificate.rotate", resourceId: target.id });

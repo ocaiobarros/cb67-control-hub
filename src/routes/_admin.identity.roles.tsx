@@ -9,14 +9,14 @@ import type { Role } from "@/types";
 export const Route = createFileRoute("/_admin/identity/roles")({
   head: () => ({
     meta: [
-      { title: "Roles — CB67 Labs Control Center" },
+      { title: "Funções — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Administrative roles, the permissions each one grants and how many operators are assigned to them.",
+          "Funções administrativas, as permissões que cada uma concede e quantos operadores estão atribuídos a elas.",
       },
-      { property: "og:title", content: "Roles — CB67 Labs Control Center" },
-      { property: "og:description", content: "Role definitions and granted permissions." },
+      { property: "og:title", content: "Funções — CB67 Labs Control Center" },
+      { property: "og:description", content: "Definições de funções e permissões concedidas." },
     ],
   }),
   component: RolesPage,
@@ -29,7 +29,7 @@ function RolesPage() {
   const columns: Column<Role>[] = [
     {
       id: "name",
-      header: "Role",
+      header: "Função",
       cell: (row) => (
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">{row.name}</p>
@@ -40,19 +40,19 @@ function RolesPage() {
     },
     {
       id: "description",
-      header: "Purpose",
+      header: "Finalidade",
       cell: (row) => <p className="max-w-md text-xs text-muted-foreground">{row.description}</p>,
     },
     {
       id: "administrators",
-      header: "Assigned",
+      header: "Atribuídos",
       cell: (row) => <span className="tabular">{row.administrators}</span>,
       sortValue: (row) => row.administrators,
       align: "right",
     },
     {
       id: "permissions",
-      header: "Permissions",
+      header: "Permissões",
       cell: (row) => (
         <div className="flex flex-wrap gap-1">
           {row.permissions.map((permission) => (
@@ -68,24 +68,24 @@ function RolesPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Roles"
-        description="Roles are the only mechanism that grants administrative capability. Permissions are additive and evaluated server-side on every request."
+        title="Funções"
+        description="As funções são o único mecanismo que concede capacidade administrativa. As permissões são aditivas e avaliadas no servidor a cada requisição."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Roles" value={rows.length} isLoading={roles.isLoading} />
+        <MetricCard label="Funções" value={rows.length} isLoading={roles.isLoading} />
         <MetricCard
-          label="Operators assigned"
+          label="Operadores atribuídos"
           value={rows.reduce((sum, row) => sum + row.administrators, 0)}
           isLoading={roles.isLoading}
         />
         <MetricCard
-          label="Distinct permissions"
+          label="Permissões distintas"
           value={new Set(rows.flatMap((row) => row.permissions)).size}
           isLoading={roles.isLoading}
         />
         <MetricCard
-          label="Broadest role"
+          label="Função mais abrangente"
           value={[...rows].sort((a, b) => b.permissions.length - a.permissions.length)[0]?.name ?? "—"}
           isLoading={roles.isLoading}
         />
@@ -93,8 +93,8 @@ function RolesPage() {
 
       <div className="space-y-3">
         <SectionTitle
-          title="Role catalogue"
-          description="Use the permission matrix to compare coverage across roles."
+          title="Catálogo de funções"
+          description="Use a matriz de permissões para comparar a cobertura entre funções."
         />
         <DataTable
           data={roles.data}
@@ -102,7 +102,7 @@ function RolesPage() {
           rowKey={(row) => row.id}
           isLoading={roles.isLoading}
           error={roles.error ?? undefined}
-          searchPlaceholder="Search role or permission…"
+          searchPlaceholder="Buscar função ou permissão…"
           searchValue={(row) => `${row.name} ${row.code} ${row.permissions.join(" ")}`}
           pageSize={15}
         />

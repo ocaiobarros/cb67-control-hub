@@ -14,14 +14,14 @@ import type { SecurityEvent, Severity } from "@/types";
 export const Route = createFileRoute("/_admin/security/events")({
   head: () => ({
     meta: [
-      { title: "Security Events — CB67 Labs Control Center" },
+      { title: "Eventos de Segurança — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Full security event stream with severity, category, originating client, source address and the correlated request identifier.",
+          "Fluxo completo de eventos de segurança com severidade, categoria, cliente de origem, endereço de origem e o identificador de requisição correlacionado.",
       },
-      { property: "og:title", content: "Security Events — CB67 Labs Control Center" },
-      { property: "og:description", content: "Severity-filtered security event stream." },
+      { property: "og:title", content: "Eventos de Segurança — CB67 Labs Control Center" },
+      { property: "og:description", content: "Fluxo de eventos de segurança filtrado por severidade." },
     ],
   }),
   component: SecurityEventsPage,
@@ -39,13 +39,13 @@ function SecurityEventsPage() {
   const columns: Column<SecurityEvent>[] = [
     {
       id: "timestamp",
-      header: "When",
+      header: "Quando",
       cell: (row) => <span className="mono-xs">{formatDateTime(row.timestamp)}</span>,
       sortValue: (row) => row.timestamp,
     },
     {
       id: "event",
-      header: "Event",
+      header: "Evento",
       cell: (row) => (
         <div className="min-w-0">
           <p className="truncate text-sm">{row.event}</p>
@@ -56,31 +56,31 @@ function SecurityEventsPage() {
     },
     {
       id: "client",
-      header: "Client",
+      header: "Cliente",
       cell: (row) => <code className="mono-xs text-muted-foreground">{row.clientId}</code>,
       sortValue: (row) => row.clientId,
     },
     {
       id: "source",
-      header: "Source",
+      header: "Origem",
       cell: (row) => <code className="mono-xs text-muted-foreground">{row.source}</code>,
       sortValue: (row) => row.source,
     },
     {
       id: "request",
-      header: "Request",
+      header: "Requisição",
       cell: (row) => <IdentifierCell value={row.requestId} label="request id" />,
     },
     {
       id: "severity",
-      header: "Severity",
+      header: "Severidade",
       cell: (row) => <StatusBadge status={row.severity} />,
       sortValue: (row) => row.severity,
       align: "right",
     },
     {
       id: "decision",
-      header: "Decision",
+      header: "Decisão",
       cell: (row) => <StatusBadge status={row.decision} />,
       sortValue: (row) => row.decision,
       align: "right",
@@ -90,26 +90,26 @@ function SecurityEventsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Security Events"
-        description="Every event carries the request identifier so it can be correlated with the API request explorer and the audit trail."
+        title="Eventos de Segurança"
+        description="Cada evento carrega o identificador de requisição para que possa ser correlacionado com o explorador de requisições da API e a trilha de auditoria."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Events" value={all.length} isLoading={events.isLoading} />
+        <MetricCard label="Eventos" value={all.length} isLoading={events.isLoading} />
         <MetricCard
-          label="Critical"
+          label="Crítico"
           value={all.filter((row) => row.severity === "critical").length}
           tone="crit"
           isLoading={events.isLoading}
         />
         <MetricCard
-          label="High"
+          label="Alto"
           value={all.filter((row) => row.severity === "high").length}
           tone="warn"
           isLoading={events.isLoading}
         />
         <MetricCard
-          label="Denied"
+          label="Negados"
           value={all.filter((row) => row.decision === "denied").length}
           isLoading={events.isLoading}
         />
@@ -117,8 +117,8 @@ function SecurityEventsPage() {
 
       <div className="space-y-3">
         <SectionTitle
-          title="Event stream"
-          description="Filter by severity, then search by client, source or request identifier."
+          title="Fluxo de eventos"
+          description="Filtre por severidade, depois busque por cliente, origem ou identificador de requisição."
         />
         <DataTable
           data={rows}
@@ -126,12 +126,12 @@ function SecurityEventsPage() {
           rowKey={(row) => row.id}
           isLoading={events.isLoading}
           error={events.error ?? undefined}
-          searchPlaceholder="Search client, source, request…"
+          searchPlaceholder="Buscar cliente, origem, requisição…"
           searchValue={(row) => `${row.clientId} ${row.source} ${row.requestId} ${row.event}`}
           pageSize={20}
           dense
           toolbar={
-            <div role="group" aria-label="Severity filter" className="inline-flex overflow-hidden rounded-md border border-border">
+            <div role="group" aria-label="Filtro de severidade" className="inline-flex overflow-hidden rounded-md border border-border">
               {SEVERITIES.map((value) => (
                 <button
                   key={value}

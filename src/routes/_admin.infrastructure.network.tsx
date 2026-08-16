@@ -13,14 +13,14 @@ import type { TimeRange } from "@/types";
 export const Route = createFileRoute("/_admin/infrastructure/network")({
   head: () => ({
     meta: [
-      { title: "Network — CB67 Labs Control Center" },
+      { title: "Rede — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Ingress and egress throughput, edge posture and firewall state for the CB67 Labs on-premises platform.",
+          "Throughput de entrada e saída, postura de borda e estado do firewall para a plataforma on-premises da CB67 Labs.",
       },
-      { property: "og:title", content: "Network — CB67 Labs Control Center" },
-      { property: "og:description", content: "Throughput, edge posture and firewall state." },
+      { property: "og:title", content: "Rede — CB67 Labs Control Center" },
+      { property: "og:description", content: "Throughput, postura de borda e estado do firewall." },
     ],
   }),
   component: NetworkPage,
@@ -36,40 +36,40 @@ function NetworkPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Network"
-        description="Traffic crossing the reverse proxy and mTLS edge. Throughput is expressed in Mbit/s as reported by the interface counters."
+        title="Rede"
+        description="Tráfego atravessando o proxy reverso e a borda mTLS. O throughput é expresso em Mbit/s conforme reportado pelos contadores de interface."
         actions={<TimeRangeSelect value={range} onChange={setRange} />}
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
-          label="Ingress"
+          label="Entrada"
           value={last ? `${formatCompact(Number(last["rx"]))} Mbit/s` : "—"}
           isLoading={series.isLoading}
         />
         <MetricCard
-          label="Egress"
+          label="Saída"
           value={last ? `${formatCompact(Number(last["tx"]))} Mbit/s` : "—"}
           isLoading={series.isLoading}
         />
         <MetricCard
-          label="Firewall rules"
+          label="Regras de firewall"
           value={firewall.data ? formatNumber(firewall.data.rulesCount) : "—"}
           hint={firewall.data?.policy}
           isLoading={firewall.isLoading}
         />
         <MetricCard
-          label="Recent blocks"
+          label="Bloqueios recentes"
           value={firewall.data ? formatNumber(firewall.data.recentBlocks) : "—"}
           tone={firewall.data && firewall.data.recentBlocks > 100 ? "warn" : "neutral"}
-          hint="Dropped connections in last hour"
+          hint="Conexões descartadas na última hora"
           isLoading={firewall.isLoading}
         />
       </div>
 
       <ChartPanel
-        title="Interface throughput"
-        description="Receive and transmit rates on the platform uplink."
+        title="Throughput de interface"
+        description="Taxas de recepção e transmissão no uplink da plataforma."
         isLoading={series.isLoading}
         error={series.error ?? undefined}
         isEmpty={series.data?.length === 0}
@@ -79,31 +79,31 @@ function NetworkPage() {
           data={series.data ?? []}
           unit="Mbit/s"
           series={[
-            { key: "rx", label: "Ingress" },
-            { key: "tx", label: "Egress" },
+            { key: "rx", label: "Entrada" },
+            { key: "tx", label: "Saída" },
           ]}
         />
       </ChartPanel>
 
       <section className="panel p-4">
         <div className="flex items-center justify-between gap-3 pb-2">
-          <h2 className="text-sm font-semibold">Edge posture</h2>
+          <h2 className="text-sm font-semibold">Postura de borda</h2>
           {firewall.data && <StatusBadge status={firewall.data.status} />}
         </div>
         <dl>
-          <StatRow label="Default policy" value={firewall.data?.policy ?? "—"} />
+          <StatRow label="Política padrão" value={firewall.data?.policy ?? "—"} />
           <StatRow
-            label="Last reload"
+            label="Última recarga"
             value={firewall.data ? formatDateTime(firewall.data.lastReloadAt) : "—"}
           />
           <StatRow
-            label="Active rules"
+            label="Regras ativas"
             value={firewall.data ? formatNumber(firewall.data.rulesCount) : "—"}
           />
         </dl>
         <p className="mt-3 text-xs text-muted-foreground">
-          Firewall configuration is managed outside this interface. Values shown are read-only
-          reports supplied by the platform control plane.
+          A configuração do firewall é gerenciada fora desta interface. Os valores exibidos são
+          relatórios somente leitura fornecidos pelo plano de controle da plataforma.
         </p>
       </section>
     </div>

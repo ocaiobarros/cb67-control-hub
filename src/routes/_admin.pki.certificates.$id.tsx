@@ -17,14 +17,14 @@ import { daysUntil, formatDate, formatDateTime } from "@/utils/format";
 export const Route = createFileRoute("/_admin/pki/certificates/$id")({
   head: () => ({
     meta: [
-      { title: "Certificate Record — CB67 Labs Control Center" },
+      { title: "Registro de Certificado — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Certificate record with issuer chain, fingerprint, validity window, bound client and rotation or revocation controls.",
+          "Registro de certificado com cadeia de emissores, fingerprint, janela de validade, cliente vinculado e controles de rotação ou revogação.",
       },
-      { property: "og:title", content: "Certificate Record — CB67 Labs Control Center" },
-      { property: "og:description", content: "Fingerprint, chain, validity and revocation controls." },
+      { property: "og:title", content: "Registro de Certificado — CB67 Labs Control Center" },
+      { property: "og:description", content: "Fingerprint, cadeia, validade e controles de revogação." },
     ],
   }),
   component: CertificateDetail,
@@ -53,8 +53,8 @@ function CertificateDetail() {
   if (certificate.isError) {
     return (
       <div className="space-y-6">
-        <PageHeader title="Certificate unavailable" description="The certificate record could not be loaded." />
-        <EmptyState message="Certificate not found" hint="Verify the identifier and try again." />
+        <PageHeader title="Certificado indisponível" description="Não foi possível carregar o registro do certificado." />
+        <EmptyState message="Certificado não encontrado" hint="Verifique o identificador e tente novamente." />
       </div>
     );
   }
@@ -64,17 +64,17 @@ function CertificateDetail() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title={record?.subject ?? "Certificate"}
-        description="Rotation issues a new certificate for the same subject and keeps the previous one valid until its expiry. Revocation is immediate and irreversible."
+        title={record?.subject ?? "Certificado"}
+        description="A rotação emite um novo certificado para o mesmo sujeito e mantém o anterior válido até sua expiração. A revogação é imediata e irreversível."
         meta={record ? <StatusBadge status={record.status} /> : undefined}
         actions={
           <Permitted permission="pki:write">
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={() => setPending("rotate")}>
-                Rotate
+                Rotacionar
               </Button>
               <Button variant="destructive" size="sm" onClick={() => setPending("revoke")}>
-                Revoke
+                Revogar
               </Button>
             </div>
           </Permitted>
@@ -83,19 +83,19 @@ function CertificateDetail() {
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
-          label="Remaining validity"
-          value={record ? `${Math.max(0, remaining)} days` : "—"}
+          label="Validade restante"
+          value={record ? `${Math.max(0, remaining)} dias` : "—"}
           tone={remaining <= 0 ? "crit" : remaining <= 30 ? "warn" : "ok"}
           isLoading={certificate.isLoading}
         />
-        <MetricCard label="Type" value={record?.type ?? "—"} isLoading={certificate.isLoading} />
+        <MetricCard label="Tipo" value={record?.type ?? "—"} isLoading={certificate.isLoading} />
         <MetricCard
-          label="Issued"
+          label="Emitido"
           value={record ? formatDate(record.issuedAt) : "—"}
           isLoading={certificate.isLoading}
         />
         <MetricCard
-          label="Expires"
+          label="Expira"
           value={record ? formatDate(record.expiresAt) : "—"}
           isLoading={certificate.isLoading}
         />
@@ -103,12 +103,12 @@ function CertificateDetail() {
 
       <div className="grid gap-4 xl:grid-cols-2">
         <section className="panel p-4">
-          <h3 className="text-sm font-semibold">Certificate record</h3>
+          <h3 className="text-sm font-semibold">Registro do certificado</h3>
           <dl className="mt-2">
-            <StatRow label="Subject" value={record?.subject ?? "—"} />
-            <StatRow label="Issuer" value={record?.issuer ?? "—"} />
+            <StatRow label="Sujeito" value={record?.subject ?? "—"} />
+            <StatRow label="Emissor" value={record?.issuer ?? "—"} />
             <StatRow
-              label="Serial"
+              label="Número de série"
               value={record ? <IdentifierCell value={record.serial} label="serial" /> : "—"}
             />
             <StatRow
@@ -116,17 +116,17 @@ function CertificateDetail() {
               value={record ? <IdentifierCell value={record.fingerprint} label="fingerprint" /> : "—"}
             />
             <StatRow
-              label="Bound client"
+              label="Cliente vinculado"
               value={record ? <IdentifierCell value={record.clientId} label="client id" /> : "—"}
             />
             <StatRow
-              label="Validity"
+              label="Validade"
               value={record ? `${formatDateTime(record.issuedAt)} → ${formatDateTime(record.expiresAt)}` : "—"}
             />
           </dl>
         </section>
         <section className="panel p-4">
-          <h3 className="text-sm font-semibold">Certificate activity</h3>
+          <h3 className="text-sm font-semibold">Atividade do certificado</h3>
           <div className="mt-3">
             <ActivityTimeline items={timeline} />
           </div>
@@ -138,24 +138,24 @@ function CertificateDetail() {
         onOpenChange={(open) => {
           if (!open) setPending(null);
         }}
-        title={pending === "revoke" ? "Revoke certificate" : "Rotate certificate"}
+        title={pending === "revoke" ? "Revogar certificado" : "Rotacionar certificado"}
         warning={
           pending === "revoke"
-            ? "The certificate is added to the revocation list immediately. Any mTLS connection presenting it is rejected, which will break the bound client until a new certificate is installed."
-            : "A replacement certificate is issued for the same subject. The client must install it before the current certificate expires."
+            ? "O certificado é adicionado imediatamente à lista de revogação. Qualquer conexão mTLS que o apresente é rejeitada, o que interromperá o cliente vinculado até que um novo certificado seja instalado."
+            : "Um certificado substituto é emitido para o mesmo sujeito. O cliente deve instalá-lo antes que o certificado atual expire."
         }
         details={
           record
             ? [
-                { label: "Subject", value: record.subject },
-                { label: "Serial", value: record.serial },
-                { label: "Bound client", value: record.clientId },
+                { label: "Sujeito", value: record.subject },
+                { label: "Número de série", value: record.serial },
+                { label: "Cliente vinculado", value: record.clientId },
               ]
             : undefined
         }
-        confirmLabel={pending === "revoke" ? "Revoke certificate" : "Rotate certificate"}
+        confirmLabel={pending === "revoke" ? "Revogar certificado" : "Rotacionar certificado"}
         requireTypedValue={pending === "revoke" ? record?.serial : undefined}
-        environmentNotice="PKI operations are re-authorised and audited server-side."
+        environmentNotice="Operações de PKI são reautorizadas e auditadas no servidor."
         onConfirm={async () => {
           if (!record || !pending) return;
           await action.mutateAsync({

@@ -10,14 +10,14 @@ import type { ServiceHealth } from "@/types";
 export const Route = createFileRoute("/_admin/infrastructure/services")({
   head: () => ({
     meta: [
-      { title: "Services — CB67 Labs Control Center" },
+      { title: "Serviços — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Control-plane and data-plane service health for the CB67 Labs platform: gateway, licensing, PKI, database and observability stack.",
+          "Saúde dos serviços de plano de controle e de dados da plataforma CB67 Labs: gateway, licenciamento, PKI, banco de dados e stack de observabilidade.",
       },
-      { property: "og:title", content: "Services — CB67 Labs Control Center" },
-      { property: "og:description", content: "Health of every platform service." },
+      { property: "og:title", content: "Serviços — CB67 Labs Control Center" },
+      { property: "og:description", content: "Saúde de todos os serviços da plataforma." },
     ],
   }),
   component: ServicesPage,
@@ -30,11 +30,11 @@ function ServicesPage() {
   const columns: Column<ServiceHealth>[] = [
     {
       id: "name",
-      header: "Service",
+      header: "Serviço",
       cell: (row) => <span className="text-sm font-medium">{row.name}</span>,
       sortValue: (row) => row.name,
     },
-    { id: "detail", header: "Detail", cell: (row) => <span className="text-xs text-muted-foreground">{row.detail}</span> },
+    { id: "detail", header: "Detalhe", cell: (row) => <span className="text-xs text-muted-foreground">{row.detail}</span> },
     { id: "uptime", header: "Uptime", cell: (row) => <span className="mono-xs">{row.uptime}</span>, sortValue: (row) => row.uptime },
     {
       id: "status",
@@ -48,15 +48,15 @@ function ServicesPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Services"
-        description="Systemd units and containers composing the platform. Restart and reload operations are performed by the operations runbook, not from this interface."
+        title="Serviços"
+        description="Unidades systemd e contêineres que compõem a plataforma. As operações de reinício e recarga são realizadas pelo runbook de operações, não por esta interface."
       />
 
       <div className="grid gap-3 sm:grid-cols-3">
-        <MetricCard label="Healthy" value={rows.filter((r) => r.status === "healthy").length} tone="ok" isLoading={services.isLoading} />
-        <MetricCard label="Degraded" value={rows.filter((r) => r.status === "degraded").length} tone="warn" isLoading={services.isLoading} />
+        <MetricCard label="Saudáveis" value={rows.filter((r) => r.status === "healthy").length} tone="ok" isLoading={services.isLoading} />
+        <MetricCard label="Degradados" value={rows.filter((r) => r.status === "degraded").length} tone="warn" isLoading={services.isLoading} />
         <MetricCard
-          label="Unavailable"
+          label="Indisponíveis"
           value={rows.filter((r) => r.status === "unavailable").length}
           tone="crit"
           isLoading={services.isLoading}
@@ -69,7 +69,7 @@ function ServicesPage() {
         rowKey={(row) => row.id}
         isLoading={services.isLoading}
         error={services.error ?? undefined}
-        searchPlaceholder="Search services…"
+        searchPlaceholder="Buscar serviços…"
         pageSize={20}
       />
     </div>

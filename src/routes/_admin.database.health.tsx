@@ -14,14 +14,14 @@ import type { TimeRange } from "@/types";
 export const Route = createFileRoute("/_admin/database/health")({
   head: () => ({
     meta: [
-      { title: "Database Health — CB67 Labs Control Center" },
+      { title: "Saúde do Banco de Dados — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "PostgreSQL health for the CB67 Labs platform: connection pool, throughput, cache hit ratio, locks and deadlocks.",
+          "Saúde do PostgreSQL da plataforma CB67 Labs: pool de conexões, throughput, taxa de acerto de cache, locks e deadlocks.",
       },
-      { property: "og:title", content: "Database Health — CB67 Labs Control Center" },
-      { property: "og:description", content: "PostgreSQL connection pool, throughput and lock health." },
+      { property: "og:title", content: "Saúde do Banco de Dados — CB67 Labs Control Center" },
+      { property: "og:description", content: "Pool de conexões, throughput e saúde de locks do PostgreSQL." },
     ],
   }),
   component: DatabaseHealthPage,
@@ -36,25 +36,25 @@ function DatabaseHealthPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Database Health"
-        description="A single PostgreSQL cluster backs the platform: licensing, identity, audit and API metadata. Metrics come from the database exporter, never from direct queries issued by this UI."
+        title="Saúde do Banco de Dados"
+        description="Um único cluster PostgreSQL sustenta a plataforma: licenciamento, identidade, auditoria e metadados de API. As métricas vêm do exporter do banco de dados, nunca de consultas diretas emitidas por esta interface."
         meta={db ? <StatusBadge status={db.status} /> : undefined}
         actions={<TimeRangeSelect value={range} onChange={setRange} />}
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
-          label="Transactions/s"
+          label="Transações/s"
           value={db ? formatNumber(db.transactionsPerSec) : "—"}
           isLoading={health.isLoading}
         />
         <MetricCard
-          label="Queries/s"
+          label="Consultas/s"
           value={db ? formatNumber(db.queriesPerSec) : "—"}
           isLoading={health.isLoading}
         />
         <MetricCard
-          label="Cache hit ratio"
+          label="Taxa de acerto de cache"
           value={db ? formatPercent(db.cacheHitRatio, 1) : "—"}
           tone={db && db.cacheHitRatio < 95 ? "warn" : "ok"}
           isLoading={health.isLoading}
@@ -69,37 +69,37 @@ function DatabaseHealthPage() {
 
       <div className="grid gap-3 sm:grid-cols-2">
         <UsageCard
-          label="Connection pool"
+          label="Pool de conexões"
           used={db?.connections ?? 0}
           total={db?.maxConnections ?? 0}
           formatValue={(value) => formatNumber(value)}
-          hint="Pool saturation above 80% indicates a leaking client or an undersized pooler."
+          hint="Saturação do pool acima de 80% indica um cliente com vazamento ou um pooler subdimensionado."
         />
         <UsageCard
-          label="Cluster size"
+          label="Tamanho do cluster"
           used={db?.sizeBytes ?? 0}
           total={Math.max(db?.sizeBytes ?? 0, 512 * 1024 ** 3)}
           formatValue={(value) => formatBytes(value)}
-          hint="Provisioned volume for the database mount on the Proxmox host."
+          hint="Volume provisionado para o mount do banco de dados no host Proxmox."
         />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-2">
         <ChartPanel
-          title="Connections"
-          description="Active backends over the selected window."
+          title="Conexões"
+          description="Backends ativos na janela selecionada."
           isLoading={series.isLoading}
           error={series.error ?? undefined}
           isEmpty={(series.data?.length ?? 0) === 0}
         >
           <TimeSeriesChart
             data={series.data ?? []}
-            series={[{ key: "connections", label: "Connections" }]}
+            series={[{ key: "connections", label: "Conexões" }]}
           />
         </ChartPanel>
         <ChartPanel
-          title="Query throughput and locks"
-          description="Queries per second against lock contention."
+          title="Throughput de consultas e locks"
+          description="Consultas por segundo em relação à contenção de locks."
           isLoading={series.isLoading}
           error={series.error ?? undefined}
           isEmpty={(series.data?.length ?? 0) === 0}
@@ -107,7 +107,7 @@ function DatabaseHealthPage() {
           <TimeSeriesChart
             data={series.data ?? []}
             series={[
-              { key: "queries", label: "Queries/s" },
+              { key: "queries", label: "Consultas/s" },
               { key: "locks", label: "Locks" },
             ]}
             variant="line"
@@ -116,14 +116,14 @@ function DatabaseHealthPage() {
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Cluster facts" description="Deployment characteristics relevant to operators." />
+        <SectionTitle title="Dados do cluster" description="Características de implantação relevantes para operadores." />
         <section className="panel p-4">
           <dl>
-            <StatRow label="Engine" value="PostgreSQL (on-premises)" />
-            <StatRow label="Host platform" value="Debian 13 on Proxmox" />
-            <StatRow label="Exposure" value="Management network only" />
-            <StatRow label="Locks held" value={db ? formatNumber(db.locks) : "—"} />
-            <StatRow label="Platform" value={<code className="mono-xs">{platformMeta.publicDomain}</code>} />
+            <StatRow label="Motor" value="PostgreSQL (on-premises)" />
+            <StatRow label="Plataforma do host" value="Debian 13 no Proxmox" />
+            <StatRow label="Exposição" value="Apenas rede de gerenciamento" />
+            <StatRow label="Locks mantidos" value={db ? formatNumber(db.locks) : "—"} />
+            <StatRow label="Plataforma" value={<code className="mono-xs">{platformMeta.publicDomain}</code>} />
           </dl>
         </section>
       </div>

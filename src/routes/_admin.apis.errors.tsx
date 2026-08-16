@@ -12,16 +12,16 @@ import type { ApiErrorGroup } from "@/types";
 export const Route = createFileRoute("/_admin/apis/errors")({
   head: () => ({
     meta: [
-      { title: "API Errors — CB67 Labs Control Center" },
+      { title: "Erros da API — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Grouped API failures by status class, rate per minute, affected clients and endpoints, with first and last occurrence.",
+          "Falhas de API agrupadas por classe de status, taxa por minuto, clientes e endpoints afetados, com primeira e última ocorrência.",
       },
-      { property: "og:title", content: "API Errors — CB67 Labs Control Center" },
+      { property: "og:title", content: "Erros da API — CB67 Labs Control Center" },
       {
         property: "og:description",
-        content: "Error groups by 4xx, 5xx, timeout and provider failure classes.",
+        content: "Grupos de erro por classes 4xx, 5xx, timeout e falha de provedor.",
       },
     ],
   }),
@@ -29,10 +29,10 @@ export const Route = createFileRoute("/_admin/apis/errors")({
 });
 
 const CLASS_LABEL: Record<ApiErrorGroup["statusClass"], string> = {
-  "4xx": "Client (4xx)",
-  "5xx": "Server (5xx)",
+  "4xx": "Cliente (4xx)",
+  "5xx": "Servidor (5xx)",
   timeout: "Timeout",
-  provider: "Provider",
+  provider: "Provedor",
 };
 
 function ApiErrorsPage() {
@@ -69,7 +69,7 @@ function ApiErrorsPage() {
   const columns: Column<ApiErrorGroup>[] = [
     {
       id: "status",
-      header: "Error",
+      header: "Erro",
       cell: (row) => (
         <div className="min-w-0">
           <code className="mono-xs text-foreground">{row.status}</code>
@@ -80,21 +80,21 @@ function ApiErrorsPage() {
     },
     {
       id: "count",
-      header: "Occurrences",
+      header: "Ocorrências",
       cell: (row) => <span className="tabular">{formatNumber(row.count)}</span>,
       sortValue: (row) => row.count,
       align: "right",
     },
     {
       id: "rate",
-      header: "Per minute",
+      header: "Por minuto",
       cell: (row) => <span className="tabular">{row.ratePerMin.toFixed(2)}</span>,
       sortValue: (row) => row.ratePerMin,
       align: "right",
     },
     {
       id: "trend",
-      header: "Trend",
+      header: "Tendência",
       cell: (row) => (
         <span className={row.trend > 0 ? "tabular text-crit" : "tabular text-ok"}>
           {row.trend > 0 ? "+" : ""}
@@ -106,7 +106,7 @@ function ApiErrorsPage() {
     },
     {
       id: "clients",
-      header: "Clients",
+      header: "Clientes",
       cell: (row) => <span className="tabular">{row.affectedClients}</span>,
       sortValue: (row) => row.affectedClients,
       align: "right",
@@ -126,14 +126,14 @@ function ApiErrorsPage() {
     },
     {
       id: "firstSeen",
-      header: "First seen",
+      header: "Primeira ocorrência",
       cell: (row) => <span className="mono-xs">{formatDateTime(row.firstSeen)}</span>,
       sortValue: (row) => row.firstSeen,
       hideByDefault: true,
     },
     {
       id: "lastSeen",
-      header: "Last seen",
+      header: "Última ocorrência",
       cell: (row) => (
         <span className="mono-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>
       ),
@@ -147,42 +147,42 @@ function ApiErrorsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="API Errors"
-        description="Failures are grouped by normalised status so recurring conditions surface as one signal. Provider-class errors originate upstream and are not counted against platform availability."
+        title="Erros da API"
+        description="As falhas são agrupadas por status normalizado para que condições recorrentes apareçam como um único sinal. Erros da classe provedor se originam upstream e não contam contra a disponibilidade da plataforma."
         meta={<StatusBadge status={totals.serverSide > 0 ? "degraded" : "healthy"} />}
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
-          label="Error groups"
+          label="Grupos de erro"
           value={rows.length}
           isLoading={errors.isLoading}
-          hint="Distinct normalised conditions"
+          hint="Condições normalizadas distintas"
         />
         <MetricCard
-          label="Occurrences"
+          label="Ocorrências"
           value={formatCompact(totals.count)}
           isLoading={errors.isLoading}
         />
         <MetricCard
-          label="Server-side"
+          label="Lado servidor"
           value={formatCompact(totals.serverSide)}
           tone={totals.serverSide > 0 ? "warn" : "ok"}
-          hint="5xx and timeout classes"
+          hint="Classes 5xx e timeout"
           isLoading={errors.isLoading}
         />
         <MetricCard
-          label="Top condition"
+          label="Principal condição"
           value={worst?.status ?? "—"}
-          hint={worst ? `${formatNumber(worst.count)} occurrences` : undefined}
+          hint={worst ? `${formatNumber(worst.count)} ocorrências` : undefined}
           isLoading={errors.isLoading}
         />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-2">
         <ChartPanel
-          title="Distribution by class"
-          description="Where failures originate: consumer request, platform, or upstream provider."
+          title="Distribuição por classe"
+          description="Onde as falhas se originam: requisição do consumidor, plataforma ou provedor upstream."
           isLoading={errors.isLoading}
           error={errors.error ?? undefined}
           isEmpty={byClass.every((entry) => entry.value === 0)}
@@ -190,8 +190,8 @@ function ApiErrorsPage() {
           <CategoryBarChart data={byClass} colorByIndex />
         </ChartPanel>
         <ChartPanel
-          title="Most affected endpoints"
-          description="Occurrences attributed to each endpoint in the current window."
+          title="Endpoints mais afetados"
+          description="Ocorrências atribuídas a cada endpoint na janela atual."
           isLoading={errors.isLoading}
           error={errors.error ?? undefined}
           isEmpty={byEndpoint.length === 0}
@@ -202,8 +202,8 @@ function ApiErrorsPage() {
 
       <div className="space-y-3">
         <SectionTitle
-          title="Error groups"
-          description="Sorted by occurrences. Expand the request explorer to inspect individual correlated requests."
+          title="Grupos de erro"
+          description="Ordenado por ocorrências. Abra o explorador de requisições para inspecionar requisições correlacionadas individuais."
         />
         <DataTable
           data={errors.data}
@@ -211,7 +211,7 @@ function ApiErrorsPage() {
           rowKey={(row) => row.id}
           isLoading={errors.isLoading}
           error={errors.error ?? undefined}
-          searchPlaceholder="Search status or endpoint…"
+          searchPlaceholder="Buscar status ou endpoint…"
           searchValue={(row) => `${row.status} ${row.affectedEndpoints.join(" ")}`}
           pageSize={15}
         />

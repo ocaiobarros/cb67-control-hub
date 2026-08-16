@@ -14,14 +14,14 @@ import type { SecurityEvent, TimeRange } from "@/types";
 export const Route = createFileRoute("/_admin/security/failed-attempts")({
   head: () => ({
     meta: [
-      { title: "Failed Attempts — CB67 Labs Control Center" },
+      { title: "Tentativas Falhas — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Repeated failed authentication and authorisation attempts grouped by client and source address to surface abuse patterns.",
+          "Tentativas repetidas de autenticação e autorização falhas agrupadas por cliente e endereço de origem para revelar padrões de abuso.",
       },
-      { property: "og:title", content: "Failed Attempts — CB67 Labs Control Center" },
-      { property: "og:description", content: "Abuse patterns by client and source address." },
+      { property: "og:title", content: "Tentativas Falhas — CB67 Labs Control Center" },
+      { property: "og:description", content: "Padrões de abuso por cliente e endereço de origem." },
     ],
   }),
   component: FailedAttemptsPage,
@@ -71,19 +71,19 @@ function FailedAttemptsPage() {
   const offenderColumns: Column<Offender>[] = [
     {
       id: "client",
-      header: "Client",
+      header: "Cliente",
       cell: (row) => <code className="mono-xs text-foreground">{row.clientId}</code>,
       sortValue: (row) => row.clientId,
     },
     {
       id: "source",
-      header: "Source",
+      header: "Origem",
       cell: (row) => <code className="mono-xs text-muted-foreground">{row.source}</code>,
       sortValue: (row) => row.source,
     },
     {
       id: "attempts",
-      header: "Failed attempts",
+      header: "Tentativas falhas",
       cell: (row) => (
         <span className={row.attempts >= 5 ? "tabular text-crit" : "tabular"}>{row.attempts}</span>
       ),
@@ -92,14 +92,14 @@ function FailedAttemptsPage() {
     },
     {
       id: "severity",
-      header: "Worst severity",
+      header: "Pior severidade",
       cell: (row) => <StatusBadge status={row.worstSeverity} />,
       sortValue: (row) => row.worstSeverity,
       align: "right",
     },
     {
       id: "last",
-      header: "Last attempt",
+      header: "Última tentativa",
       cell: (row) => <span className="mono-xs text-muted-foreground">{formatRelative(row.lastAt)}</span>,
       sortValue: (row) => row.lastAt,
       align: "right",
@@ -109,28 +109,28 @@ function FailedAttemptsPage() {
   const eventColumns: Column<SecurityEvent>[] = [
     {
       id: "timestamp",
-      header: "When",
+      header: "Quando",
       cell: (row) => <span className="mono-xs">{formatDateTime(row.timestamp)}</span>,
       sortValue: (row) => row.timestamp,
     },
     {
       id: "event",
-      header: "Attempt",
+      header: "Tentativa",
       cell: (row) => <p className="text-sm">{row.event}</p>,
     },
     {
       id: "client",
-      header: "Client",
+      header: "Cliente",
       cell: (row) => <code className="mono-xs text-muted-foreground">{row.clientId}</code>,
     },
     {
       id: "source",
-      header: "Source",
+      header: "Origem",
       cell: (row) => <code className="mono-xs text-muted-foreground">{row.source}</code>,
     },
     {
       id: "severity",
-      header: "Severity",
+      header: "Severidade",
       cell: (row) => <StatusBadge status={row.severity} />,
       align: "right",
     },
@@ -139,39 +139,39 @@ function FailedAttemptsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Failed Attempts"
-        description="Grouping denials by client and source address separates a misconfigured integration from a deliberate probing attempt."
+        title="Tentativas Falhas"
+        description="Agrupar negações por cliente e endereço de origem separa uma integração mal configurada de uma tentativa deliberada de sondagem."
         actions={<TimeRangeSelect value={range} onChange={setRange} />}
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
-          label="Failed attempts"
+          label="Tentativas falhas"
           value={denied.length}
           tone={denied.length > 0 ? "warn" : "ok"}
           isLoading={events.isLoading}
         />
         <MetricCard
-          label="Distinct sources"
+          label="Origens distintas"
           value={new Set(denied.map((event) => event.source)).size}
           isLoading={events.isLoading}
         />
         <MetricCard
-          label="Suspicious clients"
+          label="Clientes suspeitos"
           value={data ? formatNumber(data.suspiciousClients) : "—"}
           tone={data && data.suspiciousClients > 0 ? "crit" : "ok"}
           isLoading={overview.isLoading}
         />
         <MetricCard
-          label="Operator login failures"
+          label="Falhas de login de operador"
           value={data ? formatNumber(data.adminLoginFailures) : "—"}
           isLoading={overview.isLoading}
         />
       </div>
 
       <ChartPanel
-        title="Attempts by source"
-        description="Top originating addresses in the current dataset."
+        title="Tentativas por origem"
+        description="Principais endereços de origem no conjunto de dados atual."
         isLoading={events.isLoading}
         error={events.error ?? undefined}
         isEmpty={bySource.length === 0}
@@ -181,8 +181,8 @@ function FailedAttemptsPage() {
 
       <div className="space-y-3">
         <SectionTitle
-          title="Repeat offenders"
-          description="Five or more failures from the same pair warrants investigation."
+          title="Infratores recorrentes"
+          description="Cinco ou mais falhas do mesmo par justificam investigação."
         />
         <DataTable
           data={offenders}
@@ -190,22 +190,22 @@ function FailedAttemptsPage() {
           rowKey={(row) => row.key}
           isLoading={events.isLoading}
           error={events.error ?? undefined}
-          emptyMessage="No failed attempts recorded."
-          searchPlaceholder="Search client or source…"
+          emptyMessage="Nenhuma tentativa falha registrada."
+          searchPlaceholder="Buscar cliente ou origem…"
           searchValue={(row) => `${row.clientId} ${row.source}`}
           pageSize={10}
         />
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Attempt log" description="Individual denied attempts, newest first." />
+        <SectionTitle title="Registro de tentativas" description="Tentativas negadas individuais, mais recentes primeiro." />
         <DataTable
           data={denied}
           columns={eventColumns}
           rowKey={(row) => row.id}
           isLoading={events.isLoading}
           error={events.error ?? undefined}
-          emptyMessage="No failed attempts recorded."
+          emptyMessage="Nenhuma tentativa falha registrada."
           pageSize={15}
           dense
         />

@@ -12,14 +12,14 @@ import type { TimeRange } from "@/types";
 export const Route = createFileRoute("/_admin/database/performance")({
   head: () => ({
     meta: [
-      { title: "Database Performance — CB67 Labs Control Center" },
+      { title: "Desempenho do Banco de Dados — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Query throughput, cache efficiency and lock contention for the platform PostgreSQL cluster over a selectable window.",
+          "Throughput de consultas, eficiência de cache e contenção de locks do cluster PostgreSQL da plataforma em uma janela selecionável.",
       },
-      { property: "og:title", content: "Database Performance — CB67 Labs Control Center" },
-      { property: "og:description", content: "Throughput, cache efficiency and lock contention." },
+      { property: "og:title", content: "Desempenho do Banco de Dados — CB67 Labs Control Center" },
+      { property: "og:description", content: "Throughput, eficiência de cache e contenção de locks." },
     ],
   }),
   component: PerformancePage,
@@ -39,31 +39,31 @@ function PerformancePage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Database Performance"
-        description="Throughput and contention indicators. Statement-level analysis stays in the database tooling; this surface tracks the signals that page an operator."
+        title="Desempenho do Banco de Dados"
+        description="Indicadores de throughput e contenção. A análise em nível de statement permanece nas ferramentas do banco de dados; esta superfície acompanha os sinais que acionam um operador."
         actions={<TimeRangeSelect value={range} onChange={setRange} />}
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
-          label="Queries/s"
+          label="Consultas/s"
           value={db ? formatNumber(db.queriesPerSec) : "—"}
-          hint={`peak ${formatNumber(peakQueries)}`}
+          hint={`pico ${formatNumber(peakQueries)}`}
           isLoading={health.isLoading}
         />
         <MetricCard
-          label="Transactions/s"
+          label="Transações/s"
           value={db ? formatNumber(db.transactionsPerSec) : "—"}
           isLoading={health.isLoading}
         />
         <MetricCard
-          label="Cache hit ratio"
+          label="Taxa de acerto de cache"
           value={db ? formatPercent(db.cacheHitRatio, 1) : "—"}
           tone={db && db.cacheHitRatio < 95 ? "warn" : "ok"}
           isLoading={health.isLoading}
         />
         <MetricCard
-          label="Peak locks"
+          label="Pico de locks"
           value={formatNumber(peakLocks)}
           tone={peakLocks > 12 ? "warn" : "ok"}
           isLoading={series.isLoading}
@@ -72,17 +72,17 @@ function PerformancePage() {
 
       <div className="grid gap-4 xl:grid-cols-2">
         <ChartPanel
-          title="Query throughput"
-          description="Queries per second across all consumers."
+          title="Throughput de consultas"
+          description="Consultas por segundo em todos os consumidores."
           isLoading={series.isLoading}
           error={series.error ?? undefined}
           isEmpty={(series.data?.length ?? 0) === 0}
         >
-          <TimeSeriesChart data={series.data ?? []} series={[{ key: "queries", label: "Queries/s" }]} />
+          <TimeSeriesChart data={series.data ?? []} series={[{ key: "queries", label: "Consultas/s" }]} />
         </ChartPanel>
         <ChartPanel
-          title="Lock contention"
-          description="Locks held during the selected window."
+          title="Contenção de locks"
+          description="Locks mantidos durante a janela selecionada."
           isLoading={series.isLoading}
           error={series.error ?? undefined}
           isEmpty={(series.data?.length ?? 0) === 0}
@@ -93,15 +93,15 @@ function PerformancePage() {
 
       <div className="space-y-3">
         <SectionTitle
-          title="Operating thresholds"
-          description="Provisional targets to be confirmed with the backend team before alert rules are provisioned."
+          title="Limites operacionais"
+          description="Metas provisórias a serem confirmadas com a equipe de backend antes de provisionar regras de alerta."
         />
         <section className="panel p-4">
           <dl>
-            <StatRow label="Cache hit ratio" value="≥ 99% steady state, warn below 95%" />
-            <StatRow label="Deadlocks" value="0 tolerated; any occurrence raises an alert" />
-            <StatRow label="Pool saturation" value="warn at 80%, critical at 92%" />
-            <StatRow label="Long transactions" value="warn above 60s, kill above 300s" />
+            <StatRow label="Taxa de acerto de cache" value="≥ 99% em regime estável, aviso abaixo de 95%" />
+            <StatRow label="Deadlocks" value="0 tolerado; qualquer ocorrência gera um alerta" />
+            <StatRow label="Saturação do pool" value="aviso em 80%, crítico em 92%" />
+            <StatRow label="Transações longas" value="aviso acima de 60s, encerramento acima de 300s" />
           </dl>
         </section>
       </div>

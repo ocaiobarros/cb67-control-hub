@@ -10,36 +10,36 @@ export function describeError(error: unknown): { title: string; detail: string }
   if (error instanceof HttpError) {
     switch (error.status) {
       case 401:
-        return { title: "Session expired", detail: "Sign in again to continue." };
+        return { title: "Sessão expirada", detail: "Entre novamente para continuar." };
       case 403:
         return {
-          title: "Access denied",
-          detail: "Your role does not allow this operation.",
+          title: "Acesso negado",
+          detail: "Sua função não permite esta operação.",
         };
       case 404:
-        return { title: "Not found", detail: "The requested resource no longer exists." };
+        return { title: "Não encontrado", detail: "O recurso solicitado não existe mais." };
       case 409:
-        return { title: "Conflict", detail: "The resource changed. Reload and retry." };
+        return { title: "Conflito", detail: "O recurso foi alterado. Recarregue e tente novamente." };
       case 422:
-        return { title: "Invalid request", detail: "Some fields were rejected by the server." };
+        return { title: "Requisição inválida", detail: "Alguns campos foram rejeitados pelo servidor." };
       case 429:
         return {
-          title: "Rate limit exceeded",
-          detail: "Too many requests. Wait a moment before retrying.",
+          title: "Limite de taxa excedido",
+          detail: "Muitas requisições. Aguarde um momento antes de tentar novamente.",
         };
       case 502:
       case 503:
         return {
-          title: "Service unavailable",
-          detail: "The management API is not reachable right now.",
+          title: "Serviço indisponível",
+          detail: "A API de gestão não está acessível no momento.",
         };
       default:
-        return { title: "Request failed", detail: "The management API returned an error." };
+        return { title: "Falha na requisição", detail: "A API de gestão retornou um erro." };
     }
   }
   return {
-    title: "Data unavailable",
-    detail: "The management API could not be reached. Check connectivity and retry.",
+    title: "Dados indisponíveis",
+    detail: "Não foi possível acessar a API de gestão. Verifique a conectividade e tente novamente.",
   };
 }
 
@@ -55,7 +55,7 @@ export function ErrorState({ error, onRetry }: { error: unknown; onRetry?: () =>
       <p className="max-w-sm text-xs text-muted-foreground">{detail}</p>
       {onRetry && (
         <Button variant="outline" size="sm" onClick={onRetry} className="mt-2">
-          Retry
+          Tentar novamente
         </Button>
       )}
     </div>

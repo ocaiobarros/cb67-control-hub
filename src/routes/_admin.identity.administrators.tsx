@@ -16,14 +16,14 @@ import type { Administrator } from "@/types";
 export const Route = createFileRoute("/_admin/identity/administrators")({
   head: () => ({
     meta: [
-      { title: "Administrators — CB67 Labs Control Center" },
+      { title: "Administradores — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Human operators with access to the CB67 Labs Control Center, their assigned role, session count and last sign-in.",
+          "Operadores humanos com acesso ao CB67 Labs Control Center, sua função atribuída, contagem de sessões e último login.",
       },
-      { property: "og:title", content: "Administrators — CB67 Labs Control Center" },
-      { property: "og:description", content: "Operator accounts, roles and sign-in activity." },
+      { property: "og:title", content: "Administradores — CB67 Labs Control Center" },
+      { property: "og:description", content: "Contas de operadores, funções e atividade de login." },
     ],
   }),
   component: AdministratorsPage,
@@ -38,33 +38,33 @@ function AdministratorsPage() {
   const columns: Column<Administrator>[] = [
     {
       id: "name",
-      header: "Administrator",
+      header: "Administrador",
       cell: (row) => <span className="text-sm font-medium">{row.name}</span>,
       sortValue: (row) => row.name,
     },
     {
       id: "role",
-      header: "Role",
+      header: "Função",
       cell: (row) => <code className="mono-xs text-muted-foreground">{row.role}</code>,
       sortValue: (row) => row.role,
     },
     {
       id: "sessions",
-      header: "Active sessions",
+      header: "Sessões ativas",
       cell: (row) => <span className="tabular">{row.sessions}</span>,
       sortValue: (row) => row.sessions,
       align: "right",
     },
     {
       id: "lastLogin",
-      header: "Last sign-in",
+      header: "Último login",
       cell: (row) => <span className="mono-xs text-muted-foreground">{formatRelative(row.lastLoginAt)}</span>,
       sortValue: (row) => row.lastLoginAt,
       align: "right",
     },
     {
       id: "created",
-      header: "Created",
+      header: "Criado",
       cell: (row) => <span className="mono-xs text-muted-foreground">{formatDate(row.createdAt)}</span>,
       sortValue: (row) => row.createdAt,
       align: "right",
@@ -90,7 +90,7 @@ function AdministratorsPage() {
               setTarget(row);
             }}
           >
-            Revoke sessions
+            Revogar sessões
           </Button>
         </Permitted>
       ),
@@ -101,40 +101,40 @@ function AdministratorsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Administrators"
-        description="Operator identities are federated by the platform; this surface never stores or displays credentials. Authorisation derives entirely from the assigned role."
+        title="Administradores"
+        description="As identidades de operadores são federadas pela plataforma; esta superfície nunca armazena ou exibe credenciais. A autorização deriva inteiramente da função atribuída."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Administrators" value={rows.length} isLoading={administrators.isLoading} />
+        <MetricCard label="Administradores" value={rows.length} isLoading={administrators.isLoading} />
         <MetricCard
-          label="Active"
+          label="Ativos"
           value={rows.filter((row) => row.status === "active").length}
           tone="ok"
           isLoading={administrators.isLoading}
         />
         <MetricCard
-          label="Suspended"
+          label="Suspensos"
           value={rows.filter((row) => row.status === "suspended").length}
           tone="warn"
           isLoading={administrators.isLoading}
         />
         <MetricCard
-          label="Open sessions"
+          label="Sessões abertas"
           value={rows.reduce((sum, row) => sum + row.sessions, 0)}
           isLoading={administrators.isLoading}
         />
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Operator accounts" description="Roles are managed under Identity → Roles." />
+        <SectionTitle title="Contas de operadores" description="As funções são gerenciadas em Identidade → Funções." />
         <DataTable
           data={administrators.data}
           columns={columns}
           rowKey={(row) => row.id}
           isLoading={administrators.isLoading}
           error={administrators.error ?? undefined}
-          searchPlaceholder="Search administrator or role…"
+          searchPlaceholder="Buscar administrador ou função…"
           searchValue={(row) => `${row.name} ${row.role}`}
           pageSize={15}
         />
@@ -145,19 +145,19 @@ function AdministratorsPage() {
         onOpenChange={(open) => {
           if (!open) setTarget(null);
         }}
-        title="Revoke all sessions"
-        warning="Every active session for this administrator is terminated immediately. They must authenticate again, including any open console tabs."
+        title="Revogar todas as sessões"
+        warning="Toda sessão ativa deste administrador é encerrada imediatamente. Ele deverá se autenticar novamente, incluindo quaisquer abas do console abertas."
         details={
           target
             ? [
-                { label: "Administrator", value: target.name },
-                { label: "Role", value: target.role },
-                { label: "Sessions", value: `${target.sessions}` },
+                { label: "Administrador", value: target.name },
+                { label: "Função", value: target.role },
+                { label: "Sessões", value: `${target.sessions}` },
               ]
             : undefined
         }
-        confirmLabel="Revoke sessions"
-        environmentNotice="Session termination is executed and audited server-side."
+        confirmLabel="Revogar sessões"
+        environmentNotice="O encerramento de sessão é executado e auditado no servidor."
         onConfirm={async () => {
           if (!target) return;
           await action.mutateAsync({ action: "administrator.revoke-sessions", resourceId: target.id });

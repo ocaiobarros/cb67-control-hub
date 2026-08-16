@@ -11,14 +11,14 @@ import type { ApiRequestRecord } from "@/types";
 export const Route = createFileRoute("/_admin/apis/requests")({
   head: () => ({
     meta: [
-      { title: "Request Explorer — CB67 Labs Control Center" },
+      { title: "Explorador de Requisições — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Recent CB67 Labs API requests with correlation ID, client, endpoint, upstream provider, status code and latency split.",
+          "Requisições recentes da API CB67 Labs com ID de correlação, cliente, endpoint, provedor upstream, código de status e divisão de latência.",
       },
-      { property: "og:title", content: "Request Explorer — CB67 Labs Control Center" },
-      { property: "og:description", content: "Correlation IDs, status codes and latency split." },
+      { property: "og:title", content: "Explorador de Requisições — CB67 Labs Control Center" },
+      { property: "og:description", content: "IDs de correlação, códigos de status e divisão de latência." },
     ],
   }),
   component: RequestsPage,
@@ -30,19 +30,19 @@ function RequestsPage() {
   const columns: Column<ApiRequestRecord>[] = [
     {
       id: "timestamp",
-      header: "Timestamp",
+      header: "Data/hora",
       cell: (row) => <span className="mono-xs text-muted-foreground">{formatDateTime(row.timestamp)}</span>,
       sortValue: (row) => row.timestamp,
     },
     {
       id: "requestId",
-      header: "Request ID",
+      header: "ID da requisição",
       cell: (row) => <IdentifierCell value={row.requestId} label="request id" />,
       sortValue: (row) => row.requestId,
     },
     {
       id: "applicationName",
-      header: "Client",
+      header: "Cliente",
       cell: (row) => (
         <div className="min-w-0">
           <p className="truncate text-sm">{row.applicationName}</p>
@@ -77,7 +77,7 @@ function RequestsPage() {
     },
     {
       id: "latencyMs",
-      header: "Latency",
+      header: "Latência",
       cell: (row) => (
         <div className="text-right">
           <span className="tabular">{formatMs(row.latencyMs)}</span>
@@ -96,8 +96,8 @@ function RequestsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Request Explorer"
-        description="Correlated request records as reported by the API gateway. Request IDs are propagated end-to-end and can be used to join gateway, application and provider logs."
+        title="Explorador de Requisições"
+        description="Registros de requisições correlacionadas conforme reportado pelo gateway de API. Os IDs de requisição são propagados de ponta a ponta e podem ser usados para unir logs de gateway, aplicação e provedor."
       />
 
       <DataTable
@@ -106,13 +106,13 @@ function RequestsPage() {
         rowKey={(row) => row.id}
         isLoading={requests.isLoading}
         error={requests.error ?? undefined}
-        searchPlaceholder="Search request IDs, clients, endpoints…"
+        searchPlaceholder="Buscar IDs de requisição, clientes, endpoints…"
         pageSize={20}
       />
 
       <p className="text-xs text-muted-foreground">
-        Payload bodies are intentionally not surfaced in this interface. Sensitive request content
-        stays in the platform log pipeline under its own retention and access policy.
+        Os corpos de payload propositalmente não são exibidos nesta interface. O conteúdo sensível das
+        requisições permanece no pipeline de logs da plataforma, sob sua própria política de retenção e acesso.
       </p>
     </div>
   );

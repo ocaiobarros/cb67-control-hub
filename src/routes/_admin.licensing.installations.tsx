@@ -13,14 +13,14 @@ import type { Installation } from "@/types";
 export const Route = createFileRoute("/_admin/licensing/installations")({
   head: () => ({
     meta: [
-      { title: "Installations — CB67 Labs Control Center" },
+      { title: "Instalações — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Licensed product installations with version, heartbeat, lease binding and grace period state.",
+          "Instalações de produtos licenciados com versão, heartbeat, vínculo de concessão e estado do período de carência.",
       },
-      { property: "og:title", content: "Installations — CB67 Labs Control Center" },
-      { property: "og:description", content: "Heartbeats, versions and grace periods per installation." },
+      { property: "og:title", content: "Instalações — CB67 Labs Control Center" },
+      { property: "og:description", content: "Heartbeats, versões e períodos de carência por instalação." },
     ],
   }),
   component: InstallationsPage,
@@ -43,13 +43,13 @@ function InstallationsPage() {
   const columns: Column<Installation>[] = [
     {
       id: "installation",
-      header: "Installation",
+      header: "Instalação",
       cell: (row) => <IdentifierCell value={row.installationId} label="installation id" />,
       sortValue: (row) => row.installationId,
     },
     {
       id: "product",
-      header: "Product",
+      header: "Produto",
       cell: (row) => (
         <div className="min-w-0">
           <p className="truncate text-sm">{row.productName}</p>
@@ -60,13 +60,13 @@ function InstallationsPage() {
     },
     {
       id: "license",
-      header: "Licence",
+      header: "Licença",
       cell: (row) => <code className="mono-xs text-muted-foreground">{row.licenseKey}</code>,
       sortValue: (row) => row.licenseKey,
     },
     {
       id: "lease",
-      header: "Lease",
+      header: "Concessão",
       cell: (row) => <code className="mono-xs text-muted-foreground">{row.leaseId}</code>,
       hideByDefault: true,
     },
@@ -79,7 +79,7 @@ function InstallationsPage() {
     },
     {
       id: "grace",
-      header: "Grace until",
+      header: "Carência até",
       cell: (row) => (
         <span className={row.graceUntil ? "mono-xs text-warn" : "mono-xs text-muted-foreground"}>
           {row.graceUntil ? formatDateTime(row.graceUntil) : "—"}
@@ -99,36 +99,36 @@ function InstallationsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Installations"
-        description="An installation is a licensed product instance running in a customer environment. Offline installations keep operating until their lease or grace window ends."
+        title="Instalações"
+        description="Uma instalação é uma instância de produto licenciado em execução no ambiente de um cliente. Instalações offline continuam operando até o fim da concessão ou da janela de carência."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Installations" value={rows.length} isLoading={installations.isLoading} />
+        <MetricCard label="Instalações" value={rows.length} isLoading={installations.isLoading} />
         <MetricCard
-          label="Active"
+          label="Ativas"
           value={rows.filter((row) => row.status === "active").length}
           tone="ok"
           isLoading={installations.isLoading}
         />
         <MetricCard
-          label="In grace"
+          label="Em carência"
           value={inGrace.length}
           tone={inGrace.length > 0 ? "warn" : "ok"}
-          hint="Operating without a fresh lease"
+          hint="Operando sem uma concessão recente"
           isLoading={installations.isLoading}
         />
         <MetricCard
-          label="Distinct versions"
+          label="Versões distintas"
           value={byVersion.length}
-          hint="Version drift across the fleet"
+          hint="Divergência de versões na frota"
           isLoading={installations.isLoading}
         />
       </div>
 
       <ChartPanel
-        title="Version distribution"
-        description="Installations per product version."
+        title="Distribuição de versões"
+        description="Instalações por versão de produto."
         isLoading={installations.isLoading}
         error={installations.error ?? undefined}
         isEmpty={byVersion.length === 0}
@@ -137,14 +137,14 @@ function InstallationsPage() {
       </ChartPanel>
 
       <div className="space-y-3">
-        <SectionTitle title="Installation registry" description="Heartbeats are reported by the installed product." />
+        <SectionTitle title="Registro de instalações" description="Os heartbeats são reportados pelo produto instalado." />
         <DataTable
           data={installations.data}
           columns={columns}
           rowKey={(row) => row.id}
           isLoading={installations.isLoading}
           error={installations.error ?? undefined}
-          searchPlaceholder="Search installation, licence or product…"
+          searchPlaceholder="Buscar instalação, licença ou produto…"
           searchValue={(row) => `${row.installationId} ${row.licenseKey} ${row.productName}`}
           pageSize={15}
         />

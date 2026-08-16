@@ -3,7 +3,7 @@
  * locale become configurable here once the backend exposes preferences.
  */
 
-const LOCALE = "en-US";
+const LOCALE = "pt-BR";
 export const DISPLAY_TIMEZONE = "UTC";
 
 const numberFmt = new Intl.NumberFormat(LOCALE);

@@ -11,14 +11,14 @@ import type { QuotaRecord } from "@/types";
 export const Route = createFileRoute("/_admin/apis/quotas")({
   head: () => ({
     meta: [
-      { title: "API Quotas — CB67 Labs Control Center" },
+      { title: "Cotas da API — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Monthly API quota consumption per application with end-of-cycle forecast and reset dates.",
+          "Consumo mensal de cota de API por aplicação com previsão de fim de ciclo e datas de reinício.",
       },
-      { property: "og:title", content: "API Quotas — CB67 Labs Control Center" },
-      { property: "og:description", content: "Consumption, forecast and reset per application." },
+      { property: "og:title", content: "Cotas da API — CB67 Labs Control Center" },
+      { property: "og:description", content: "Consumo, previsão e reinício por aplicação." },
     ],
   }),
   component: QuotasPage,
@@ -47,7 +47,7 @@ function QuotasPage() {
   const columns: Column<QuotaRecord>[] = [
     {
       id: "application",
-      header: "Application",
+      header: "Aplicação",
       cell: (row) => (
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">{row.applicationName}</p>
@@ -58,21 +58,21 @@ function QuotasPage() {
     },
     {
       id: "rate",
-      header: "Rate / min",
+      header: "Taxa / min",
       cell: (row) => <span className="tabular">{formatNumber(row.rateLimitPerMin)}</span>,
       sortValue: (row) => row.rateLimitPerMin,
       align: "right",
     },
     {
       id: "quota",
-      header: "Monthly quota",
+      header: "Cota mensal",
       cell: (row) => <span className="tabular">{formatCompact(row.monthlyQuota)}</span>,
       sortValue: (row) => row.monthlyQuota,
       align: "right",
     },
     {
       id: "used",
-      header: "Used",
+      header: "Usado",
       cell: (row) => (
         <div className="text-right">
           <span className="tabular">{formatCompact(row.used)}</span>
@@ -84,7 +84,7 @@ function QuotasPage() {
     },
     {
       id: "forecast",
-      header: "Cycle forecast",
+      header: "Previsão do ciclo",
       cell: (row) => (
         <span
           className={
@@ -103,11 +103,11 @@ function QuotasPage() {
     },
     {
       id: "status",
-      header: "Projection",
+      header: "Projeção",
       cell: (row) => (
         <StatusBadge
           status={forecastTone(row) === "crit" ? "critical" : forecastTone(row) === "warn" ? "warn" : "healthy"}
-          label={forecastTone(row) === "crit" ? "Will exceed" : forecastTone(row) === "warn" ? "Near limit" : "Within quota"}
+          label={forecastTone(row) === "crit" ? "Vai exceder" : forecastTone(row) === "warn" ? "Próximo do limite" : "Dentro da cota"}
         />
       ),
       sortValue: (row) => row.forecast / Math.max(1, row.monthlyQuota),
@@ -115,7 +115,7 @@ function QuotasPage() {
     },
     {
       id: "resets",
-      header: "Resets",
+      header: "Reinício",
       cell: (row) => <span className="mono-xs text-muted-foreground">{formatDate(row.resetsAt)}</span>,
       sortValue: (row) => row.resetsAt,
       align: "right",
@@ -125,28 +125,28 @@ function QuotasPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="API Quotas"
-        description="Quotas are counted per billing cycle and evaluated independently from rate limits. Forecast projects the current burn rate to the end of the cycle."
+        title="Cotas da API"
+        description="As cotas são contadas por ciclo de cobrança e avaliadas independentemente dos limites de taxa. A previsão projeta o ritmo de consumo atual até o fim do ciclo."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Tracked pairs" value={rows.length} isLoading={quotas.isLoading} />
+        <MetricCard label="Pares monitorados" value={rows.length} isLoading={quotas.isLoading} />
         <MetricCard
-          label="Consumed"
+          label="Consumido"
           value={formatCompact(totalUsed)}
-          hint={`of ${formatCompact(totalQuota)} granted`}
+          hint={`de ${formatCompact(totalQuota)} concedidos`}
           isLoading={quotas.isLoading}
         />
         <MetricCard
-          label="Cycle utilisation"
+          label="Utilização do ciclo"
           value={formatPercent(totalQuota > 0 ? (totalUsed / totalQuota) * 100 : 0, 1)}
           isLoading={quotas.isLoading}
         />
         <MetricCard
-          label="Forecast breaches"
+          label="Violações previstas"
           value={overForecast.length}
           tone={overForecast.length > 0 ? "crit" : "ok"}
-          hint="Applications projected above quota"
+          hint="Aplicações projetadas acima da cota"
           isLoading={quotas.isLoading}
         />
       </div>
@@ -160,7 +160,7 @@ function QuotasPage() {
               used={row.used}
               total={row.monthlyQuota}
               formatValue={formatCompact}
-              hint={`${row.api} · resets ${formatDate(row.resetsAt)}`}
+              hint={`${row.api} · reinicia ${formatDate(row.resetsAt)}`}
             />
           ))}
         </div>
@@ -168,8 +168,8 @@ function QuotasPage() {
 
       <div className="space-y-3">
         <SectionTitle
-          title="Quota ledger"
-          description="Sorted client-side; the backend owns cycle boundaries and carry-over rules."
+          title="Livro-razão de cotas"
+          description="Ordenado no cliente; o backend controla os limites de ciclo e as regras de transporte."
         />
         <DataTable
           data={quotas.data}
@@ -177,7 +177,7 @@ function QuotasPage() {
           rowKey={(row) => row.id}
           isLoading={quotas.isLoading}
           error={quotas.error ?? undefined}
-          searchPlaceholder="Search application or API…"
+          searchPlaceholder="Buscar aplicação ou API…"
           searchValue={(row) => `${row.applicationName} ${row.api}`}
           pageSize={15}
         />
