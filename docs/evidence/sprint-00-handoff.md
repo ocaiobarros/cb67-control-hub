@@ -328,3 +328,34 @@ credentials.
   owner.
 - 11 `react-refresh/only-export-components` warnings remain, inherent to
   exporting variants alongside components; not addressed during a design freeze.
+
+---
+
+## 14. Gate outcome
+
+**Independent reviewer verdict (5th submission): APPROVED WITH NON-BLOCKING FINDINGS.**
+
+> "The frontend handoff gate passes. The prior P1 is closed."
+
+P0: none. P1: none.
+
+The gate took five submissions. Four rejections, each finding something real:
+
+| #   | Rejected for                                                                                                                                                     | Was it a genuine defect?                                                                         |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| 1   | Deployment target defaulted to Cloudflare; Bearer-vs-cookie contract conflict; Grafana promised but descoped; Google Fonts; `.env` unguarded                     | Yes — all five                                                                                   |
+| 2   | Grafana remapped **only in documentation** while the UI still implemented it; CSRF documented but not implemented; build running as root beside the deploy key   | Yes — the first was the same fictitious-capability defect I had just been told to fix, relocated |
+| 3   | CSRF **failed open** — a failed token fetch let the mutation through unprotected; every 403 replayed, including authorization denials; PromQL metrics unverified | Yes — fail-open was a security defect of my own making                                           |
+| 4   | `csrf_token_invalid` replay had no contractual no-side-effect guarantee; login left a stale token; caller could override the CSRF header                         | Yes — a partially-executed revocation could have applied twice                                   |
+
+Reviewer's closing note: the approval covers this gate only. It does not close
+the platform S0 gate, the network-ingress feasibility question, or the backup
+risk, which remain independently open.
+
+### Carried, non-blocking, and explicitly not to be silently carried into production
+
+- Five build-chain advisories unpatched (dev/build-time; none in the client bundle)
+- No entropy/provider-aware secret scanner; no enforced CI or pre-push gate
+- GitHub host-key provenance undocumented
+- Deploy key lacks a dedicated identity filename with `IdentitiesOnly`
+- Deploy-key rotation and revocation ownership undefined

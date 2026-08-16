@@ -166,7 +166,7 @@ or a readable cookie — and is cleared on logout so a new session cannot reuse 
 session identifier on privilege change (session fixation).
 
 Implemented in `src/api/http-adapter.ts`; behaviour covered by
-`src/api/http-adapter.test.ts` (23 tests, weighted toward failure paths: nine
+`src/api/http-adapter.test.ts` (25 tests, weighted toward failure paths: nine
 fail-closed cases each asserting zero mutation attempts; six covering 403
 classification, including that an authorization 403 is _not_ retried; plus
 concurrency de-duplication, body preservation across retry, and cache clearing
