@@ -17,14 +17,14 @@ import type { BackupRun } from "@/types";
 export const Route = createFileRoute("/_admin/backups/checksums")({
   head: () => ({
     meta: [
-      { title: "Backup Checksums — CB67 Labs Control Center" },
+      { title: "Checksums de Backup — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Integrity verification state for CB67 Labs backup artefacts, with verified, pending and failed checksum results.",
+          "Estado da verificação de integridade dos artefatos de backup da CB67 Labs, com resultados de checksum verificados, pendentes e falhos.",
       },
-      { property: "og:title", content: "Backup Checksums — CB67 Labs Control Center" },
-      { property: "og:description", content: "Artefact integrity verification state and re-verify controls." },
+      { property: "og:title", content: "Checksums de Backup — CB67 Labs Control Center" },
+      { property: "og:description", content: "Estado da verificação de integridade de artefatos e controles de reverificação." },
     ],
   }),
   component: ChecksumsPage,
@@ -50,7 +50,7 @@ function ChecksumsPage() {
   const columns: Column<BackupRun>[] = [
     {
       id: "timestamp",
-      header: "Artefact",
+      header: "Artefato",
       cell: (row) => (
         <div className="min-w-0">
           <span className="mono-xs">{formatDateTime(row.timestamp)}</span>
@@ -61,20 +61,20 @@ function ChecksumsPage() {
     },
     {
       id: "type",
-      header: "Type",
+      header: "Tipo",
       cell: (row) => <StatusBadge status={row.type} />,
       sortValue: (row) => row.type,
     },
     {
       id: "size",
-      header: "Size",
+      header: "Tamanho",
       cell: (row) => <span className="tabular">{formatBytes(row.sizeBytes)}</span>,
       sortValue: (row) => row.sizeBytes,
       align: "right",
     },
     {
       id: "checksum",
-      header: "Integrity",
+      header: "Integridade",
       cell: (row) => <StatusBadge status={row.checksum} />,
       sortValue: (row) => row.checksum,
       align: "right",
@@ -92,7 +92,7 @@ function ChecksumsPage() {
               setTarget(row);
             }}
           >
-            Re-verify
+            Reverificar
           </Button>
         </Permitted>
       ),
@@ -103,22 +103,22 @@ function ChecksumsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Backup Checksums"
-        description="Integrity is computed by the backup pipeline when an artefact is written and re-checked on a schedule. A failed checksum invalidates the artefact for restore."
+        title="Checksums de Backup"
+        description="A integridade é calculada pelo pipeline de backup quando um artefato é gravado e reverificada periodicamente. Um checksum falho invalida o artefato para restauração."
         meta={<StatusBadge status={failedRows.length > 0 ? "failed" : "verified"} />}
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Artefacts" value={all.length} isLoading={runs.isLoading} />
-        <MetricCard label="Verified" value={verified.length} tone="ok" isLoading={runs.isLoading} />
+        <MetricCard label="Artefatos" value={all.length} isLoading={runs.isLoading} />
+        <MetricCard label="Verificados" value={verified.length} tone="ok" isLoading={runs.isLoading} />
         <MetricCard
-          label="Pending"
+          label="Pendentes"
           value={pending.length}
           tone={pending.length > 0 ? "warn" : "ok"}
           isLoading={runs.isLoading}
         />
         <MetricCard
-          label="Failed"
+          label="Falhos"
           value={failedRows.length}
           tone={failedRows.length > 0 ? "crit" : "ok"}
           isLoading={runs.isLoading}
@@ -127,8 +127,8 @@ function ChecksumsPage() {
 
       <div className="grid gap-4 xl:grid-cols-[1fr_1fr]">
         <ChartPanel
-          title="Verification state"
-          description="Distribution of checksum outcomes across stored artefacts."
+          title="Estado de verificação"
+          description="Distribuição dos resultados de checksum entre os artefatos armazenados."
           isLoading={runs.isLoading}
           error={runs.error ?? undefined}
           isEmpty={all.length === 0}
@@ -136,25 +136,25 @@ function ChecksumsPage() {
           <DonutChart data={distribution} />
         </ChartPanel>
         <section className="panel p-4">
-          <h3 className="text-sm font-semibold">Integrity policy</h3>
+          <h3 className="text-sm font-semibold">Política de integridade</h3>
           <dl className="mt-2">
-            <StatRow label="Algorithm" value="SHA-256 per artefact" />
-            <StatRow label="Re-verification" value="Weekly sweep over retained artefacts" />
-            <StatRow label="Verified coverage" value={formatPercent(coverage, 1)} />
-            <StatRow label="On failure" value="Artefact quarantined and an alert is raised" />
+            <StatRow label="Algoritmo" value="SHA-256 por artefato" />
+            <StatRow label="Reverificação" value="Varredura semanal sobre artefatos retidos" />
+            <StatRow label="Cobertura verificada" value={formatPercent(coverage, 1)} />
+            <StatRow label="Em caso de falha" value="Artefato colocado em quarentena e um alerta é gerado" />
           </dl>
         </section>
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Artefact integrity" description="Search by artefact identifier." />
+        <SectionTitle title="Integridade dos artefatos" description="Buscar por identificador do artefato." />
         <DataTable
           data={runs.data}
           columns={columns}
           rowKey={(row) => row.id}
           isLoading={runs.isLoading}
           error={runs.error ?? undefined}
-          searchPlaceholder="Search artefact…"
+          searchPlaceholder="Buscar artefato…"
           searchValue={(row) => `${row.id} ${row.type} ${row.checksum}`}
           pageSize={15}
           dense
@@ -166,21 +166,21 @@ function ChecksumsPage() {
         onOpenChange={(open) => {
           if (!open) setTarget(null);
         }}
-        title="Re-verify artefact checksum"
-        warning="Re-verification reads the full artefact from the backup volume and competes with running jobs for I/O."
+        title="Reverificar checksum do artefato"
+        warning="A reverificação lê o artefato completo do volume de backup e concorre por I/O com rotinas em execução."
         details={
           target
             ? [
-                { label: "Artefact", value: target.id },
-                { label: "Type", value: target.type },
-                { label: "Size", value: formatBytes(target.sizeBytes) },
-                { label: "Current state", value: target.checksum },
+                { label: "Artefato", value: target.id },
+                { label: "Tipo", value: target.type },
+                { label: "Tamanho", value: formatBytes(target.sizeBytes) },
+                { label: "Estado atual", value: target.checksum },
               ]
             : undefined
         }
-        confirmLabel="Re-verify"
+        confirmLabel="Reverificar"
         destructive={false}
-        environmentNotice="The verification result replaces the stored checksum state for this artefact."
+        environmentNotice="O resultado da verificação substitui o estado de checksum armazenado para este artefato."
         onConfirm={async () => {
           if (!target) return;
           await action.mutateAsync({ action: "backup.verify", resourceId: target.id });

@@ -15,14 +15,14 @@ import type { AuditEvent } from "@/types";
 export const Route = createFileRoute("/_admin/audit")({
   head: () => ({
     meta: [
-      { title: "Audit Trail — CB67 Labs Control Center" },
+      { title: "Trilha de Auditoria — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Append-only audit trail of operator, machine and system actions across the CB67 Labs platform, correlated by request identifier.",
+          "Trilha de auditoria somente-anexação de ações de operadores, máquinas e do sistema em toda a plataforma CB67 Labs, correlacionada por identificador de requisição.",
       },
-      { property: "og:title", content: "Audit Trail — CB67 Labs Control Center" },
-      { property: "og:description", content: "Append-only record of every privileged action on the platform." },
+      { property: "og:title", content: "Trilha de Auditoria — CB67 Labs Control Center" },
+      { property: "og:description", content: "Registro somente-anexação de toda ação privilegiada na plataforma." },
     ],
   }),
   component: AuditPage,
@@ -51,7 +51,7 @@ function AuditPage() {
   const columns: Column<AuditEvent>[] = [
     {
       id: "timestamp",
-      header: "When",
+      header: "Quando",
       cell: (row) => (
         <div>
           <span className="mono-xs">{formatDateTime(row.timestamp)}</span>
@@ -62,7 +62,7 @@ function AuditPage() {
     },
     {
       id: "actor",
-      header: "Actor",
+      header: "Ator",
       cell: (row) => (
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">{row.actor}</p>
@@ -73,13 +73,13 @@ function AuditPage() {
     },
     {
       id: "action",
-      header: "Action",
+      header: "Ação",
       cell: (row) => <code className="mono-xs text-foreground">{row.action}</code>,
       sortValue: (row) => row.action,
     },
     {
       id: "resource",
-      header: "Resource",
+      header: "Recurso",
       cell: (row) => (
         <div className="min-w-0">
           <p className="truncate text-sm">{row.resource}</p>
@@ -90,21 +90,21 @@ function AuditPage() {
     },
     {
       id: "source",
-      header: "Source",
+      header: "Origem",
       cell: (row) => <code className="mono-xs text-muted-foreground">{row.source}</code>,
       hideByDefault: true,
     },
     {
       id: "result",
-      header: "Result",
+      header: "Resultado",
       cell: (row) => <StatusBadge status={row.result} />,
       sortValue: (row) => row.result,
       align: "right",
     },
     {
       id: "request",
-      header: "Request",
-      cell: (row) => <IdentifierCell value={row.requestId} label="request id" />,
+      header: "Requisição",
+      cell: (row) => <IdentifierCell value={row.requestId} label="id da requisição" />,
       align: "right",
     },
   ];
@@ -112,26 +112,26 @@ function AuditPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Audit Trail"
-        description="Every privileged action is recorded by the backend with the acting identity, source address and correlating request identifier. The record is append-only; this surface cannot alter or delete it."
+        title="Trilha de Auditoria"
+        description="Toda ação privilegiada é registrada pelo backend com a identidade atuante, endereço de origem e identificador de requisição correlato. O registro é somente-anexação; esta interface não pode alterá-lo ou excluí-lo."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Events" value={all.length} isLoading={audit.isLoading} />
+        <MetricCard label="Eventos" value={all.length} isLoading={audit.isLoading} />
         <MetricCard
-          label="Denied"
+          label="Negados"
           value={all.filter((row) => row.result === "denied").length}
           tone="warn"
           isLoading={audit.isLoading}
         />
         <MetricCard
-          label="Failures"
+          label="Falhas"
           value={all.filter((row) => row.result === "failure").length}
           tone="crit"
           isLoading={audit.isLoading}
         />
         <MetricCard
-          label="Distinct actors"
+          label="Atores distintos"
           value={new Set(all.map((row) => row.actor)).size}
           isLoading={audit.isLoading}
         />
@@ -139,8 +139,8 @@ function AuditPage() {
 
       <div className="grid gap-4 xl:grid-cols-[2fr_1fr]">
         <ChartPanel
-          title="Activity by resource"
-          description="Where privileged activity concentrates."
+          title="Atividade por recurso"
+          description="Onde a atividade privilegiada se concentra."
           isLoading={audit.isLoading}
           error={audit.error ?? undefined}
           isEmpty={byResource.length === 0}
@@ -148,25 +148,25 @@ function AuditPage() {
           <CategoryBarChart data={byResource} layout="horizontal" colorByIndex />
         </ChartPanel>
         <section className="panel p-4">
-          <h3 className="text-sm font-semibold">Record properties</h3>
+          <h3 className="text-sm font-semibold">Propriedades do registro</h3>
           <dl className="mt-2">
-            <StatRow label="Mutability" value="Append-only, no operator deletion path" />
-            <StatRow label="Retention" value="18 months, monthly partitions" />
-            <StatRow label="Correlation" value="Request identifier shared with logs and API traces" />
-            <StatRow label="Export" value="Owned by the backend; not exposed in this UI" />
+            <StatRow label="Mutabilidade" value="Somente-anexação, sem caminho de exclusão pelo operador" />
+            <StatRow label="Retenção" value="18 meses, partições mensais" />
+            <StatRow label="Correlação" value="Identificador de requisição compartilhado com logs e rastreamentos de API" />
+            <StatRow label="Exportação" value="Responsabilidade do backend; não exposta nesta interface" />
           </dl>
         </section>
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Event stream" description="Filter by result and actor type, then search actor, action or resource." />
+        <SectionTitle title="Fluxo de eventos" description="Filtrar por resultado e tipo de ator, depois buscar ator, ação ou recurso." />
         <DataTable
           data={rows}
           columns={columns}
           rowKey={(row) => row.id}
           isLoading={audit.isLoading}
           error={audit.error ?? undefined}
-          searchPlaceholder="Search actor, action, resource or request…"
+          searchPlaceholder="Buscar ator, ação, recurso ou requisição…"
           searchValue={(row) =>
             `${row.actor} ${row.action} ${row.resource} ${row.resourceId} ${row.requestId} ${row.source}`
           }
@@ -174,7 +174,7 @@ function AuditPage() {
           dense
           toolbar={
             <div className="flex flex-wrap items-center gap-2">
-              <div role="group" aria-label="Result" className="inline-flex overflow-hidden rounded-md border border-border">
+              <div role="group" aria-label="Resultado" className="inline-flex overflow-hidden rounded-md border border-border">
                 {RESULTS.map((value) => (
                   <button
                     key={value}
@@ -191,11 +191,11 @@ function AuditPage() {
                 ))}
               </div>
               <label className="flex items-center gap-1 text-xs text-muted-foreground">
-                <span className="sr-only">Actor type</span>
+                <span className="sr-only">Tipo de ator</span>
                 <select
                   value={actorType}
                   onChange={(event) => setActorType(event.target.value)}
-                  aria-label="Filter by actor type"
+                  aria-label="Filtrar por tipo de ator"
                   className="rounded-md border border-border bg-background px-2 py-1 text-xs"
                 >
                   {actorTypes.map((value) => (
