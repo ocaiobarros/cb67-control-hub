@@ -33,9 +33,31 @@ export class HttpError extends Error {
 /** Methods that change state and therefore require a CSRF token. */
 const MUTATING = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 
+/**
+ * Contractual error code the server returns when a mutation is rejected
+ * specifically because of CSRF. Any other 403 is an authorization or policy
+ * denial and must NOT be retried — replaying a denied operation pollutes audit
+ * logs and, without idempotency guarantees, is unsafe.
+ */
+const CSRF_ERROR_CODE = "csrf_token_invalid";
+
+/** Upper bound on an accepted token, so a malformed giant body cannot be used. */
+const MAX_CSRF_TOKEN_LENGTH = 512;
+
+/** Raised when a CSRF token cannot be obtained. Mutations fail closed. */
+export class CsrfError extends Error {
+  override readonly cause: unknown;
+
+  constructor(message: string, cause?: unknown) {
+    super(message);
+    this.name = "CsrfError";
+    this.cause = cause;
+  }
+}
+
 /** In-memory only. Never persisted, so it cannot outlive the tab or be read from storage. */
 let csrfToken: string | null = null;
-let csrfInFlight: Promise<string | null> | null = null;
+let csrfInFlight: Promise<string> | null = null;
 
 function buildUrl(path: string, query?: Record<string, string | undefined>): URL {
   const url = new URL(path.replace(/^\//, ""), env.apiBaseUrl.replace(/\/?$/, "/"));
@@ -47,27 +69,59 @@ function buildUrl(path: string, query?: Record<string, string | undefined>): URL
 
 /**
  * Fetches a CSRF token, de-duplicating concurrent callers so a burst of
- * mutations does not produce a burst of token requests.
+ * mutations produces one token request rather than many.
+ *
+ * THROWS on any failure. A security prerequisite that cannot be met must stop
+ * the request, not be silently skipped.
  */
-async function fetchCsrfToken(): Promise<string | null> {
+async function fetchCsrfToken(): Promise<string> {
+  if (csrfToken) return csrfToken;
   if (csrfInFlight) return csrfInFlight;
   csrfInFlight = (async () => {
+    let response: Response;
     try {
-      const response = await fetch(buildUrl("v1/admin/auth/csrf"), {
+      response = await fetch(buildUrl("v1/admin/auth/csrf"), {
         credentials: "include",
         headers: { Accept: "application/json" },
       });
-      if (!response.ok) return null;
-      const body = (await response.json()) as { token?: string };
-      csrfToken = body.token ?? null;
-      return csrfToken;
-    } catch {
-      return null;
-    } finally {
-      csrfInFlight = null;
+    } catch (cause) {
+      throw new CsrfError("Could not reach the CSRF token endpoint.", cause);
     }
+    if (!response.ok) {
+      throw new CsrfError(`CSRF token endpoint returned ${response.status}.`);
+    }
+    let body: unknown;
+    try {
+      body = await response.json();
+    } catch (cause) {
+      throw new CsrfError("CSRF token endpoint returned invalid JSON.", cause);
+    }
+    const token = (body as { token?: unknown } | null)?.token;
+    if (typeof token !== "string" || token.length === 0) {
+      throw new CsrfError("CSRF token endpoint returned no usable token.");
+    }
+    if (token.length > MAX_CSRF_TOKEN_LENGTH) {
+      throw new CsrfError("CSRF token exceeds the maximum accepted length.");
+    }
+    csrfToken = token;
+    return token;
   })();
-  return csrfInFlight;
+  try {
+    return await csrfInFlight;
+  } finally {
+    csrfInFlight = null;
+  }
+}
+
+/** True only when a 403 body carries the contractual CSRF error code. */
+function isCsrfRejection(body: string): boolean {
+  try {
+    const parsed = JSON.parse(body) as { code?: unknown };
+    return parsed?.code === CSRF_ERROR_CODE;
+  } catch {
+    // A 403 we cannot classify is treated as an authorization denial, not CSRF.
+    return false;
+  }
 }
 
 async function send(
@@ -97,20 +151,26 @@ export async function request<T>(
   }
   const url = buildUrl(path, init?.query);
   const method = (init?.method ?? "GET").toUpperCase();
+  const mutating = MUTATING.has(method);
 
-  let token: string | null = null;
-  if (MUTATING.has(method)) {
-    token = csrfToken ?? (await fetchCsrfToken());
-  }
+  // Fail closed: if the token cannot be obtained, the mutation is never sent.
+  const token: string | null = mutating ? await fetchCsrfToken() : null;
 
   let response = await send(url, init, method, token);
 
-  // A 403 on a mutation usually means the token rotated or the session was
-  // renewed elsewhere. Re-fetch once and retry; do not loop.
-  if (response.status === 403 && MUTATING.has(method)) {
-    csrfToken = null;
-    const refreshed = await fetchCsrfToken();
-    if (refreshed) response = await send(url, init, method, refreshed);
+  // Retry ONLY when the server says this specific 403 was a CSRF failure —
+  // meaning the token rotated or the session was renewed elsewhere. An
+  // authorization denial must surface immediately and must never be replayed.
+  if (response.status === 403 && mutating) {
+    const body = await response
+      .clone()
+      .text()
+      .catch(() => "");
+    if (isCsrfRejection(body)) {
+      csrfToken = null;
+      const refreshed = await fetchCsrfToken();
+      response = await send(url, init, method, refreshed);
+    }
   }
 
   if (!response.ok) {

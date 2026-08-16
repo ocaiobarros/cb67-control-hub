@@ -79,13 +79,47 @@ GET /v1/admin/auth/csrf
 
 **Failure and rotation**
 
-- A missing, malformed or mismatched token on a mutation → **`403`** with
-  `{ code, message, requestId }`.
-- On `403` the client re-fetches the token **once** and retries the request
-  once. It does not loop. A second `403` surfaces to the caller.
-- Rotation on privilege change is permitted; the retry path above absorbs it.
+A CSRF rejection must be distinguishable from every other `403`. The server
+returns a stable, contractual code:
+
+```
+403 → { "code": "csrf_token_invalid", "message": "...", "requestId": "..." }
+```
+
+- **Only** a `403` carrying `code: "csrf_token_invalid"` is retried. The client
+  re-fetches the token once and replays the request once. It does not loop.
+- **Every other `403` surfaces immediately and is never replayed** — insufficient
+  role, missing permission, suspended administrator, policy denial, admin-network
+  restriction and origin rejection all fall here. Replaying a denied privileged
+  operation would corrupt the audit trail, and without server-side idempotency
+  guarantees it is unsafe.
+- A `403` whose body cannot be parsed is treated as an authorization denial, not
+  as CSRF. Ambiguity resolves toward _not_ retrying.
+- Rotation on privilege change is permitted; the retry path absorbs it.
 - Multiple tabs: the token is session-bound rather than tab-bound, so tabs share
-  it. A tab holding a stale token recovers through the same single retry.
+  it. A stale tab recovers through the same single retry.
+
+**Fail closed**
+
+If the token cannot be obtained — endpoint unreachable, non-2xx, invalid JSON,
+missing/empty/non-string token, or a token beyond the accepted length — the
+client raises `CsrfError` and **the mutation is never sent**. A security
+prerequisite that cannot be met stops the request; it is not silently skipped.
+
+**Login bootstrap and session rotation**
+
+Login requires a CSRF token, but before login there is no authenticated session.
+The sequence is therefore:
+
+1. `GET /auth/csrf` establishes (or reuses) a **pre-authentication session
+   cookie** and returns a token bound to it.
+2. `POST /auth/login` carries that pre-authentication token in `X-CSRF-Token`.
+3. On success the server **rotates the session identifier** — defeating session
+   fixation — and **invalidates the pre-authentication CSRF token**.
+4. The client's cached token is therefore stale by design; the next mutation
+   obtains a fresh token bound to the authenticated session.
+5. `POST /auth/logout` likewise requires a token, and the client clears its
+   cached token afterwards so a subsequent session cannot inherit it.
 
 **Origin validation**
 

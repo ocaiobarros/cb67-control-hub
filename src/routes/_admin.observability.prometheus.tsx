@@ -32,6 +32,13 @@ export const Route = createFileRoute("/_admin/observability/prometheus")({
  * from platform scope to keep the memory budget on a constrained host, so the
  * Control Center links to Prometheus' own query interface instead of promising
  * dashboards that are not provisioned.
+ *
+ * PROVISIONAL. Every expression below names metrics that the platform has not
+ * yet emitted. Replacing unverified Grafana dashboards with unverified PromQL
+ * would be the same defect wearing a different label, so each entry declares
+ * which component must produce it and is rendered as provisional in the UI.
+ * Verify names and labels against the real instrumentation and exporter
+ * versions before treating any of them as a functional contract.
  */
 const QUERIES = [
   {
@@ -39,36 +46,42 @@ const QUERIES = [
     name: "Visão geral da plataforma",
     description: "Taxa de requisições por serviço, somada em janelas de cinco minutos.",
     expr: "sum by (service) (rate(cb67_http_requests_total[5m]))",
+    owner: "API core instrumentation",
   },
   {
     id: "api-latency",
     name: "Latência da API (p95)",
     description: "Percentil 95 de latência por endpoint, a partir do histograma de duração.",
     expr: "histogram_quantile(0.95, sum by (le, endpoint) (rate(cb67_http_request_duration_seconds_bucket[5m])))",
+    owner: "API core instrumentation",
   },
   {
     id: "error-rate",
     name: "Taxa de erro",
     description: "Proporção de respostas 5xx sobre o total, por serviço.",
     expr: 'sum by (service) (rate(cb67_http_requests_total{status=~"5.."}[5m])) / sum by (service) (rate(cb67_http_requests_total[5m]))',
+    owner: "API core instrumentation",
   },
   {
     id: "provider-integrations",
     name: "Integrações com provedores",
     description: "Latência upstream e limitação de taxa por provedor externo.",
     expr: "sum by (provider, status) (rate(cb67_provider_requests_total[5m]))",
+    owner: "Provider broker instrumentation",
   },
   {
     id: "infrastructure",
     name: "Infraestrutura",
     description: "CPU, memória e saturação de disco do host, via node_exporter.",
     expr: '100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)',
+    owner: "node_exporter",
   },
   {
     id: "postgresql",
     name: "PostgreSQL",
     description: "Conexões ativas contra o limite configurado.",
     expr: "sum(pg_stat_activity_count) / sum(pg_settings_max_connections)",
+    owner: "postgres_exporter (not yet deployed)",
   },
 ];
 
@@ -121,8 +134,8 @@ function PrometheusPage() {
 
       <div className="space-y-3">
         <SectionTitle
-          title="Consultas de referência"
-          description="Expressões PromQL abertas no navegador de consultas do Prometheus. Substituem os dashboards do Grafana, que não faz parte do escopo da plataforma."
+          title="Consultas de referência (provisórias)"
+          description="Expressões PromQL abertas no navegador de consultas do Prometheus. Substituem os dashboards do Grafana, que não faz parte do escopo da plataforma. As métricas ainda não são emitidas pela plataforma — cada consulta indica o componente responsável por produzi-la."
         />
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {QUERIES.map((query) => (
@@ -132,6 +145,9 @@ function PrometheusPage() {
                 <code className="mono-xs break-all text-muted-foreground">{query.expr}</code>
               </div>
               <p className="flex-1 text-xs text-muted-foreground">{query.description}</p>
+              <p className="text-[0.6875rem] text-muted-foreground">
+                Provisória — depende de: <span className="font-medium">{query.owner}</span>
+              </p>
               {prometheus ? (
                 <Button asChild size="sm" variant="outline" className="self-start">
                   <a

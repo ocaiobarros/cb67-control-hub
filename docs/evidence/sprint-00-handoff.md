@@ -237,22 +237,44 @@ it automatically and it serves 200 again. Memory ~25 MiB against a 256 MiB cap.
 **Was:** `API-CONTRACTS.md` mandated `Authorization: Bearer`, while the adapter
 sent `credentials: "include"` for HttpOnly cookies.
 
-**Now:** HttpOnly cookie sessions, with the **CSRF wire contract fully
-specified** — token endpoint and response shape, header name, which methods
-require it (including login and logout), failure semantics, single-retry
-rotation handling, multi-tab behaviour, Origin validation, and in-memory-only
-client storage.
+**Now:** HttpOnly cookie sessions with a fully specified CSRF wire contract.
 
-**Implemented**, not just documented: `src/api/http-adapter.ts` fetches the
-token, attaches `X-CSRF-Token` to every mutating method, de-duplicates
-concurrent token fetches, retries exactly once on `403`, and clears the token on
-logout.
+Two defects were found in the first CSRF implementation by independent review,
+and both were real:
 
-Covered by 8 tests in `src/api/http-adapter.test.ts`: reads carry no token;
-mutations do; the token is cached across mutations; a 403 refreshes and retries
-once; a persistent 403 throws without looping; a 403 on a read is not retried;
-all four mutating verbs carry the token; credentials are always included.
-**8/8 pass.**
+**Defect 1 — it failed open.** Token acquisition returned `null` on network
+failure, non-2xx, invalid JSON or a missing token, and the mutation was then
+sent _without_ a CSRF header. A security prerequisite that cannot be met must
+stop the request, not be silently skipped. Now `fetchCsrfToken()` throws
+`CsrfError` on every one of those conditions, plus a non-string token and a
+token beyond 512 characters, and the mutation is never dispatched.
+
+**Defect 2 — every 403 was treated as CSRF rotation.** The client blindly
+refreshed and replayed on any 403, so an _authorization_ denial — insufficient
+role, suspended administrator, policy or origin rejection — was replayed too.
+That corrupts the audit trail and, without server-side idempotency guarantees,
+is unsafe. Now the contract defines `code: "csrf_token_invalid"`, and only a 403
+carrying exactly that code is retried. An unparseable 403 body resolves toward
+_not_ retrying.
+
+**Login bootstrap** is now specified rather than left to interpretation:
+`GET /auth/csrf` establishes a pre-authentication session and returns a token
+bound to it; login carries that token; on success the server rotates the session
+identifier (defeating fixation) and invalidates the pre-authentication token.
+
+**23 tests, all passing.** Coverage is deliberately weighted toward failure
+paths, because those are the security-relevant ones:
+
+| Group              | Cases                                                                                                                                                                                                                                           |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Fail closed        | token endpoint 500 / 401 / 404, invalid JSON, missing token, empty token, non-string token, oversized token, network failure — **9 cases, each asserting zero mutation attempts**                                                               |
+| Recovery           | a failed token fetch does not poison the next attempt                                                                                                                                                                                           |
+| 403 classification | CSRF-coded 403 retries once · **authorization 403 not retried** · unparseable 403 not retried · unrelated code not retried · persistent CSRF 403 capped at two attempts · 403 on GET not retried                                                |
+| Lifecycle          | GET never fetches a token · all four mutating verbs carry it · cached across mutations · **concurrent mutations de-duplicate to one token fetch** · request body survives a retry · logout clears the cache · credentials sent on every request |
+
+The suite immediately earned its place: while restructuring the implementation I
+dropped the cache lookup, and the concurrency and caching tests failed on the
+next run rather than the defect reaching review.
 
 ### 11.3 Grafana — RESOLVED
 
