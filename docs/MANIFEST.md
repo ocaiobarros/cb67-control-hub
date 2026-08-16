@@ -38,6 +38,9 @@ TanStack Query · Tailwind CSS v4 · shadcn/ui · Recharts · Lucide · Sonner.
 | `docs/API-CONTRACTS.md` | Provisional endpoint and payload contracts |
 | `docs/ENVIRONMENT.md` | Every environment variable and example configurations |
 | `docs/DESIGN-SYSTEM.md` | Tokens, status semantics, layout and accessibility rules |
+| `docs/LIQUID-MATERIAL.md` | CB67 Liquid material grades, composition order and rules |
+| `docs/MOTION-SYSTEM.md` | Duration/easing scale, motion vocabulary, reduced motion |
+| `docs/DESIGN-AUDIT.md` | Pre-redesign findings and the decisions taken |
 | `docs/ROUTES.md` | Complete route map and how to add a page |
 | `docs/MANIFEST.md` | This delivery manifest |
 
