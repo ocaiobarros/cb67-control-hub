@@ -95,7 +95,7 @@ export function UsageCard({
       </p>
       <Progress
         value={pct}
-        aria-label={`${label} usage`}
+        aria-label={`Uso de ${label}`}
         className={cn(
           "h-1.5 bg-surface-muted [&>div]:transition-transform [&>div]:duration-500 [&>div]:ease-enter",
           pct > 90 && "[&>div]:bg-crit",

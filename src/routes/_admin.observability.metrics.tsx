@@ -55,7 +55,7 @@ function MetricsPage() {
         actions={<TimeRangeSelect value={range} onChange={setRange} />}
       />
 
-      <div role="group" aria-label="Metric" className="flex flex-wrap gap-2">
+      <div role="group" aria-label="Métrica" className="flex flex-wrap gap-2">
         {METRICS.map((entry) => (
           <button
             key={entry.key}

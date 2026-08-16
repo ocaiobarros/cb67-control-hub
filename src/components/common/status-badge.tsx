@@ -1,5 +1,6 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
+import { statusLabel } from "@/i18n/status";
 
 /**
  * Single source of truth for status colour semantics across every screen.
@@ -90,7 +91,7 @@ export function StatusBadge({
           resolved === "neutral" && "bg-neutral",
         )}
       />
-      {(label ?? status).toUpperCase()}
+      {(label ?? statusLabel(status)).toUpperCase()}
     </span>
   );
 }

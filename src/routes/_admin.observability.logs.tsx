@@ -116,7 +116,7 @@ function LogsPage() {
           dense
           toolbar={
             <div className="flex flex-wrap items-center gap-2">
-              <div role="group" aria-label="Log level" className="inline-flex overflow-hidden rounded-md border border-border">
+              <div role="group" aria-label="Nível de log" className="inline-flex overflow-hidden rounded-md border border-border">
                 {LEVELS.map((value) => (
                   <button
                     key={value}
