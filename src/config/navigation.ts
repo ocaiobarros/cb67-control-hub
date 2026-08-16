@@ -133,7 +133,7 @@ export const NAVIGATION: NavGroup[] = [
       { label: "Métricas", to: "/observability/metrics" },
       { label: "Logs", to: "/observability/logs" },
       { label: "Alertas", to: "/observability/alerts" },
-      { label: "Grafana", to: "/observability/grafana" },
+      { label: "Prometheus", to: "/observability/prometheus" },
     ],
   },
   {

@@ -114,10 +114,20 @@ function SettingsPage() {
               }
             />
             <StatRow
-              label="URL do Grafana"
+              label="URL do Prometheus"
               value={
-                env.grafanaUrl ? (
-                  <code className="mono-xs">{env.grafanaUrl}</code>
+                env.prometheusUrl ? (
+                  <code className="mono-xs">{env.prometheusUrl}</code>
+                ) : (
+                  "Não configurado"
+                )
+              }
+            />
+            <StatRow
+              label="URL do Alertmanager"
+              value={
+                env.alertmanagerUrl ? (
+                  <code className="mono-xs">{env.alertmanagerUrl}</code>
                 ) : (
                   "Não configurado"
                 )

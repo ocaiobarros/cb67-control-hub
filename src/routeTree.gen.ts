@@ -54,9 +54,9 @@ import { Route as AdminLicensingProductsRouteImport } from './routes/_admin.lice
 import { Route as AdminLicensingRevocationsRouteImport } from './routes/_admin.licensing.revocations'
 import { Route as AdminObservabilityIndexRouteImport } from './routes/_admin.observability.index'
 import { Route as AdminObservabilityAlertsRouteImport } from './routes/_admin.observability.alerts'
-import { Route as AdminObservabilityGrafanaRouteImport } from './routes/_admin.observability.grafana'
 import { Route as AdminObservabilityLogsRouteImport } from './routes/_admin.observability.logs'
 import { Route as AdminObservabilityMetricsRouteImport } from './routes/_admin.observability.metrics'
+import { Route as AdminObservabilityPrometheusRouteImport } from './routes/_admin.observability.prometheus'
 import { Route as AdminPkiExpirationRouteImport } from './routes/_admin.pki.expiration'
 import { Route as AdminPkiRevocationRouteImport } from './routes/_admin.pki.revocation'
 import { Route as AdminPkiRotationRouteImport } from './routes/_admin.pki.rotation'
@@ -316,12 +316,6 @@ const AdminObservabilityAlertsRoute =
     path: '/observability/alerts',
     getParentRoute: () => AdminRoute,
   } as any)
-const AdminObservabilityGrafanaRoute =
-  AdminObservabilityGrafanaRouteImport.update({
-    id: '/observability/grafana',
-    path: '/observability/grafana',
-    getParentRoute: () => AdminRoute,
-  } as any)
 const AdminObservabilityLogsRoute = AdminObservabilityLogsRouteImport.update({
   id: '/observability/logs',
   path: '/observability/logs',
@@ -331,6 +325,12 @@ const AdminObservabilityMetricsRoute =
   AdminObservabilityMetricsRouteImport.update({
     id: '/observability/metrics',
     path: '/observability/metrics',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminObservabilityPrometheusRoute =
+  AdminObservabilityPrometheusRouteImport.update({
+    id: '/observability/prometheus',
+    path: '/observability/prometheus',
     getParentRoute: () => AdminRoute,
   } as any)
 const AdminPkiExpirationRoute = AdminPkiExpirationRouteImport.update({
@@ -484,9 +484,9 @@ export interface FileRoutesByFullPath {
   '/licensing/products': typeof AdminLicensingProductsRoute
   '/licensing/revocations': typeof AdminLicensingRevocationsRoute
   '/observability/alerts': typeof AdminObservabilityAlertsRoute
-  '/observability/grafana': typeof AdminObservabilityGrafanaRoute
   '/observability/logs': typeof AdminObservabilityLogsRoute
   '/observability/metrics': typeof AdminObservabilityMetricsRoute
+  '/observability/prometheus': typeof AdminObservabilityPrometheusRoute
   '/pki/expiration': typeof AdminPkiExpirationRoute
   '/pki/revocation': typeof AdminPkiRevocationRoute
   '/pki/rotation': typeof AdminPkiRotationRoute
@@ -553,9 +553,9 @@ export interface FileRoutesByTo {
   '/licensing/products': typeof AdminLicensingProductsRoute
   '/licensing/revocations': typeof AdminLicensingRevocationsRoute
   '/observability/alerts': typeof AdminObservabilityAlertsRoute
-  '/observability/grafana': typeof AdminObservabilityGrafanaRoute
   '/observability/logs': typeof AdminObservabilityLogsRoute
   '/observability/metrics': typeof AdminObservabilityMetricsRoute
+  '/observability/prometheus': typeof AdminObservabilityPrometheusRoute
   '/pki/expiration': typeof AdminPkiExpirationRoute
   '/pki/revocation': typeof AdminPkiRevocationRoute
   '/pki/rotation': typeof AdminPkiRotationRoute
@@ -624,9 +624,9 @@ export interface FileRoutesById {
   '/_admin/licensing/products': typeof AdminLicensingProductsRoute
   '/_admin/licensing/revocations': typeof AdminLicensingRevocationsRoute
   '/_admin/observability/alerts': typeof AdminObservabilityAlertsRoute
-  '/_admin/observability/grafana': typeof AdminObservabilityGrafanaRoute
   '/_admin/observability/logs': typeof AdminObservabilityLogsRoute
   '/_admin/observability/metrics': typeof AdminObservabilityMetricsRoute
+  '/_admin/observability/prometheus': typeof AdminObservabilityPrometheusRoute
   '/_admin/pki/expiration': typeof AdminPkiExpirationRoute
   '/_admin/pki/revocation': typeof AdminPkiRevocationRoute
   '/_admin/pki/rotation': typeof AdminPkiRotationRoute
@@ -695,9 +695,9 @@ export interface FileRouteTypes {
     | '/licensing/products'
     | '/licensing/revocations'
     | '/observability/alerts'
-    | '/observability/grafana'
     | '/observability/logs'
     | '/observability/metrics'
+    | '/observability/prometheus'
     | '/pki/expiration'
     | '/pki/revocation'
     | '/pki/rotation'
@@ -764,9 +764,9 @@ export interface FileRouteTypes {
     | '/licensing/products'
     | '/licensing/revocations'
     | '/observability/alerts'
-    | '/observability/grafana'
     | '/observability/logs'
     | '/observability/metrics'
+    | '/observability/prometheus'
     | '/pki/expiration'
     | '/pki/revocation'
     | '/pki/rotation'
@@ -834,9 +834,9 @@ export interface FileRouteTypes {
     | '/_admin/licensing/products'
     | '/_admin/licensing/revocations'
     | '/_admin/observability/alerts'
-    | '/_admin/observability/grafana'
     | '/_admin/observability/logs'
     | '/_admin/observability/metrics'
+    | '/_admin/observability/prometheus'
     | '/_admin/pki/expiration'
     | '/_admin/pki/revocation'
     | '/_admin/pki/rotation'
@@ -1188,13 +1188,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminObservabilityAlertsRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/_admin/observability/grafana': {
-      id: '/_admin/observability/grafana'
-      path: '/observability/grafana'
-      fullPath: '/observability/grafana'
-      preLoaderRoute: typeof AdminObservabilityGrafanaRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/_admin/observability/logs': {
       id: '/_admin/observability/logs'
       path: '/observability/logs'
@@ -1207,6 +1200,13 @@ declare module '@tanstack/react-router' {
       path: '/observability/metrics'
       fullPath: '/observability/metrics'
       preLoaderRoute: typeof AdminObservabilityMetricsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/observability/prometheus': {
+      id: '/_admin/observability/prometheus'
+      path: '/observability/prometheus'
+      fullPath: '/observability/prometheus'
+      preLoaderRoute: typeof AdminObservabilityPrometheusRouteImport
       parentRoute: typeof AdminRoute
     }
     '/_admin/pki/expiration': {
@@ -1389,9 +1389,9 @@ interface AdminRouteChildren {
   AdminLicensingProductsRoute: typeof AdminLicensingProductsRoute
   AdminLicensingRevocationsRoute: typeof AdminLicensingRevocationsRoute
   AdminObservabilityAlertsRoute: typeof AdminObservabilityAlertsRoute
-  AdminObservabilityGrafanaRoute: typeof AdminObservabilityGrafanaRoute
   AdminObservabilityLogsRoute: typeof AdminObservabilityLogsRoute
   AdminObservabilityMetricsRoute: typeof AdminObservabilityMetricsRoute
+  AdminObservabilityPrometheusRoute: typeof AdminObservabilityPrometheusRoute
   AdminPkiExpirationRoute: typeof AdminPkiExpirationRoute
   AdminPkiRevocationRoute: typeof AdminPkiRevocationRoute
   AdminPkiRotationRoute: typeof AdminPkiRotationRoute
@@ -1454,9 +1454,9 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminLicensingProductsRoute: AdminLicensingProductsRoute,
   AdminLicensingRevocationsRoute: AdminLicensingRevocationsRoute,
   AdminObservabilityAlertsRoute: AdminObservabilityAlertsRoute,
-  AdminObservabilityGrafanaRoute: AdminObservabilityGrafanaRoute,
   AdminObservabilityLogsRoute: AdminObservabilityLogsRoute,
   AdminObservabilityMetricsRoute: AdminObservabilityMetricsRoute,
+  AdminObservabilityPrometheusRoute: AdminObservabilityPrometheusRoute,
   AdminPkiExpirationRoute: AdminPkiExpirationRoute,
   AdminPkiRevocationRoute: AdminPkiRevocationRoute,
   AdminPkiRotationRoute: AdminPkiRotationRoute,

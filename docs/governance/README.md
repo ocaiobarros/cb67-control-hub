@@ -1,71 +1,65 @@
 # Governance — CB67 Labs
 
-## ⚠ This repository is public. Governance here is deliberately sanitized.
+## This repository is public. Governance here is deliberately sanitized.
 
-Project governance exists in **two layers**, and the split is a security control,
-not an organisational preference:
+Project governance exists in **two layers**, and the split is a security control
+rather than an organisational preference:
 
-| Layer                       | Location                                               | Contents                                                                                                                                                                      |
-| --------------------------- | ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Public** (this directory) | `docs/governance/` in the public repo                  | Principles, process, decision rationale, threat model _classes_, definitions of ready/done, sprint structure                                                                  |
-| **Private**                 | `/opt/apiserver/docs/governance/` on the platform host | Everything above **plus** private addressing, internal hostnames, key fingerprints, filesystem paths, port inventory, operator source addresses, and raw reviewer transcripts |
+| Layer                                               | Contents                                                                                                                                                |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Public** (this directory)                         | Principles, process, decision rationale, threat model _classes_, definitions of ready/done, sprint structure, review verdicts                           |
+| **Private** (restricted-access platform repository) | Everything above, plus operational topology, addressing, host identifiers, credential metadata, filesystem layout, raw evidence and recovery procedures |
 
-### Why
-
-An audit of the private governance set found private IPs in 13 files, the
-internal hostname in 9, key fingerprints in 2, and an operator's public source
-address in 1. Publishing those to a public repository would hand an attacker a
-network map, a host inventory and a target list — the exact information
-disclosure the platform's own security policy forbids.
-
-The rule is simple and applies to every future document added here:
+### The rule
 
 > Public governance describes **how we decide and what we require**.
 > It never describes **where things are or how to reach them**.
 
 ### What must never appear in this directory
 
-- Private IP addresses or network ranges
+- Private addressing or network ranges
 - Internal hostnames
 - Filesystem paths to secrets, keys or certificates
 - Key fingerprints or identifiers
 - Port inventories or bind addresses
 - Operator source addresses
-- Component versions of internal services (aids CVE targeting)
-- Raw log excerpts or command output that carries any of the above
+- Versions of internal services (aids CVE targeting)
+- Raw log excerpts or command output carrying any of the above
+
+An audit of the private governance set before publishing anything here found
+material in every one of those categories. None of it reached this repository,
+and a pre-push scan checks for it on every push.
 
 ### What belongs here
 
-- Principles and constraints
-- Decision records with rationale and trade-offs
-- Threat model by _class_ of threat and control
-- Definition of Ready / Definition of Done
-- Sprint structure and gate criteria
-- Review verdicts and their dispositions
+Principles and constraints · decision records with rationale and trade-offs ·
+threat model by class of threat and control · Definition of Ready / Definition
+of Done · sprint structure and gate criteria · review verdicts and dispositions.
 
-## Index
+## Contents
 
-| Document                                         | Purpose                                               |
-| ------------------------------------------------ | ----------------------------------------------------- |
-| [VISION.md](VISION.md)                           | What the platform is, and what it deliberately is not |
-| [ARCHITECTURE.md](ARCHITECTURE.md)               | Planes, boundaries, request pipeline                  |
-| [THREAT-MODEL.md](THREAT-MODEL.md)               | Adversaries, assets, controls                         |
-| [SECURITY.md](SECURITY.md)                       | Security policy and acceptance criteria               |
-| [DEFINITION-OF-READY.md](DEFINITION-OF-READY.md) | Entry criteria for implementation                     |
-| [DEFINITION-OF-DONE.md](DEFINITION-OF-DONE.md)   | Exit criteria, severity scale, anti-theatre rules     |
-| [DECISIONS.md](DECISIONS.md)                     | Decision log                                          |
-| [SPRINTS.md](SPRINTS.md)                         | Sprint structure and gates                            |
-| [CODEX-REVIEWS.md](CODEX-REVIEWS.md)             | Independent reviewer verdicts                         |
-| [TEST-PLAN.md](TEST-PLAN.md)                     | What "tested" means per layer                         |
-| [OPERATIONS.md](OPERATIONS.md)                   | Operating principles (procedures stay private)        |
-| [DISASTER-RECOVERY.md](DISASTER-RECOVERY.md)     | Recovery objectives and validation rules              |
+| Document                                                                                                                                      | Status                                                                                    |
+| --------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `README.md` (this file)                                                                                                                       | **Present**                                                                               |
+| Sanitized VISION, ARCHITECTURE, THREAT-MODEL, SECURITY, DoR, DoD, DECISIONS, SPRINTS, CODEX-REVIEWS, TEST-PLAN, OPERATIONS, DISASTER-RECOVERY | **Planned** — maintained privately today; sanitized versions land as each passes its gate |
+
+Listing them as links before they exist would make this index a promise rather
+than a description, which is the same failure mode the project rejects
+elsewhere. They are named here so the intended shape is visible, and marked
+planned so nobody mistakes intent for delivery.
+
+Frontend-facing contracts that _are_ delivered live one directory up:
+[`API-CONTRACTS.md`](../API-CONTRACTS.md), [`ENVIRONMENT.md`](../ENVIRONMENT.md),
+[`FRONTEND-HANDOFF.md`](../FRONTEND-HANDOFF.md), [`MANIFEST.md`](../MANIFEST.md),
+[`ROUTES.md`](../ROUTES.md), and the design documents alongside them.
+Sprint evidence is in [`../evidence/`](../evidence/).
 
 ## Roles
 
 **Claude Code** — Engineering team. Implements, tests, documents.
 
 **Codex** — Scrum Master and Independent Reviewer. Reviews, challenges, gates.
-Does not implement and does not modify files. No sprint is DONE without a
-recorded verdict.
+Does not implement and does not modify files.
 
-Claude may not declare a sprint complete on its own authority.
+No sprint reaches DONE without a recorded reviewer verdict. Engineering may not
+declare its own work complete.

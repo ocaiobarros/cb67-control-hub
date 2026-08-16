@@ -10,6 +10,13 @@ import type { Provider, TimeRange } from "@/types";
  *
  * Credentials: requests are sent with `credentials: "include"` so the backend
  * can use HttpOnly cookies. No token is read from or written to browser storage.
+ *
+ * CSRF: cookies are attached by the browser automatically, so any origin can
+ * trigger an authenticated request. Every state-changing method therefore
+ * carries a CSRF token in the `X-CSRF-Token` header. The token is fetched from
+ * `GET /v1/admin/auth/csrf`, held in memory only (never in localStorage or a
+ * readable cookie), and re-fetched once on a 403 in case it rotated or the
+ * session was renewed in another tab.
  */
 
 export class HttpError extends Error {
@@ -23,32 +30,100 @@ export class HttpError extends Error {
   }
 }
 
-async function request<T>(
+/** Methods that change state and therefore require a CSRF token. */
+const MUTATING = new Set(["POST", "PUT", "PATCH", "DELETE"]);
+
+/** In-memory only. Never persisted, so it cannot outlive the tab or be read from storage. */
+let csrfToken: string | null = null;
+let csrfInFlight: Promise<string | null> | null = null;
+
+function buildUrl(path: string, query?: Record<string, string | undefined>): URL {
+  const url = new URL(path.replace(/^\//, ""), env.apiBaseUrl.replace(/\/?$/, "/"));
+  for (const [key, value] of Object.entries(query ?? {})) {
+    if (value !== undefined) url.searchParams.set(key, value);
+  }
+  return url;
+}
+
+/**
+ * Fetches a CSRF token, de-duplicating concurrent callers so a burst of
+ * mutations does not produce a burst of token requests.
+ */
+async function fetchCsrfToken(): Promise<string | null> {
+  if (csrfInFlight) return csrfInFlight;
+  csrfInFlight = (async () => {
+    try {
+      const response = await fetch(buildUrl("v1/admin/auth/csrf"), {
+        credentials: "include",
+        headers: { Accept: "application/json" },
+      });
+      if (!response.ok) return null;
+      const body = (await response.json()) as { token?: string };
+      csrfToken = body.token ?? null;
+      return csrfToken;
+    } catch {
+      return null;
+    } finally {
+      csrfInFlight = null;
+    }
+  })();
+  return csrfInFlight;
+}
+
+async function send(
+  url: URL,
+  init: RequestInit | undefined,
+  method: string,
+  token: string | null,
+): Promise<Response> {
+  return fetch(url, {
+    ...init,
+    credentials: "include",
+    headers: {
+      Accept: "application/json",
+      ...(init?.body ? { "Content-Type": "application/json" } : {}),
+      ...(MUTATING.has(method) && token ? { "X-CSRF-Token": token } : {}),
+      ...init?.headers,
+    },
+  });
+}
+
+export async function request<T>(
   path: string,
   init?: RequestInit & { query?: Record<string, string | undefined> },
 ): Promise<T> {
   if (!env.apiBaseUrl) {
     throw new HttpError(503, null, "VITE_CB67_API_BASE_URL is not configured.");
   }
-  const url = new URL(path.replace(/^\//, ""), env.apiBaseUrl.replace(/\/?$/, "/"));
-  for (const [key, value] of Object.entries(init?.query ?? {})) {
-    if (value !== undefined) url.searchParams.set(key, value);
+  const url = buildUrl(path, init?.query);
+  const method = (init?.method ?? "GET").toUpperCase();
+
+  let token: string | null = null;
+  if (MUTATING.has(method)) {
+    token = csrfToken ?? (await fetchCsrfToken());
   }
-  const response = await fetch(url, {
-    ...init,
-    credentials: "include",
-    headers: {
-      Accept: "application/json",
-      ...(init?.body ? { "Content-Type": "application/json" } : {}),
-      ...init?.headers,
-    },
-  });
+
+  let response = await send(url, init, method, token);
+
+  // A 403 on a mutation usually means the token rotated or the session was
+  // renewed elsewhere. Re-fetch once and retry; do not loop.
+  if (response.status === 403 && MUTATING.has(method)) {
+    csrfToken = null;
+    const refreshed = await fetchCsrfToken();
+    if (refreshed) response = await send(url, init, method, refreshed);
+  }
+
   if (!response.ok) {
     const body = await response.text().catch(() => "");
     throw new HttpError(response.status, body);
   }
   if (response.status === 204) return undefined as T;
   return (await response.json()) as T;
+}
+
+/** Clears the cached CSRF token. Called on logout so a new session gets a new token. */
+export function resetCsrfToken(): void {
+  csrfToken = null;
 }
 
 const range = (r: TimeRange) => ({ query: { range: r } });
@@ -58,7 +133,15 @@ export const httpAdapter: PlatformAdapter = {
 
   login: (input) => request("v1/admin/auth/login", { method: "POST", body: JSON.stringify(input) }),
   currentUser: () => request("v1/admin/auth/session"),
-  logout: () => request("v1/admin/auth/logout", { method: "POST" }),
+  logout: async () => {
+    try {
+      await request("v1/admin/auth/logout", { method: "POST" });
+    } finally {
+      // Cleared even if the call fails: a stale token must never be reused
+      // against a new session.
+      resetCsrfToken();
+    }
+  },
 
   getOverview: (r) => request("v1/admin/overview", range(r)),
   globalSearch: (query) => request("v1/admin/search", { query: { q: query } }),

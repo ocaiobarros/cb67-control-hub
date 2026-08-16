@@ -29,9 +29,19 @@ renders real server-side HTML in `pt-BR`, makes zero external font requests, and
 occupies roughly **84 MiB RSS**.
 
 It runs as a systemd service under a dedicated non-root user with `MemoryMax`
-and `CPUQuota`, behind Caddy. It is a long-running process, not a static
-directory — that difference determines its service user, resource budget, patch
-surface and failure modes.
+and `CPUQuota`, bound to loopback behind the reverse proxy. It is a long-running
+process, not a static directory — that difference determines its service user,
+resource budget, patch surface and failure modes.
+
+Verified on the platform host: service active and enabled, HTTP 200 on `/` and
+`/observability/prometheus`, correct 404 on removed routes, survives `restart`,
+and after `kill -9` systemd restarts it automatically and it serves 200 again.
+Resident memory ~25 MiB against a 256 MiB cap.
+
+**Still owed by the deployment sprint**, and not claimed here: reverse-proxy
+routing and upstream timeouts, health/readiness endpoints, log retention policy,
+reboot recovery proof, rollback to a previous build artifact, and a pinned
+runtime decision.
 
 ## What is implemented
 

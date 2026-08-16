@@ -117,8 +117,8 @@ function PublicHome() {
           <div className="panel space-y-1 p-5">
             <p className="text-sm font-semibold">Observabilidade</p>
             <p className="text-sm text-muted-foreground">
-              Dashboards em <code className="mono-xs">{platformMeta.grafanaDomain}</code>, somente
-              na rede de gestão.
+              Métricas e alertas em <code className="mono-xs">{platformMeta.prometheusDomain}</code>
+              , somente na rede de gestão.
             </p>
           </div>
         </div>

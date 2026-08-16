@@ -211,26 +211,98 @@ being bundled into a handoff commit.
 | `bunx tsc --noEmit` | **0**                            |
 | `bun run build`     | **0**                            |
 
-## 11. Unresolved — requires owner decision
+## 11. Contract contradictions — raised, decided, implemented
 
-These are contract contradictions, not implementation gaps. Backend work should
-not begin until they are settled, because each one changes what gets built.
+These were found during the handoff and were genuine conflicts between what the
+documentation promised and what the code did. All three are now resolved by
+owner decision **and implemented**, not merely documented.
 
-1. **Deployment target.** `FRONTEND-HANDOFF.md` describes static assets behind
-   the platform proxy. The actual config builds a Nitro server bundle with
-   **Cloudflare as the default target**, and the build emits `wrangler.json`.
-   Static SPA, self-hosted Node/Nitro SSR, and a Cloudflare worker have
-   different service users, systemd units, resource budgets, CSP behaviour and
-   failure modes. This must be chosen explicitly and proven on Debian.
+### 11.1 Deployment target — RESOLVED
 
-2. **Admin authentication model.** `API-CONTRACTS.md` specifies
-   `Authorization: Bearer <token>` on every management call. `http-adapter.ts`
-   sends `credentials: "include"` for HttpOnly cookies. These are different
-   security models — cookies additionally require CSRF defence, `SameSite`,
-   and Origin validation for destructive operations. One must be authoritative.
+**Was:** `FRONTEND-HANDOFF.md` described static assets behind the platform
+proxy, while the build produced a Nitro server bundle with **Cloudflare as the
+default preset**, emitting `wrangler.json`.
 
-3. **Grafana.** The frontend treats Grafana as a delivered surface. The platform
-   removed it from scope by owner decision. Either that decision is reversed, or
-   the surface stays mock-only, or it is remapped to Prometheus/Alertmanager.
-   The design freeze protects the UI from redesign; it does not oblige the
-   backend to implement infrastructure that was descoped.
+**Now:** self-hosted Node/Nitro SSR. `build:selfhosted` sets
+`NITRO_PRESET=node-server`; `nitro.json` reports `node-server` and no Cloudflare
+artifacts are emitted. Runs as a hardened systemd service under a dedicated
+non-root user, bound to loopback behind the reverse proxy.
+
+Verified: HTTP 200 on `/` and `/observability/prometheus`, correct 404 on the
+removed route, service survives `restart`, and after `kill -9` systemd restarts
+it automatically and it serves 200 again. Memory ~25 MiB against a 256 MiB cap.
+
+### 11.2 Admin authentication — RESOLVED
+
+**Was:** `API-CONTRACTS.md` mandated `Authorization: Bearer`, while the adapter
+sent `credentials: "include"` for HttpOnly cookies.
+
+**Now:** HttpOnly cookie sessions, with the **CSRF wire contract fully
+specified** — token endpoint and response shape, header name, which methods
+require it (including login and logout), failure semantics, single-retry
+rotation handling, multi-tab behaviour, Origin validation, and in-memory-only
+client storage.
+
+**Implemented**, not just documented: `src/api/http-adapter.ts` fetches the
+token, attaches `X-CSRF-Token` to every mutating method, de-duplicates
+concurrent token fetches, retries exactly once on `403`, and clears the token on
+logout.
+
+Covered by 8 tests in `src/api/http-adapter.test.ts`: reads carry no token;
+mutations do; the token is cached across mutations; a 403 refreshes and retries
+once; a persistent 403 throws without looping; a 403 on a read is not retried;
+all four mutating verbs carry the token; credentials are always included.
+**8/8 pass.**
+
+### 11.3 Grafana — RESOLVED
+
+**Was:** the frontend implemented a full Grafana integration — route, page,
+navigation entry, settings row, environment variable, mock service and dashboard
+slugs — while platform scope had removed Grafana.
+
+An intermediate commit corrected only the _documentation_, which independent
+review correctly rejected: the UI still implemented Grafana while the docs
+claimed otherwise. That is the fictitious-capability problem, just relocated.
+
+**Now remapped in code:** the route is `/observability/prometheus`, the page
+presents Prometheus and Alertmanager with reference **PromQL expressions** that
+deep-link into the Prometheus expression browser, `env` exposes
+`prometheusUrl`/`alertmanagerUrl` instead of `grafanaUrl`, navigation and
+settings are updated, and the mock service list reports Alertmanager.
+
+No reference to Grafana remains in `src/` except one comment explaining why the
+queries exist. The old route now correctly returns **404**.
+
+## 12. Build isolation
+
+Independent review noted that building on the platform host as root — with a
+GitHub write key present and platform credentials on the same machine — is a
+supply-chain exposure that "not in the client bundle" does not address.
+
+A dedicated unprivileged build account now owns the source tree and runs the
+build. Verified:
+
+| Check                                     | Result                |
+| ----------------------------------------- | --------------------- |
+| Build account reads the GitHub deploy key | **Permission denied** |
+| Build account reads a platform credential | **Permission denied** |
+| Build account lists the secrets directory | **Permission denied** |
+| Full build as that account                | exit 0                |
+| Test suite as that account                | 8/8 pass              |
+
+A compromised build dependency therefore cannot reach the deploy key or platform
+credentials.
+
+## 13. Known-open items
+
+- Dependency advisories (5 high, all dev/build-time, none in the client bundle)
+  are **not yet remediated**. Isolation reduces their blast radius; it does not
+  patch them. Upgrading across a beta Nitro and a Lovable-specific Vite
+  integration warrants its own verification pass.
+- No entropy-aware or provider-verifying secret scanner; no CI or pre-push
+  enforcement gate; no scan of ignored build output.
+- GitHub host-key provenance not documented against published fingerprints.
+- Deploy key uses the default identity filename and has no recorded rotation
+  owner.
+- 11 `react-refresh/only-export-components` warnings remain, inherent to
+  exporting variants alongside components; not addressed during a design freeze.

@@ -1535,10 +1535,10 @@ export const MockServices: ServiceHealth[] = [
     uptime: "99.51%",
   },
   {
-    id: "svc-grafana",
-    name: "Grafana",
+    id: "svc-alertmanager",
+    name: "Alertmanager",
     status: "healthy",
-    detail: "9 dashboards",
+    detail: "4 rotas de alerta",
     uptime: "99.9%",
   },
   {

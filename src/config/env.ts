@@ -14,7 +14,8 @@ export const env = {
   apiBaseUrl: raw["VITE_CB67_API_BASE_URL"] ?? "",
   licenseBaseUrl: raw["VITE_CB67_LICENSE_BASE_URL"] ?? "",
   statusBaseUrl: raw["VITE_CB67_STATUS_BASE_URL"] ?? "",
-  grafanaUrl: raw["VITE_GRAFANA_URL"] ?? "",
+  prometheusUrl: raw["VITE_PROMETHEUS_URL"] ?? "",
+  alertmanagerUrl: raw["VITE_ALERTMANAGER_URL"] ?? "",
   /** Mock mode stays on until the backend exposes the contracts in docs/API-CONTRACTS.md. */
   useMockApi: flag(raw["VITE_USE_MOCK_API"], true),
   environment: (raw["VITE_CB67_ENVIRONMENT"] ?? "development") as
@@ -29,5 +30,6 @@ export const platformMeta = {
   docsDomain: "docs.cb67labs.api.br",
   statusDomain: "status.cb67labs.api.br",
   adminDomain: "admin.cb67labs.api.br",
-  grafanaDomain: "grafana.cb67labs.api.br",
+  prometheusDomain: "prometheus.cb67labs.api.br",
+  alertmanagerDomain: "alertmanager.cb67labs.api.br",
 } as const;

@@ -34,12 +34,12 @@ issues and revokes licences.
 with mTLS client certificates. The two planes have different threat models and
 deliberately different mechanisms.
 
-| Method | Path           | Returns                     |
-| ------ | -------------- | --------------------------- |
-| POST   | `/auth/login`  | `AuthenticatedUser`         |
-| GET    | `/auth/me`     | `AuthenticatedUser \| null` |
-| POST   | `/auth/logout` | `204`                       |
-| GET    | `/auth/csrf`   | CSRF token for mutations    |
+| Method | Path           | Returns                      |
+| ------ | -------------- | ---------------------------- |
+| POST   | `/auth/login`  | `AuthenticatedUser`          |
+| GET    | `/auth/me`     | `AuthenticatedUser \| null`  |
+| POST   | `/auth/logout` | `204`                        |
+| GET    | `/auth/csrf`   | `{ token }` — see CSRF below |
 
 ### Cookie attributes the backend must set
 
@@ -50,15 +50,61 @@ deliberately different mechanisms.
 | `SameSite` | `Strict` | admin plane has no cross-site flows |
 | `Path`     | `/`      | —                                   |
 
-### CSRF — the debt cookies create
+### CSRF — the wire contract
 
 Cookies are attached by the browser automatically, so a cross-origin page can
-trigger authenticated requests. Every **state-changing** call — including
-`performAction()` — must carry a CSRF token, and the server must validate
-`Origin`/`Referer`. Read-only `GET` requests do not.
+trigger authenticated requests. The token below closes that hole. This section
+is the **normative wire contract** — frontend and backend must not have to guess.
 
-Also required server-side: absolute and idle session expiry, and a new session
-identifier on privilege change (session fixation).
+**Token issuance**
+
+```
+GET /v1/admin/auth/csrf
+200 → { "token": "<opaque string>" }
+```
+
+- The token is **session-bound**. A token issued for one session is invalid for
+  any other.
+- It is returned in the JSON body, never in a JavaScript-readable cookie.
+- Issuing is idempotent: repeated calls within a session may return the same
+  token or a rotated one; the client always uses the most recent.
+
+**Token presentation**
+
+- Header name: **`X-CSRF-Token`**.
+- Required on `POST`, `PUT`, `PATCH`, `DELETE` — **including `/auth/login` and
+  `/auth/logout`**. Login CSRF is a real attack: it can log a victim into an
+  attacker's account and cause their activity to be recorded there.
+- Never sent on `GET`, `HEAD` or `OPTIONS`.
+
+**Failure and rotation**
+
+- A missing, malformed or mismatched token on a mutation → **`403`** with
+  `{ code, message, requestId }`.
+- On `403` the client re-fetches the token **once** and retries the request
+  once. It does not loop. A second `403` surfaces to the caller.
+- Rotation on privilege change is permitted; the retry path above absorbs it.
+- Multiple tabs: the token is session-bound rather than tab-bound, so tabs share
+  it. A tab holding a stale token recovers through the same single retry.
+
+**Origin validation**
+
+The server validates `Origin` (falling back to `Referer`) on every mutation and
+rejects any value outside the configured admin origin. The token and the origin
+check are independent controls; both must pass.
+
+**Client state**
+
+The token is held **in memory only** — never `localStorage`, `sessionStorage`,
+or a readable cookie — and is cleared on logout so a new session cannot reuse it.
+
+**Also required server-side:** absolute and idle session expiry, and a new
+session identifier on privilege change (session fixation).
+
+Implemented in `src/api/http-adapter.ts`; behaviour covered by
+`src/api/http-adapter.test.ts` (8 tests: reads carry no token, mutations do,
+caching, single-retry-on-403, no-loop, all mutating verbs, credentials always
+included).
 
 **Frontend guards are UX only.** Authorization is enforced by the backend and
 never by the client.
