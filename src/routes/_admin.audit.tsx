@@ -22,7 +22,10 @@ export const Route = createFileRoute("/_admin/audit")({
           "Trilha de auditoria somente-anexação de ações de operadores, máquinas e do sistema em toda a plataforma CB67 Labs, correlacionada por identificador de requisição.",
       },
       { property: "og:title", content: "Trilha de Auditoria — CB67 Labs Control Center" },
-      { property: "og:description", content: "Registro somente-anexação de toda ação privilegiada na plataforma." },
+      {
+        property: "og:description",
+        content: "Registro somente-anexação de toda ação privilegiada na plataforma.",
+      },
     ],
   }),
   component: AuditPage,
@@ -44,7 +47,10 @@ function AuditPage() {
   );
 
   const byResource = [...new Set(all.map((row) => row.resource))]
-    .map((resource) => ({ t: resource, value: all.filter((row) => row.resource === resource).length }))
+    .map((resource) => ({
+      t: resource,
+      value: all.filter((row) => row.resource === resource).length,
+    }))
     .sort((a, b) => b.value - a.value)
     .slice(0, 8);
 
@@ -150,16 +156,28 @@ function AuditPage() {
         <section className="panel p-4">
           <h3 className="text-sm font-semibold">Propriedades do registro</h3>
           <dl className="mt-2">
-            <StatRow label="Mutabilidade" value="Somente-anexação, sem caminho de exclusão pelo operador" />
+            <StatRow
+              label="Mutabilidade"
+              value="Somente-anexação, sem caminho de exclusão pelo operador"
+            />
             <StatRow label="Retenção" value="18 meses, partições mensais" />
-            <StatRow label="Correlação" value="Identificador de requisição compartilhado com logs e rastreamentos de API" />
-            <StatRow label="Exportação" value="Responsabilidade do backend; não exposta nesta interface" />
+            <StatRow
+              label="Correlação"
+              value="Identificador de requisição compartilhado com logs e rastreamentos de API"
+            />
+            <StatRow
+              label="Exportação"
+              value="Responsabilidade do backend; não exposta nesta interface"
+            />
           </dl>
         </section>
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Fluxo de eventos" description="Filtrar por resultado e tipo de ator, depois buscar ator, ação ou recurso." />
+        <SectionTitle
+          title="Fluxo de eventos"
+          description="Filtrar por resultado e tipo de ator, depois buscar ator, ação ou recurso."
+        />
         <DataTable
           data={rows}
           columns={columns}
@@ -174,7 +192,11 @@ function AuditPage() {
           dense
           toolbar={
             <div className="flex flex-wrap items-center gap-2">
-              <div role="group" aria-label="Resultado" className="inline-flex overflow-hidden rounded-md border border-border">
+              <div
+                role="group"
+                aria-label="Resultado"
+                className="inline-flex overflow-hidden rounded-md border border-border"
+              >
                 {RESULTS.map((value) => (
                   <button
                     key={value}
@@ -183,7 +205,9 @@ function AuditPage() {
                     onClick={() => setResult(value)}
                     className={cn(
                       "px-2.5 py-1 text-xs font-medium transition-colors",
-                      result === value ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-muted",
+                      result === value
+                        ? "bg-accent text-accent-foreground"
+                        : "text-muted-foreground hover:bg-muted",
                     )}
                   >
                     {value}

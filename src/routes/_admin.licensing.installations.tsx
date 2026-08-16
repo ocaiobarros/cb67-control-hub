@@ -20,7 +20,10 @@ export const Route = createFileRoute("/_admin/licensing/installations")({
           "Instalações de produtos licenciados com versão, heartbeat, vínculo de concessão e estado do período de carência.",
       },
       { property: "og:title", content: "Instalações — CB67 Labs Control Center" },
-      { property: "og:description", content: "Heartbeats, versões e períodos de carência por instalação." },
+      {
+        property: "og:description",
+        content: "Heartbeats, versões e períodos de carência por instalação.",
+      },
     ],
   }),
   component: InstallationsPage,
@@ -73,7 +76,9 @@ function InstallationsPage() {
     {
       id: "lastSeen",
       header: "Heartbeat",
-      cell: (row) => <span className="mono-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>,
+      cell: (row) => (
+        <span className="mono-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>
+      ),
       sortValue: (row) => row.lastSeen,
       align: "right",
     },
@@ -137,7 +142,10 @@ function InstallationsPage() {
       </ChartPanel>
 
       <div className="space-y-3">
-        <SectionTitle title="Registro de instalações" description="Os heartbeats são reportados pelo produto instalado." />
+        <SectionTitle
+          title="Registro de instalações"
+          description="Os heartbeats são reportados pelo produto instalado."
+        />
         <DataTable
           data={installations.data}
           columns={columns}

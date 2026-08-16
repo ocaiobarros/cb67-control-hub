@@ -51,7 +51,8 @@ function FailedAttemptsPage() {
       if (current) {
         current.attempts += 1;
         if (event.timestamp > current.lastAt) current.lastAt = event.timestamp;
-        if (event.severity === "critical" || event.severity === "high") current.worstSeverity = event.severity;
+        if (event.severity === "critical" || event.severity === "high")
+          current.worstSeverity = event.severity;
       } else {
         acc[key] = {
           key,
@@ -100,7 +101,9 @@ function FailedAttemptsPage() {
     {
       id: "last",
       header: "Última tentativa",
-      cell: (row) => <span className="mono-xs text-muted-foreground">{formatRelative(row.lastAt)}</span>,
+      cell: (row) => (
+        <span className="mono-xs text-muted-foreground">{formatRelative(row.lastAt)}</span>
+      ),
       sortValue: (row) => row.lastAt,
       align: "right",
     },
@@ -198,7 +201,10 @@ function FailedAttemptsPage() {
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Registro de tentativas" description="Tentativas negadas individuais, mais recentes primeiro." />
+        <SectionTitle
+          title="Registro de tentativas"
+          description="Tentativas negadas individuais, mais recentes primeiro."
+        />
         <DataTable
           data={denied}
           columns={eventColumns}

@@ -23,7 +23,10 @@ export const Route = createFileRoute("/_admin/backups/jobs")({
           "Inventário de rotinas de backup agendadas da plataforma CB67 Labs, com agenda, alvo, duração e controles de execução manual.",
       },
       { property: "og:title", content: "Rotinas de Backup — CB67 Labs Control Center" },
-      { property: "og:description", content: "Rotinas de backup agendadas, alvos e controles de execução manual." },
+      {
+        property: "og:description",
+        content: "Rotinas de backup agendadas, alvos e controles de execução manual.",
+      },
     ],
   }),
   component: BackupJobsPage,
@@ -139,7 +142,10 @@ function BackupJobsPage() {
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Inventário de rotinas" description="Busque por nome ou volume de destino." />
+        <SectionTitle
+          title="Inventário de rotinas"
+          description="Busque por nome ou volume de destino."
+        />
         <DataTable
           data={jobs.data}
           columns={columns}

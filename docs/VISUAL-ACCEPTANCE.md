@@ -10,22 +10,22 @@ the last refinement.
 
 ## 1. Surface acceptance — Control Center
 
-| Section | Light | Dark | Notes |
-| --- | --- | --- | --- |
-| Overview | PASS | PASS | Provider latency corrected to a time-series read; donut legend legible in both themes |
-| Infrastructure (hosts, compute, storage, network) | PASS | PASS | Node tables and utilisation charts hold contrast at 13% border opacity |
-| SaaS (applications, detail, instances, clients) | PASS | PASS | Detail tabs, credential panels, rotation modal verified |
-| APIs (endpoints, requests, errors, latency, rate limits, quotas) | PASS | PASS | Method/status badges keep tone separation on glass |
-| Providers (index, detail) | PASS | PASS | |
-| Licensing (index, products, plans, customers, licences, detail, installations, leases, features, revocations) | PASS | PASS | Status ladder active/grace/suspended/pending/revoked/expired all distinguishable |
-| Identity & Access (administrators, roles, permissions, scopes, sessions, machine clients) | PASS | PASS | Permission matrix readable at tablet width |
-| PKI (certificates, detail, expiration, rotation, revocation) | PASS | PASS | Fingerprint mono blocks aligned |
-| Security (index, authentication, authorization, events, failed attempts, firewall, sessions) | PASS | PASS | Critical surfaces use `crit` tone, not raw red fills |
-| Observability (index, metrics, logs, alerts, grafana) | PASS | PASS | Log level chips and correlation IDs legible |
-| Database (health, connections, performance, growth) | PASS | PASS | |
-| Backups (index, jobs, history, checksums, restore tests) | PASS | PASS | |
-| Audit | PASS | PASS | |
-| Settings | PASS | PASS | |
+| Section                                                                                                       | Light | Dark | Notes                                                                                 |
+| ------------------------------------------------------------------------------------------------------------- | ----- | ---- | ------------------------------------------------------------------------------------- |
+| Overview                                                                                                      | PASS  | PASS | Provider latency corrected to a time-series read; donut legend legible in both themes |
+| Infrastructure (hosts, compute, storage, network)                                                             | PASS  | PASS | Node tables and utilisation charts hold contrast at 13% border opacity                |
+| SaaS (applications, detail, instances, clients)                                                               | PASS  | PASS | Detail tabs, credential panels, rotation modal verified                               |
+| APIs (endpoints, requests, errors, latency, rate limits, quotas)                                              | PASS  | PASS | Method/status badges keep tone separation on glass                                    |
+| Providers (index, detail)                                                                                     | PASS  | PASS |                                                                                       |
+| Licensing (index, products, plans, customers, licences, detail, installations, leases, features, revocations) | PASS  | PASS | Status ladder active/grace/suspended/pending/revoked/expired all distinguishable      |
+| Identity & Access (administrators, roles, permissions, scopes, sessions, machine clients)                     | PASS  | PASS | Permission matrix readable at tablet width                                            |
+| PKI (certificates, detail, expiration, rotation, revocation)                                                  | PASS  | PASS | Fingerprint mono blocks aligned                                                       |
+| Security (index, authentication, authorization, events, failed attempts, firewall, sessions)                  | PASS  | PASS | Critical surfaces use `crit` tone, not raw red fills                                  |
+| Observability (index, metrics, logs, alerts, grafana)                                                         | PASS  | PASS | Log level chips and correlation IDs legible                                           |
+| Database (health, connections, performance, growth)                                                           | PASS  | PASS |                                                                                       |
+| Backups (index, jobs, history, checksums, restore tests)                                                      | PASS  | PASS |                                                                                       |
+| Audit                                                                                                         | PASS  | PASS |                                                                                       |
+| Settings                                                                                                      | PASS  | PASS |                                                                                       |
 
 ## 2. Surface acceptance — Public plane
 

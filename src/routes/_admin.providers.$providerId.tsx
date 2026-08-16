@@ -15,7 +15,13 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Permitted } from "@/features/auth/guards";
 import { useAdminAction } from "@/hooks/use-admin-action";
-import { formatCompact, formatMs, formatNumber, formatPercent, formatRelative } from "@/utils/format";
+import {
+  formatCompact,
+  formatMs,
+  formatNumber,
+  formatPercent,
+  formatRelative,
+} from "@/utils/format";
 import type { CredentialMetadata, Provider, ProviderProject, TimeRange } from "@/types";
 
 export const Route = createFileRoute("/_admin/providers/$providerId")({
@@ -58,7 +64,10 @@ function ProviderDetail() {
   if (!providers.isLoading && !provider) {
     return (
       <div className="space-y-6">
-        <PageHeader title="Provedor não encontrado" description="Nenhuma integração está registrada para este identificador." />
+        <PageHeader
+          title="Provedor não encontrado"
+          description="Nenhuma integração está registrada para este identificador."
+        />
         <EmptyState
           message="Provedor desconhecido"
           hint="As integrações suportadas são OpenAI, Gemini e Google Maps."
@@ -278,9 +287,18 @@ function ProviderDetail() {
           <section className="panel p-4">
             <h3 className="text-sm font-semibold">Política de integração</h3>
             <dl className="mt-2">
-              <StatRow label="Posse da credencial" value="Somente plataforma — nunca exposta aos consumidores" />
-              <StatRow label="Isolamento de falhas" value="Erros de provedor excluídos do SLO da plataforma" />
-              <StatRow label="Estratégia de repetição" value="Controlada pelo backend (provisório)" />
+              <StatRow
+                label="Posse da credencial"
+                value="Somente plataforma — nunca exposta aos consumidores"
+              />
+              <StatRow
+                label="Isolamento de falhas"
+                value="Erros de provedor excluídos do SLO da plataforma"
+              />
+              <StatRow
+                label="Estratégia de repetição"
+                value="Controlada pelo backend (provisório)"
+              />
               <StatRow label="Projetos" value={provider?.projects ?? "—"} />
               <StatRow label="Credenciais" value={provider?.credentials ?? "—"} />
             </dl>
@@ -309,7 +327,10 @@ function ProviderDetail() {
         environmentNotice="A operação é autorizada e auditada no servidor."
         onConfirm={async () => {
           if (!rotating) return;
-          await action.mutateAsync({ action: "provider-credential.rotate", resourceId: rotating.id });
+          await action.mutateAsync({
+            action: "provider-credential.rotate",
+            resourceId: rotating.id,
+          });
           setRotating(null);
         }}
       />

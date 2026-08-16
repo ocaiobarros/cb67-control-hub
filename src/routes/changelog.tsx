@@ -16,7 +16,10 @@ export const Route = createFileRoute("/changelog")({
           "Histórico de lançamentos da plataforma de API da CB67 Labs: versões de API, mudanças de licenciamento e melhorias da plataforma por lançamento.",
       },
       { property: "og:title", content: "Changelog — CB67 Labs Platform" },
-      { property: "og:description", content: "Histórico de lançamentos da plataforma de API da CB67 Labs." },
+      {
+        property: "og:description",
+        content: "Histórico de lançamentos da plataforma de API da CB67 Labs.",
+      },
     ],
   }),
   component: ChangelogPage,
@@ -32,8 +35,9 @@ function ChangelogPage() {
         <header className="space-y-3 border-b border-border pb-6">
           <h1 className="text-2xl font-semibold tracking-tight">Changelog</h1>
           <p className="max-w-2xl text-sm text-muted-foreground">
-            Os lançamentos da plataforma seguem versionamento semântico. Mudanças incompatíveis de API são lançadas como uma nova versão de API e
-            a versão anterior permanece disponível pela janela de descontinuação anunciada.
+            Os lançamentos da plataforma seguem versionamento semântico. Mudanças incompatíveis de
+            API são lançadas como uma nova versão de API e a versão anterior permanece disponível
+            pela janela de descontinuação anunciada.
           </p>
         </header>
 

@@ -30,7 +30,8 @@ export const Route = createFileRoute("/_admin/overview")({
       { property: "og:title", content: "Visão Geral da Plataforma — CB67 Labs Control Center" },
       {
         property: "og:description",
-        content: "Tráfego, latência, taxa de erros, licenciamento e saúde da infraestrutura em um só lugar.",
+        content:
+          "Tráfego, latência, taxa de erros, licenciamento e saúde da infraestrutura em um só lugar.",
       },
     ],
   }),
@@ -46,7 +47,13 @@ function OverviewPage() {
     return <ErrorState error={overview.error} onRetry={() => void overview.refetch()} />;
   }
 
-  const errorTone = !data ? "neutral" : data.errorRate > 2 ? "crit" : data.errorRate > 1 ? "warn" : "ok";
+  const errorTone = !data
+    ? "neutral"
+    : data.errorRate > 2
+      ? "crit"
+      : data.errorRate > 1
+        ? "warn"
+        : "ok";
 
   return (
     <div className="space-y-6">
@@ -107,7 +114,9 @@ function OverviewPage() {
           isEmpty={data?.statusCounts.length === 0}
           height={260}
         >
-          <DonutChart data={(data?.statusCounts ?? []).map((s) => ({ t: s.code, value: s.value }))} />
+          <DonutChart
+            data={(data?.statusCounts ?? []).map((s) => ({ t: s.code, value: s.value }))}
+          />
         </ChartPanel>
       </div>
 
@@ -135,7 +144,11 @@ function OverviewPage() {
           isLoading={overview.isLoading}
           isEmpty={data?.charts.requestsBySaas.length === 0}
         >
-          <CategoryBarChart data={data?.charts.requestsBySaas ?? []} layout="horizontal" colorByIndex />
+          <CategoryBarChart
+            data={data?.charts.requestsBySaas ?? []}
+            layout="horizontal"
+            colorByIndex
+          />
         </ChartPanel>
       </div>
 
@@ -243,7 +256,9 @@ function OverviewPage() {
         />
         <MetricCard
           label="Provedores degradados"
-          value={data ? formatNumber(data.providers.filter((p) => p.status !== "healthy").length) : "—"}
+          value={
+            data ? formatNumber(data.providers.filter((p) => p.status !== "healthy").length) : "—"
+          }
           tone={data && data.providers.some((p) => p.status === "unavailable") ? "crit" : "neutral"}
           hint="Dependências externas"
           isLoading={overview.isLoading}

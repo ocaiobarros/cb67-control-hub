@@ -20,7 +20,10 @@ export const Route = createFileRoute("/_admin/security/sessions")({
           "Postura de segurança de sessões: concorrência por operador, origens, impressões digitais de dispositivos e janelas de expiração.",
       },
       { property: "og:title", content: "Segurança de Sessões — CB67 Labs Control Center" },
-      { property: "og:description", content: "Concorrência de sessões, origens e postura de expiração." },
+      {
+        property: "og:description",
+        content: "Concorrência de sessões, origens e postura de expiração.",
+      },
     ],
   }),
   component: SecuritySessionsPage,
@@ -130,15 +133,24 @@ function SecuritySessionsPage() {
       <section className="panel p-4">
         <h3 className="text-sm font-semibold">Política de sessão</h3>
         <dl className="mt-2">
-          <StatRow label="Vinculação" value="Impressão digital do dispositivo mais endereço de origem" />
+          <StatRow
+            label="Vinculação"
+            value="Impressão digital do dispositivo mais endereço de origem"
+          />
           <StatRow label="Expiração" value="Janela fixa, sem extensão silenciosa" />
-          <StatRow label="Armazenamento" value="Registros de sessão no servidor; sem tokens de navegador de longa duração" />
+          <StatRow
+            label="Armazenamento"
+            value="Registros de sessão no servidor; sem tokens de navegador de longa duração"
+          />
           <StatRow label="Encerramento" value="Imediato, a partir de Identidade → Sessões" />
         </dl>
       </section>
 
       <div className="space-y-3">
-        <SectionTitle title="Sessões ativas" description="Visualização somente leitura do inventário de sessões atual." />
+        <SectionTitle
+          title="Sessões ativas"
+          description="Visualização somente leitura do inventário de sessões atual."
+        />
         <DataTable
           data={sessions.data}
           columns={columns}

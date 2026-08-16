@@ -71,7 +71,8 @@ function PublicHome() {
         </h1>
         <p className="max-w-2xl text-base text-muted-foreground">
           APIs, identidade de máquina, licenciamento de software, PKI interna e observabilidade
-          rodam como uma única plataforma. Sem plano de controle de terceiros, sem trajeto externo de dados.
+          rodam como uma única plataforma. Sem plano de controle de terceiros, sem trajeto externo
+          de dados.
         </p>
         <div className="flex flex-wrap gap-2">
           <Button asChild>
@@ -102,20 +103,22 @@ function PublicHome() {
           <div className="panel space-y-1 p-5">
             <p className="text-sm font-semibold">Pública</p>
             <p className="text-sm text-muted-foreground">
-              Documentação, status e changelog em <code className="mono-xs">{platformMeta.publicDomain}</code>.
+              Documentação, status e changelog em{" "}
+              <code className="mono-xs">{platformMeta.publicDomain}</code>.
             </p>
           </div>
           <div className="panel space-y-1 p-5">
             <p className="text-sm font-semibold">Gestão</p>
             <p className="text-sm text-muted-foreground">
-              O Control Center em <code className="mono-xs">{platformMeta.adminDomain}</code>, restrito a
-              operadores.
+              O Control Center em <code className="mono-xs">{platformMeta.adminDomain}</code>,
+              restrito a operadores.
             </p>
           </div>
           <div className="panel space-y-1 p-5">
             <p className="text-sm font-semibold">Observabilidade</p>
             <p className="text-sm text-muted-foreground">
-              Dashboards em <code className="mono-xs">{platformMeta.grafanaDomain}</code>, somente na rede de gestão.
+              Dashboards em <code className="mono-xs">{platformMeta.grafanaDomain}</code>, somente
+              na rede de gestão.
             </p>
           </div>
         </div>

@@ -106,8 +106,20 @@ function QuotasPage() {
       header: "Projeção",
       cell: (row) => (
         <StatusBadge
-          status={forecastTone(row) === "crit" ? "critical" : forecastTone(row) === "warn" ? "warn" : "healthy"}
-          label={forecastTone(row) === "crit" ? "Vai exceder" : forecastTone(row) === "warn" ? "Próximo do limite" : "Dentro da cota"}
+          status={
+            forecastTone(row) === "crit"
+              ? "critical"
+              : forecastTone(row) === "warn"
+                ? "warn"
+                : "healthy"
+          }
+          label={
+            forecastTone(row) === "crit"
+              ? "Vai exceder"
+              : forecastTone(row) === "warn"
+                ? "Próximo do limite"
+                : "Dentro da cota"
+          }
         />
       ),
       sortValue: (row) => row.forecast / Math.max(1, row.monthlyQuota),
@@ -116,7 +128,9 @@ function QuotasPage() {
     {
       id: "resets",
       header: "Reinício",
-      cell: (row) => <span className="mono-xs text-muted-foreground">{formatDate(row.resetsAt)}</span>,
+      cell: (row) => (
+        <span className="mono-xs text-muted-foreground">{formatDate(row.resetsAt)}</span>
+      ),
       sortValue: (row) => row.resetsAt,
       align: "right",
     },

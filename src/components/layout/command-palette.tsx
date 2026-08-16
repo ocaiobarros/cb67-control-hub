@@ -33,13 +33,12 @@ export function CommandPalette({
   const groups = Array.from(new Set(NAV_INDEX.map((entry) => entry.group ?? "Platform")));
 
   return (
-    <CommandDialog
-      open={open}
-      onOpenChange={onOpenChange}
-    >
+    <CommandDialog open={open} onOpenChange={onOpenChange}>
       <CommandInput placeholder="Pesquisar seções, recursos, ações…" className="h-12" />
       <CommandList>
-        <CommandEmpty className="py-8 text-sm text-muted-foreground">Nenhuma seção corresponde.</CommandEmpty>
+        <CommandEmpty className="py-8 text-sm text-muted-foreground">
+          Nenhuma seção corresponde.
+        </CommandEmpty>
         {groups.map((group) => (
           <CommandGroup key={group} heading={group}>
             {NAV_INDEX.filter((entry) => (entry.group ?? "Platform") === group).map((entry) => (

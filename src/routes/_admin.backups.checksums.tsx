@@ -24,7 +24,10 @@ export const Route = createFileRoute("/_admin/backups/checksums")({
           "Estado da verificação de integridade dos artefatos de backup da CB67 Labs, com resultados de checksum verificados, pendentes e falhos.",
       },
       { property: "og:title", content: "Checksums de Backup — CB67 Labs Control Center" },
-      { property: "og:description", content: "Estado da verificação de integridade de artefatos e controles de reverificação." },
+      {
+        property: "og:description",
+        content: "Estado da verificação de integridade de artefatos e controles de reverificação.",
+      },
     ],
   }),
   component: ChecksumsPage,
@@ -110,7 +113,12 @@ function ChecksumsPage() {
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard label="Artefatos" value={all.length} isLoading={runs.isLoading} />
-        <MetricCard label="Verificados" value={verified.length} tone="ok" isLoading={runs.isLoading} />
+        <MetricCard
+          label="Verificados"
+          value={verified.length}
+          tone="ok"
+          isLoading={runs.isLoading}
+        />
         <MetricCard
           label="Pendentes"
           value={pending.length}
@@ -141,13 +149,19 @@ function ChecksumsPage() {
             <StatRow label="Algoritmo" value="SHA-256 por artefato" />
             <StatRow label="Reverificação" value="Varredura semanal sobre artefatos retidos" />
             <StatRow label="Cobertura verificada" value={formatPercent(coverage, 1)} />
-            <StatRow label="Em caso de falha" value="Artefato colocado em quarentena e um alerta é gerado" />
+            <StatRow
+              label="Em caso de falha"
+              value="Artefato colocado em quarentena e um alerta é gerado"
+            />
           </dl>
         </section>
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Integridade dos artefatos" description="Pesquisar por identificador do artefato." />
+        <SectionTitle
+          title="Integridade dos artefatos"
+          description="Pesquisar por identificador do artefato."
+        />
         <DataTable
           data={runs.data}
           columns={columns}

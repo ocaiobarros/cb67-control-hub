@@ -130,9 +130,7 @@ export const mockAdapter: PlatformAdapter = {
       })),
     ];
     return delay(
-      results
-        .filter((r) => `${r.label} ${r.detail}`.toLowerCase().includes(q))
-        .slice(0, 12),
+      results.filter((r) => `${r.label} ${r.detail}`.toLowerCase().includes(q)).slice(0, 12),
       120,
     );
   },
@@ -163,7 +161,9 @@ export const mockAdapter: PlatformAdapter = {
   },
   async listInstances(applicationId) {
     return delay(
-      applicationId ? M.MockInstances.filter((i) => i.applicationId === applicationId) : M.MockInstances,
+      applicationId
+        ? M.MockInstances.filter((i) => i.applicationId === applicationId)
+        : M.MockInstances,
     );
   },
   async listMachineClients() {
@@ -197,7 +197,9 @@ export const mockAdapter: PlatformAdapter = {
   },
   async listProviderProjects(providerId) {
     return delay(
-      providerId ? M.MockProviderProjects.filter((p) => p.providerId === providerId) : M.MockProviderProjects,
+      providerId
+        ? M.MockProviderProjects.filter((p) => p.providerId === providerId)
+        : M.MockProviderProjects,
     );
   },
   async listCredentials(providerId) {
@@ -361,9 +363,12 @@ export const mockAdapter: PlatformAdapter = {
   },
 
   async performAction({ action, resourceId }) {
-    return delay({
-      accepted: true,
-      message: `${action} aceito para ${resourceId}. Aplicação no backend pendente.`,
-      }, 600);
+    return delay(
+      {
+        accepted: true,
+        message: `${action} aceito para ${resourceId}. Aplicação no backend pendente.`,
+      },
+      600,
+    );
   },
 };

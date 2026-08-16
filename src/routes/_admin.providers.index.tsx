@@ -122,7 +122,12 @@ function ProvidersOverview() {
       cell: (row) => <code className="mono-xs text-foreground">{row.alias}</code>,
       sortValue: (row) => row.alias,
     },
-    { id: "provider", header: "Provedor", cell: (row) => row.providerId, sortValue: (row) => row.providerId },
+    {
+      id: "provider",
+      header: "Provedor",
+      cell: (row) => row.providerId,
+      sortValue: (row) => row.providerId,
+    },
     {
       id: "application",
       header: "Aplicação",
@@ -159,7 +164,11 @@ function ProvidersOverview() {
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Provedores integrados" value={rows.length} isLoading={providers.isLoading} />
+        <MetricCard
+          label="Provedores integrados"
+          value={rows.length}
+          isLoading={providers.isLoading}
+        />
         <MetricCard
           label="Requisições upstream 24h"
           value={formatCompact(requests)}
@@ -191,7 +200,10 @@ function ProvidersOverview() {
       </ChartPanel>
 
       <div className="space-y-3">
-        <SectionTitle title="Registro de provedores" description="Selecione um provedor para ver detalhes por projeto." />
+        <SectionTitle
+          title="Registro de provedores"
+          description="Selecione um provedor para ver detalhes por projeto."
+        />
         <DataTable
           data={providers.data}
           columns={columns}

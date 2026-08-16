@@ -21,7 +21,10 @@ export const Route = createFileRoute("/_admin/security/authorization")({
           "Negações de autorização por escopo e função: respostas proibidas, escopos ausentes e os clientes mais frequentemente negados.",
       },
       { property: "og:title", content: "Autorização — CB67 Labs Control Center" },
-      { property: "og:description", content: "Negações de escopo e função em toda a superfície da API." },
+      {
+        property: "og:description",
+        content: "Negações de escopo e função em toda a superfície da API.",
+      },
     ],
   }),
   component: AuthorizationPage,
@@ -140,15 +143,30 @@ function AuthorizationPage() {
       <section className="panel p-4">
         <h3 className="text-sm font-semibold">Modelo de autorização</h3>
         <dl className="mt-2">
-          <StatRow label="Clientes de máquina" value="Baseado em escopo, menor privilégio por endpoint" />
-          <StatRow label="Operadores" value="Baseado em função, permissões avaliadas por operação" />
-          <StatRow label="Ponto de aplicação" value="Gateway de API e camada de serviço, nunca o navegador" />
-          <StatRow label="Comportamento da interface" value="Ações são ocultadas, não meramente desabilitadas" />
+          <StatRow
+            label="Clientes de máquina"
+            value="Baseado em escopo, menor privilégio por endpoint"
+          />
+          <StatRow
+            label="Operadores"
+            value="Baseado em função, permissões avaliadas por operação"
+          />
+          <StatRow
+            label="Ponto de aplicação"
+            value="Gateway de API e camada de serviço, nunca o navegador"
+          />
+          <StatRow
+            label="Comportamento da interface"
+            value="Ações são ocultadas, não meramente desabilitadas"
+          />
         </dl>
       </section>
 
       <div className="space-y-3">
-        <SectionTitle title="Requisições negadas" description="Correlacione com o explorador de requisições usando o identificador da requisição." />
+        <SectionTitle
+          title="Requisições negadas"
+          description="Correlacione com o explorador de requisições usando o identificador da requisição."
+        />
         <DataTable
           data={denied}
           columns={columns}

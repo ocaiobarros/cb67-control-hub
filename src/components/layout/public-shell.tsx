@@ -45,7 +45,8 @@ export function PublicShell({ children }: { children: ReactNode }) {
       <footer className="border-t border-border">
         <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-6 text-xs text-muted-foreground">
           <p>
-            {platformMeta.name} — plataforma de API on-premises. Operada a partir de Debian 13 em Proxmox.
+            {platformMeta.name} — plataforma de API on-premises. Operada a partir de Debian 13 em
+            Proxmox.
           </p>
           <p className="mono-xs">{platformMeta.publicDomain}</p>
         </div>

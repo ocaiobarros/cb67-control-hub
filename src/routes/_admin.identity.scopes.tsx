@@ -17,7 +17,10 @@ export const Route = createFileRoute("/_admin/identity/scopes")({
           "Catálogo de escopos de API, a capacidade que cada um autoriza e quantos clientes de máquina o possuem.",
       },
       { property: "og:title", content: "Escopos OAuth — CB67 Labs Control Center" },
-      { property: "og:description", content: "Definições de escopos agrupadas por domínio de API." },
+      {
+        property: "og:description",
+        content: "Definições de escopos agrupadas por domínio de API.",
+      },
     ],
   }),
   component: ScopesPage,
@@ -83,7 +86,10 @@ function ScopesPage() {
       {groups.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {groups.map((group) => (
-            <span key={group} className="rounded border border-border px-2 py-0.5 text-xs text-muted-foreground">
+            <span
+              key={group}
+              className="rounded border border-border px-2 py-0.5 text-xs text-muted-foreground"
+            >
               {group} · {rows.filter((row) => row.scope.startsWith(`${group}:`)).length}
             </span>
           ))}
@@ -91,9 +97,15 @@ function ScopesPage() {
       )}
 
       <div className="space-y-3">
-        <SectionTitle title="Catálogo de escopos" description="Os nomes são identificadores estáveis do contrato de API." />
+        <SectionTitle
+          title="Catálogo de escopos"
+          description="Os nomes são identificadores estáveis do contrato de API."
+        />
         {!scopes.isLoading && rows.length === 0 ? (
-          <EmptyState message="Nenhum escopo registrado" hint="O catálogo de escopos é publicado pelo backend." />
+          <EmptyState
+            message="Nenhum escopo registrado"
+            hint="O catálogo de escopos é publicado pelo backend."
+          />
         ) : (
           <DataTable
             data={scopes.data}

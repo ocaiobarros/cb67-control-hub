@@ -20,7 +20,10 @@ export const Route = createFileRoute("/_admin/pki/expiration")({
           "Horizonte de expiração da PKI interna: certificados agrupados por validade restante para agendar renovações antes do risco de interrupção.",
       },
       { property: "og:title", content: "Expiração de Certificados — CB67 Labs Control Center" },
-      { property: "og:description", content: "Horizonte de renovação agrupado por validade restante." },
+      {
+        property: "og:description",
+        content: "Horizonte de renovação agrupado por validade restante.",
+      },
     ],
   }),
   component: ExpirationPage,
@@ -36,7 +39,9 @@ const BUCKETS = [
 
 function bucketOf(cert: Certificate) {
   const days = daysUntil(cert.expiresAt);
-  return BUCKETS.find((bucket) => days > bucket.min && days <= bucket.max) ?? BUCKETS[BUCKETS.length - 1];
+  return (
+    BUCKETS.find((bucket) => days > bucket.min && days <= bucket.max) ?? BUCKETS[BUCKETS.length - 1]
+  );
 }
 
 function ExpirationPage() {
@@ -80,7 +85,11 @@ function ExpirationPage() {
       cell: (row) => {
         const days = daysUntil(row.expiresAt);
         return (
-          <span className={days <= 0 ? "tabular text-crit" : days <= 30 ? "tabular text-warn" : "tabular"}>
+          <span
+            className={
+              days <= 0 ? "tabular text-crit" : days <= 30 ? "tabular text-warn" : "tabular"
+            }
+          >
             {days <= 0 ? "expirado" : `${days} dias`}
           </span>
         );
@@ -91,7 +100,9 @@ function ExpirationPage() {
     {
       id: "expires",
       header: "Expira",
-      cell: (row) => <span className="mono-xs text-muted-foreground">{formatDate(row.expiresAt)}</span>,
+      cell: (row) => (
+        <span className="mono-xs text-muted-foreground">{formatDate(row.expiresAt)}</span>
+      ),
       sortValue: (row) => row.expiresAt,
       align: "right",
     },
@@ -105,14 +116,20 @@ function ExpirationPage() {
   ];
 
   const expired = rows.filter((row) => daysUntil(row.expiresAt) <= 0);
-  const within7 = rows.filter((row) => daysUntil(row.expiresAt) > 0 && daysUntil(row.expiresAt) <= 7);
+  const within7 = rows.filter(
+    (row) => daysUntil(row.expiresAt) > 0 && daysUntil(row.expiresAt) <= 7,
+  );
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="Expiração de Certificados"
         description="Um certificado de cliente expirado quebra silenciosamente a autenticação mTLS. As renovações devem ser agendadas com pelo menos trinta dias de antecedência da data de expiração."
-        meta={<StatusBadge status={expired.length > 0 ? "critical" : within7.length > 0 ? "warn" : "healthy"} />}
+        meta={
+          <StatusBadge
+            status={expired.length > 0 ? "critical" : within7.length > 0 ? "warn" : "healthy"}
+          />
+        }
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -130,7 +147,10 @@ function ExpirationPage() {
         />
         <MetricCard
           label="Próximos 30 dias"
-          value={rows.filter((row) => daysUntil(row.expiresAt) > 7 && daysUntil(row.expiresAt) <= 30).length}
+          value={
+            rows.filter((row) => daysUntil(row.expiresAt) > 7 && daysUntil(row.expiresAt) <= 30)
+              .length
+          }
           isLoading={certificates.isLoading}
         />
         <MetricCard
@@ -152,7 +172,10 @@ function ExpirationPage() {
       </ChartPanel>
 
       <div className="space-y-3">
-        <SectionTitle title="Fila de renovação" description="Ordenado por validade restante, certificados revogados excluídos." />
+        <SectionTitle
+          title="Fila de renovação"
+          description="Ordenado por validade restante, certificados revogados excluídos."
+        />
         <DataTable
           data={urgent}
           columns={columns}

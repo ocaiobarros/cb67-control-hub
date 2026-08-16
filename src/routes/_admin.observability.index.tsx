@@ -21,8 +21,14 @@ export const Route = createFileRoute("/_admin/observability/")({
         content:
           "Sinais essenciais da plataforma CB67 Labs: tráfego, latência, erros e saturação, com o inventário atual de alertas.",
       },
-      { property: "og:title", content: "Visão Geral de Observabilidade — CB67 Labs Control Center" },
-      { property: "og:description", content: "Tráfego, latência, erros, saturação e alertas em tempo real." },
+      {
+        property: "og:title",
+        content: "Visão Geral de Observabilidade — CB67 Labs Control Center",
+      },
+      {
+        property: "og:description",
+        content: "Tráfego, latência, erros, saturação e alertas em tempo real.",
+      },
     ],
   }),
   component: ObservabilityOverview,
@@ -58,7 +64,9 @@ function ObservabilityOverview() {
     {
       id: "started",
       header: "Início",
-      cell: (row) => <span className="mono-xs text-muted-foreground">{formatRelative(row.startedAt)}</span>,
+      cell: (row) => (
+        <span className="mono-xs text-muted-foreground">{formatRelative(row.startedAt)}</span>
+      ),
       sortValue: (row) => row.startedAt,
       align: "right",
     },

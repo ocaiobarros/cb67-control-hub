@@ -57,7 +57,9 @@ function LicensesPage() {
       header: "Validade",
       cell: (row) => (
         <div className="text-right">
-          <span className="mono-xs">{formatDate(row.startsAt)} → {formatDate(row.expiresAt)}</span>
+          <span className="mono-xs">
+            {formatDate(row.startsAt)} → {formatDate(row.expiresAt)}
+          </span>
           <p
             className={
               daysUntil(row.expiresAt) <= 0
@@ -81,9 +83,7 @@ function LicensesPage() {
       header: "Instalações",
       cell: (row) => (
         <span
-          className={
-            row.installations >= row.maxInstallations ? "tabular text-warn" : "tabular"
-          }
+          className={row.installations >= row.maxInstallations ? "tabular text-warn" : "tabular"}
         >
           {row.installations} / {row.maxInstallations}
         </span>
@@ -95,7 +95,9 @@ function LicensesPage() {
       id: "validation",
       header: "Última validação",
       cell: (row) => (
-        <span className="mono-xs text-muted-foreground">{formatRelative(row.lastValidationAt)}</span>
+        <span className="mono-xs text-muted-foreground">
+          {formatRelative(row.lastValidationAt)}
+        </span>
       ),
       sortValue: (row) => row.lastValidationAt,
       align: "right",
@@ -142,7 +144,10 @@ function LicensesPage() {
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Licenças emitidas" description="Clique em uma licença para abrir o registro." />
+        <SectionTitle
+          title="Licenças emitidas"
+          description="Clique em uma licença para abrir o registro."
+        />
         <DataTable
           data={licenses.data}
           columns={columns}

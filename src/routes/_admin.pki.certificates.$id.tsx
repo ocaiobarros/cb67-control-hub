@@ -24,7 +24,10 @@ export const Route = createFileRoute("/_admin/pki/certificates/$id")({
           "Registro de certificado com cadeia de emissores, fingerprint, janela de validade, cliente vinculado e controles de rotação ou revogação.",
       },
       { property: "og:title", content: "Registro de Certificado — CB67 Labs Control Center" },
-      { property: "og:description", content: "Fingerprint, cadeia, validade e controles de revogação." },
+      {
+        property: "og:description",
+        content: "Fingerprint, cadeia, validade e controles de revogação.",
+      },
     ],
   }),
   component: CertificateDetail,
@@ -40,7 +43,9 @@ function CertificateDetail() {
   const record = certificate.data;
 
   const timeline: TimelineItem[] = (audit.data ?? [])
-    .filter((event) => (record ? event.resourceId === record.id || event.resourceId === record.serial : false))
+    .filter((event) =>
+      record ? event.resourceId === record.id || event.resourceId === record.serial : false,
+    )
     .slice(0, 10)
     .map((event) => ({
       id: event.id,
@@ -53,8 +58,14 @@ function CertificateDetail() {
   if (certificate.isError) {
     return (
       <div className="space-y-6">
-        <PageHeader title="Certificado indisponível" description="Não foi possível carregar o registro do certificado." />
-        <EmptyState message="Certificado não encontrado" hint="Verifique o identificador e tente novamente." />
+        <PageHeader
+          title="Certificado indisponível"
+          description="Não foi possível carregar o registro do certificado."
+        />
+        <EmptyState
+          message="Certificado não encontrado"
+          hint="Verifique o identificador e tente novamente."
+        />
       </div>
     );
   }
@@ -113,7 +124,9 @@ function CertificateDetail() {
             />
             <StatRow
               label="Fingerprint (SHA-256)"
-              value={record ? <IdentifierCell value={record.fingerprint} label="fingerprint" /> : "—"}
+              value={
+                record ? <IdentifierCell value={record.fingerprint} label="fingerprint" /> : "—"
+              }
             />
             <StatRow
               label="Cliente vinculado"
@@ -121,7 +134,11 @@ function CertificateDetail() {
             />
             <StatRow
               label="Validade"
-              value={record ? `${formatDateTime(record.issuedAt)} → ${formatDateTime(record.expiresAt)}` : "—"}
+              value={
+                record
+                  ? `${formatDateTime(record.issuedAt)} → ${formatDateTime(record.expiresAt)}`
+                  : "—"
+              }
             />
           </dl>
         </section>

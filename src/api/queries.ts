@@ -41,10 +41,12 @@ export const q = {
 
   endpoints: () => queryOptions({ queryKey: ["endpoints"], queryFn: () => api.listEndpoints() }),
   requests: () => queryOptions({ queryKey: ["requests"], queryFn: () => api.listRequests() }),
-  apiErrors: () => queryOptions({ queryKey: ["api-errors"], queryFn: () => api.listApiErrorGroups() }),
+  apiErrors: () =>
+    queryOptions({ queryKey: ["api-errors"], queryFn: () => api.listApiErrorGroups() }),
   latency: (range: TimeRange) =>
     queryOptions({ queryKey: ["latency", range], queryFn: () => api.getLatency(range) }),
-  rateLimits: () => queryOptions({ queryKey: ["rate-limits"], queryFn: () => api.listRateLimits() }),
+  rateLimits: () =>
+    queryOptions({ queryKey: ["rate-limits"], queryFn: () => api.listRateLimits() }),
   quotas: () => queryOptions({ queryKey: ["quotas"], queryFn: () => api.listQuotas() }),
 
   providers: () => queryOptions({ queryKey: ["providers"], queryFn: () => api.listProviders() }),
@@ -76,12 +78,14 @@ export const q = {
   leases: () => queryOptions({ queryKey: ["leases"], queryFn: () => api.listLeases() }),
   plans: () => queryOptions({ queryKey: ["plans"], queryFn: () => api.listPlans() }),
   features: () => queryOptions({ queryKey: ["features"], queryFn: () => api.listFeatures() }),
-  revocations: () => queryOptions({ queryKey: ["revocations"], queryFn: () => api.listRevocations() }),
+  revocations: () =>
+    queryOptions({ queryKey: ["revocations"], queryFn: () => api.listRevocations() }),
 
   administrators: () =>
     queryOptions({ queryKey: ["administrators"], queryFn: () => api.listAdministrators() }),
   roles: () => queryOptions({ queryKey: ["roles"], queryFn: () => api.listRoles() }),
-  permissions: () => queryOptions({ queryKey: ["permissions"], queryFn: () => api.listPermissions() }),
+  permissions: () =>
+    queryOptions({ queryKey: ["permissions"], queryFn: () => api.listPermissions() }),
   sessions: () => queryOptions({ queryKey: ["sessions"], queryFn: () => api.listSessions() }),
 
   certificates: () =>
@@ -109,10 +113,15 @@ export const q = {
   databaseHealth: () =>
     queryOptions({ queryKey: ["database-health"], queryFn: () => api.getDatabaseHealth() }),
   databaseSeries: (range: TimeRange) =>
-    queryOptions({ queryKey: ["database-series", range], queryFn: () => api.getDatabaseSeries(range) }),
+    queryOptions({
+      queryKey: ["database-series", range],
+      queryFn: () => api.getDatabaseSeries(range),
+    }),
 
-  backupJobs: () => queryOptions({ queryKey: ["backup-jobs"], queryFn: () => api.listBackupJobs() }),
-  backupRuns: () => queryOptions({ queryKey: ["backup-runs"], queryFn: () => api.listBackupRuns() }),
+  backupJobs: () =>
+    queryOptions({ queryKey: ["backup-jobs"], queryFn: () => api.listBackupJobs() }),
+  backupRuns: () =>
+    queryOptions({ queryKey: ["backup-runs"], queryFn: () => api.listBackupRuns() }),
   restoreTests: () =>
     queryOptions({ queryKey: ["restore-tests"], queryFn: () => api.listRestoreTests() }),
 

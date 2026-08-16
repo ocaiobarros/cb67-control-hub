@@ -41,8 +41,17 @@ function EndpointsPage() {
       ),
       sortValue: (row) => row.path,
     },
-    { id: "version", header: "Versão", cell: (row) => <span className="mono-xs">{row.version}</span>, sortValue: (row) => row.version },
-    { id: "scope", header: "Escopo exigido", cell: (row) => <code className="mono-xs text-muted-foreground">{row.scope}</code> },
+    {
+      id: "version",
+      header: "Versão",
+      cell: (row) => <span className="mono-xs">{row.version}</span>,
+      sortValue: (row) => row.version,
+    },
+    {
+      id: "scope",
+      header: "Escopo exigido",
+      cell: (row) => <code className="mono-xs text-muted-foreground">{row.scope}</code>,
+    },
     {
       id: "requests24h",
       header: "Requisições 24h",

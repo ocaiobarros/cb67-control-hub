@@ -20,7 +20,10 @@ export const Route = createFileRoute("/_admin/saas/instances")({
           "Todas as instâncias implantadas reportando à plataforma CB67 Labs, com identidade de instalação, desvio de versão e postura de certificado.",
       },
       { property: "og:title", content: "Instâncias SaaS — CB67 Labs Control Center" },
-      { property: "og:description", content: "Identidade de instalação, desvio de versão e heartbeat." },
+      {
+        property: "og:description",
+        content: "Identidade de instalação, desvio de versão e heartbeat.",
+      },
     ],
   }),
   component: InstancesPage,
@@ -38,7 +41,12 @@ function InstancesPage() {
       cell: (row) => <IdentifierCell value={row.installationId} label="installation id" />,
       sortValue: (row) => row.installationId,
     },
-    { id: "hostLabel", header: "Host", cell: (row) => <span className="text-sm">{row.hostLabel}</span>, sortValue: (row) => row.hostLabel },
+    {
+      id: "hostLabel",
+      header: "Host",
+      cell: (row) => <span className="text-sm">{row.hostLabel}</span>,
+      sortValue: (row) => row.hostLabel,
+    },
     {
       id: "environment",
       header: "Amb.",
@@ -49,7 +57,12 @@ function InstancesPage() {
       ),
       sortValue: (row) => row.environment,
     },
-    { id: "version", header: "Versão", cell: (row) => <span className="mono-xs">{row.version}</span>, sortValue: (row) => row.version },
+    {
+      id: "version",
+      header: "Versão",
+      cell: (row) => <span className="mono-xs">{row.version}</span>,
+      sortValue: (row) => row.version,
+    },
     {
       id: "licenseId",
       header: "Licença",
@@ -65,7 +78,9 @@ function InstancesPage() {
     {
       id: "lastSeen",
       header: "Heartbeat",
-      cell: (row) => <span className="text-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>,
+      cell: (row) => (
+        <span className="text-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>
+      ),
       sortValue: (row) => row.lastSeen,
     },
     {

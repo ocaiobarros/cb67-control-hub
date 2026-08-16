@@ -21,7 +21,10 @@ export const Route = createFileRoute("/_admin/backups/history")({
           "Histórico cronológico das execuções de backup da plataforma CB67 Labs com tamanho, duração, resultado de checksum e desfecho.",
       },
       { property: "og:title", content: "Histórico de Backups — CB67 Labs Control Center" },
-      { property: "og:description", content: "Histórico de execuções com tamanho, duração e desfecho." },
+      {
+        property: "og:description",
+        content: "Histórico de execuções com tamanho, duração e desfecho.",
+      },
     ],
   }),
   component: BackupHistoryPage,
@@ -114,7 +117,9 @@ function BackupHistoryPage() {
           label="Duração média"
           value={
             all.length > 0
-              ? formatDuration(Math.round(all.reduce((sum, row) => sum + row.durationSec, 0) / all.length))
+              ? formatDuration(
+                  Math.round(all.reduce((sum, row) => sum + row.durationSec, 0) / all.length),
+                )
               : "—"
           }
           isLoading={runs.isLoading}
@@ -142,7 +147,11 @@ function BackupHistoryPage() {
           pageSize={20}
           dense
           toolbar={
-            <div role="group" aria-label="Tipo de backup" className="inline-flex overflow-hidden rounded-md border border-border">
+            <div
+              role="group"
+              aria-label="Tipo de backup"
+              className="inline-flex overflow-hidden rounded-md border border-border"
+            >
               {TYPES.map((value) => (
                 <button
                   key={value}
@@ -151,7 +160,9 @@ function BackupHistoryPage() {
                   onClick={() => setType(value)}
                   className={cn(
                     "px-2.5 py-1 text-xs font-medium transition-colors",
-                    type === value ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-muted",
+                    type === value
+                      ? "bg-accent text-accent-foreground"
+                      : "text-muted-foreground hover:bg-muted",
                   )}
                 >
                   {value}

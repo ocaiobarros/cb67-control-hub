@@ -18,7 +18,10 @@ export const Route = createFileRoute("/_admin/apis/requests")({
           "Requisições recentes da API CB67 Labs com ID de correlação, cliente, endpoint, provedor upstream, código de status e divisão de latência.",
       },
       { property: "og:title", content: "Explorador de Requisições — CB67 Labs Control Center" },
-      { property: "og:description", content: "IDs de correlação, códigos de status e divisão de latência." },
+      {
+        property: "og:description",
+        content: "IDs de correlação, códigos de status e divisão de latência.",
+      },
     ],
   }),
   component: RequestsPage,
@@ -31,7 +34,9 @@ function RequestsPage() {
     {
       id: "timestamp",
       header: "Data/hora",
-      cell: (row) => <span className="mono-xs text-muted-foreground">{formatDateTime(row.timestamp)}</span>,
+      cell: (row) => (
+        <span className="mono-xs text-muted-foreground">{formatDateTime(row.timestamp)}</span>
+      ),
       sortValue: (row) => row.timestamp,
     },
     {
@@ -111,8 +116,9 @@ function RequestsPage() {
       />
 
       <p className="text-xs text-muted-foreground">
-        Os corpos de payload propositalmente não são exibidos nesta interface. O conteúdo sensível das
-        requisições permanece no pipeline de logs da plataforma, sob sua própria política de retenção e acesso.
+        Os corpos de payload propositalmente não são exibidos nesta interface. O conteúdo sensível
+        das requisições permanece no pipeline de logs da plataforma, sob sua própria política de
+        retenção e acesso.
       </p>
     </div>
   );

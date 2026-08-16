@@ -20,14 +20,22 @@ export const Route = createFileRoute("/_admin/observability/metrics")({
           "Séries de métricas selecionadas da plataforma para requisições, latência, erros, CPU, memória e throughput de rede.",
       },
       { property: "og:title", content: "Métricas — CB67 Labs Control Center" },
-      { property: "og:description", content: "Séries de métricas selecionadas com janela de tempo configurável." },
+      {
+        property: "og:description",
+        content: "Séries de métricas selecionadas com janela de tempo configurável.",
+      },
     ],
   }),
   component: MetricsPage,
 });
 
 const METRICS = [
-  { key: "requests", label: "Requisições", unit: "req", description: "Requisições atendidas por intervalo." },
+  {
+    key: "requests",
+    label: "Requisições",
+    unit: "req",
+    description: "Requisições atendidas por intervalo.",
+  },
   { key: "latency", label: "Latência", unit: "ms", description: "Tempo de resposta agregado." },
   { key: "errors", label: "Erros", unit: "err", description: "Respostas com falha por intervalo." },
   { key: "cpu", label: "CPU", unit: "%", description: "Utilização de CPU do cluster." },
@@ -45,7 +53,8 @@ function MetricsPage() {
   const values = points.map((point) => Number(point["value"] ?? 0));
   const latest = values[values.length - 1] ?? 0;
   const peak = values.length > 0 ? Math.max(...values) : 0;
-  const average = values.length > 0 ? values.reduce((sum, value) => sum + value, 0) / values.length : 0;
+  const average =
+    values.length > 0 ? values.reduce((sum, value) => sum + value, 0) / values.length : 0;
 
   return (
     <div className="space-y-6">

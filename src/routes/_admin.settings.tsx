@@ -18,7 +18,10 @@ export const Route = createFileRoute("/_admin/settings")({
           "Preferências do Control Center, configuração de tempo de execução e a identidade do operador atual, com o modo de fonte de dados em vigor.",
       },
       { property: "og:title", content: "Configurações — CB67 Labs Control Center" },
-      { property: "og:description", content: "Preferências da interface, configuração de tempo de execução e identidade." },
+      {
+        property: "og:description",
+        content: "Preferências da interface, configuração de tempo de execução e identidade.",
+      },
     ],
   }),
   component: SettingsPage,
@@ -76,24 +79,49 @@ function SettingsPage() {
         <section className="panel p-4">
           <dl>
             <StatRow label="Ambiente" value={<code className="mono-xs">{env.environment}</code>} />
-            <StatRow label="Fonte de dados" value={isMockMode ? "Adaptador simulado" : "Adaptador HTTP"} />
+            <StatRow
+              label="Fonte de dados"
+              value={isMockMode ? "Adaptador simulado" : "Adaptador HTTP"}
+            />
             <StatRow
               label="URL base da API"
-              value={env.apiBaseUrl ? <code className="mono-xs">{env.apiBaseUrl}</code> : "Não configurado"}
+              value={
+                env.apiBaseUrl ? (
+                  <code className="mono-xs">{env.apiBaseUrl}</code>
+                ) : (
+                  "Não configurado"
+                )
+              }
             />
             <StatRow
               label="URL base de licenciamento"
               value={
-                env.licenseBaseUrl ? <code className="mono-xs">{env.licenseBaseUrl}</code> : "Não configurado"
+                env.licenseBaseUrl ? (
+                  <code className="mono-xs">{env.licenseBaseUrl}</code>
+                ) : (
+                  "Não configurado"
+                )
               }
             />
             <StatRow
               label="URL base de status"
-              value={env.statusBaseUrl ? <code className="mono-xs">{env.statusBaseUrl}</code> : "Não configurado"}
+              value={
+                env.statusBaseUrl ? (
+                  <code className="mono-xs">{env.statusBaseUrl}</code>
+                ) : (
+                  "Não configurado"
+                )
+              }
             />
             <StatRow
               label="URL do Grafana"
-              value={env.grafanaUrl ? <code className="mono-xs">{env.grafanaUrl}</code> : "Não configurado"}
+              value={
+                env.grafanaUrl ? (
+                  <code className="mono-xs">{env.grafanaUrl}</code>
+                ) : (
+                  "Não configurado"
+                )
+              }
             />
             <StatRow label="Telemetria" value={env.telemetryEnabled ? "Ativada" : "Desativada"} />
           </dl>
@@ -101,7 +129,10 @@ function SettingsPage() {
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Identidade" description="Fornecida pela plataforma após a autenticação." />
+        <SectionTitle
+          title="Identidade"
+          description="Fornecida pela plataforma após a autenticação."
+        />
         <section className="panel p-4">
           <dl>
             <StatRow label="Operador" value={user?.name ?? "—"} />
@@ -131,8 +162,14 @@ function SettingsPage() {
         <section className="panel p-4">
           <dl>
             <StatRow label="Produto" value={platformMeta.productName} />
-            <StatRow label="Host de gerenciamento" value={<code className="mono-xs">{platformMeta.adminDomain}</code>} />
-            <StatRow label="Host público" value={<code className="mono-xs">{platformMeta.publicDomain}</code>} />
+            <StatRow
+              label="Host de gerenciamento"
+              value={<code className="mono-xs">{platformMeta.adminDomain}</code>}
+            />
+            <StatRow
+              label="Host público"
+              value={<code className="mono-xs">{platformMeta.publicDomain}</code>}
+            />
             <StatRow label="Plataforma do host" value="Debian 13 no Proxmox, on-premises" />
           </dl>
         </section>

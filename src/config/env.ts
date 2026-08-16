@@ -18,9 +18,7 @@ export const env = {
   /** Mock mode stays on until the backend exposes the contracts in docs/API-CONTRACTS.md. */
   useMockApi: flag(raw["VITE_USE_MOCK_API"], true),
   environment: (raw["VITE_CB67_ENVIRONMENT"] ?? "development") as
-    | "production"
-    | "staging"
-    | "development",
+    "production" | "staging" | "development",
   telemetryEnabled: flag(raw["VITE_CB67_TELEMETRY_ENABLED"], false),
 } as const;
 

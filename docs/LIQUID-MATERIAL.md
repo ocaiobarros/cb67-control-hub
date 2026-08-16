@@ -1,8 +1,8 @@
 # CB67 Liquid Material
 
 The single material the CB67 Liquid Interface is built from. It is a physical
-description, not a visual effect: every surface is either *liquid* (translucent,
-reacts to what is behind and to light) or *solid* (a reading plane).
+description, not a visual effect: every surface is either _liquid_ (translucent,
+reacts to what is behind and to light) or _solid_ (a reading plane).
 
 Everything below is implemented as tokens and `@utility` classes in
 `src/styles.css`. Components never compose blur, alpha or shadow by hand.
@@ -24,20 +24,20 @@ glass look cheap.
 
 ## The five material grades
 
-| Utility | Blur | Where it is used |
-| --- | --- | --- |
-| `liquid-subtle` | 10px | Chips, quiet controls, glass buttons, inline chrome |
-| `liquid-nav` | 34px | Sidebar and topbar — the structural chrome |
-| `liquid-floating` | 20px | Metric tiles, segmented controls, filter bars |
-| `liquid-overlay` | 20px | Popovers, dropdowns, selects, tooltips |
-| `liquid-modal` | 34px | Dialogs, command palette, drawers, sign-in |
+| Utility           | Blur | Where it is used                                    |
+| ----------------- | ---- | --------------------------------------------------- |
+| `liquid-subtle`   | 10px | Chips, quiet controls, glass buttons, inline chrome |
+| `liquid-nav`      | 34px | Sidebar and topbar — the structural chrome          |
+| `liquid-floating` | 20px | Metric tiles, segmented controls, filter bars       |
+| `liquid-overlay`  | 20px | Popovers, dropdowns, selects, tooltips              |
+| `liquid-modal`    | 34px | Dialogs, command palette, drawers, sign-in          |
 
 Plus two non-liquid grades:
 
-| Utility | Purpose |
-| --- | --- |
-| `panel` | The content plane. Opaque, high contrast, holds tables and charts. |
-| `solid-critical` | Destructive confirmations. Never translucent, never ambiguous. |
+| Utility          | Purpose                                                            |
+| ---------------- | ------------------------------------------------------------------ |
+| `panel`          | The content plane. Opaque, high contrast, holds tables and charts. |
+| `solid-critical` | Destructive confirmations. Never translucent, never ambiguous.     |
 
 ## Light behaviour
 

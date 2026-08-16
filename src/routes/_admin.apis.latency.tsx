@@ -148,11 +148,15 @@ function LatencyPage() {
           <dl className="mt-2">
             <StatRow
               label="Parcela da plataforma"
-              value={internal && overall ? `${((internal.p95 / overall.p95) * 100).toFixed(1)}%` : "—"}
+              value={
+                internal && overall ? `${((internal.p95 / overall.p95) * 100).toFixed(1)}%` : "—"
+              }
             />
             <StatRow
               label="Parcela do provedor"
-              value={provider && overall ? `${((provider.p95 / overall.p95) * 100).toFixed(1)}%` : "—"}
+              value={
+                provider && overall ? `${((provider.p95 / overall.p95) * 100).toFixed(1)}%` : "—"
+              }
             />
             <StatRow label="Janela" value={range} />
             <StatRow label="Origem do percentil" value="Registros de requisição (provisório)" />
@@ -164,7 +168,10 @@ function LatencyPage() {
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Endpoints mais lentos" description="Classificados por p95 nas últimas 24 horas." />
+        <SectionTitle
+          title="Endpoints mais lentos"
+          description="Classificados por p95 nas últimas 24 horas."
+        />
         <DataTable
           data={[...(endpoints.data ?? [])].sort((a, b) => b.p95Ms - a.p95Ms).slice(0, 10)}
           columns={slowest}

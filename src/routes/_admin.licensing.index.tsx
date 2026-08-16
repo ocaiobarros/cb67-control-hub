@@ -3,7 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import { q } from "@/api/queries";
 import { PageHeader, SectionTitle } from "@/components/common/page-header";
 import { MetricCard } from "@/components/common/metric-card";
-import { ChartPanel, CategoryBarChart, DonutChart, TimeSeriesChart } from "@/components/charts/chart-panel";
+import {
+  ChartPanel,
+  CategoryBarChart,
+  DonutChart,
+  TimeSeriesChart,
+} from "@/components/charts/chart-panel";
 import { DataTable, type Column } from "@/components/common/data-table";
 import { StatusBadge } from "@/components/common/status-badge";
 import { AppLink } from "@/components/common/app-link";
@@ -96,11 +101,36 @@ function LicensingOverviewPage() {
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
-        <MetricCard label="Ativas" value={data?.active ?? "—"} tone="ok" isLoading={overview.isLoading} />
-        <MetricCard label="Carência" value={data?.grace ?? "—"} tone="warn" isLoading={overview.isLoading} />
-        <MetricCard label="Suspensas" value={data?.suspended ?? "—"} tone="warn" isLoading={overview.isLoading} />
-        <MetricCard label="Expiradas" value={data?.expired ?? "—"} tone="crit" isLoading={overview.isLoading} />
-        <MetricCard label="Revogadas" value={data?.revoked ?? "—"} tone="crit" isLoading={overview.isLoading} />
+        <MetricCard
+          label="Ativas"
+          value={data?.active ?? "—"}
+          tone="ok"
+          isLoading={overview.isLoading}
+        />
+        <MetricCard
+          label="Carência"
+          value={data?.grace ?? "—"}
+          tone="warn"
+          isLoading={overview.isLoading}
+        />
+        <MetricCard
+          label="Suspensas"
+          value={data?.suspended ?? "—"}
+          tone="warn"
+          isLoading={overview.isLoading}
+        />
+        <MetricCard
+          label="Expiradas"
+          value={data?.expired ?? "—"}
+          tone="crit"
+          isLoading={overview.isLoading}
+        />
+        <MetricCard
+          label="Revogadas"
+          value={data?.revoked ?? "—"}
+          tone="crit"
+          isLoading={overview.isLoading}
+        />
         <MetricCard
           label="Expirando em 30d"
           value={data?.expiringSoon ?? "—"}
@@ -175,8 +205,8 @@ function LicensingOverviewPage() {
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Os totais do portfólio cobrem {formatCompact((licenses.data ?? []).length)} registros de licença no
-        conjunto de dados atual.
+        Os totais do portfólio cobrem {formatCompact((licenses.data ?? []).length)} registros de
+        licença no conjunto de dados atual.
       </p>
     </div>
   );

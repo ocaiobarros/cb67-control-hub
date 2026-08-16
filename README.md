@@ -472,13 +472,13 @@ responsividade.
 Desktop:
 
 ┌──────────────────────────────────────────────────────────────┐
-│ CB67 LABS                         SEARCH    ALERTS    USER   │
+│ CB67 LABS SEARCH ALERTS USER │
 ├──────────────┬───────────────────────────────────────────────┤
-│              │                                               │
-│ Navigation   │               Main Content                    │
-│              │                                               │
-│              │                                               │
-│              │                                               │
+│ │ │
+│ Navigation │ Main Content │
+│ │ │
+│ │ │
+│ │ │
 └──────────────┴───────────────────────────────────────────────┘
 
 Sidebar colapsável.
@@ -637,25 +637,25 @@ License Service
 
 Algo nesta lógica:
 
-CB67 LABS CONTROL CENTER                          ● HEALTHY
+CB67 LABS CONTROL CENTER ● HEALTHY
 
-API REQUESTS     RPS        P95       ERROR RATE
-1,283,921        428        87 ms     0.04%
+API REQUESTS RPS P95 ERROR RATE
+1,283,921 428 87 ms 0.04%
 
-ACTIVE SAAS      LICENSES   401       403        429
-17               124        13        5          31
+ACTIVE SAAS LICENSES 401 403 429
+17 124 13 5 31
 
 PROVIDERS
-OpenAI       ● HEALTHY     910 ms p95
-Gemini       ● HEALTHY     620 ms p95
-Google Maps  ● HEALTHY     180 ms p95
+OpenAI ● HEALTHY 910 ms p95
+Gemini ● HEALTHY 620 ms p95
+Google Maps ● HEALTHY 180 ms p95
 
 INFRASTRUCTURE
-CPU           31%
-RAM           47%
-Storage       28%
-PostgreSQL    Healthy
-Valkey        Healthy
+CPU 31%
+RAM 47%
+Storage 28%
+PostgreSQL Healthy
+Valkey Healthy
 
 Usar dados mockados claramente identificados como mocks no código.
 
@@ -853,7 +853,7 @@ POST /v1/ai/embeddings
 POST /v1/maps/geocode
 POST /v1/maps/routes
 POST /v1/licenses/lease
-GET  /v1/health
+GET /v1/health
 
 Os endpoints são contratos visuais iniciais.
 
@@ -1318,11 +1318,12 @@ Matriz visual.
 Exemplo:
 
                  Owner Admin Security Ops ReadOnly
-SaaS Read          ✓     ✓      ✓      ✓     ✓
-SaaS Write         ✓     ✓      -      ✓     -
-License Revoke     ✓     ✓      -      -     -
-PKI Revoke         ✓     -      ✓      -     -
-Audit Read         ✓     ✓      ✓      ✓     ✓
+
+SaaS Read ✓ ✓ ✓ ✓ ✓
+SaaS Write ✓ ✓ - ✓ -
+License Revoke ✓ ✓ - - -
+PKI Revoke ✓ - ✓ - -
+Audit Read ✓ ✓ ✓ ✓ ✓
 
 Responsiva.
 
@@ -1396,6 +1397,7 @@ Timeline/calendário/lista:
 < 7 days
 < 14 days
 < 30 days
+
 > 30 days
 
 Prioridade visual clara.
@@ -1747,10 +1749,10 @@ Mostrar exclusivamente status sanitizado.
 
 Exemplo:
 
-API Gateway        Operational
-Licensing          Operational
-AI Services        Operational
-Maps Services      Operational
+API Gateway Operational
+Licensing Operational
+AI Services Operational
+Maps Services Operational
 
 Pode possuir histórico visual de incidentes mockados.
 
@@ -1909,21 +1911,21 @@ se isso tornar o handoff difícil.
 Preferir:
 
 component
-   ↓
+↓
 service/hook
-   ↓
+↓
 adapter
-   ↓
+↓
 mock
 
 Depois:
 
 component
-   ↓
+↓
 service/hook
-   ↓
+↓
 adapter
-   ↓
+↓
 real API
 
 86. TYPES

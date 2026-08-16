@@ -16,7 +16,10 @@ export const Route = createFileRoute("/_admin/security/firewall")({
           "Postura do firewall de perímetro: política padrão, número de regras ativas, última recarga e conexões bloqueadas recentes.",
       },
       { property: "og:title", content: "Firewall — CB67 Labs Control Center" },
-      { property: "og:description", content: "Postura de negação padrão, número de regras e bloqueios recentes." },
+      {
+        property: "og:description",
+        content: "Postura de negação padrão, número de regras e bloqueios recentes.",
+      },
     ],
   }),
   component: FirewallPage,
@@ -74,7 +77,11 @@ function FirewallPage() {
           tone={state?.status === "healthy" ? "ok" : "warn"}
           isLoading={firewall.isLoading}
         />
-        <MetricCard label="Regras ativas" value={state?.rulesCount ?? "—"} isLoading={firewall.isLoading} />
+        <MetricCard
+          label="Regras ativas"
+          value={state?.rulesCount ?? "—"}
+          isLoading={firewall.isLoading}
+        />
         <MetricCard
           label="Bloqueios recentes"
           value={state ? formatNumber(state.recentBlocks) : "—"}
@@ -97,7 +104,10 @@ function FirewallPage() {
             label="Última recarga"
             value={state ? formatDateTime(state.lastReloadAt) : "—"}
           />
-          <StatRow label="Processo de mudança" value="Gerenciamento de configuração do host; não editável a partir desta interface" />
+          <StatRow
+            label="Processo de mudança"
+            value="Gerenciamento de configuração do host; não editável a partir desta interface"
+          />
         </dl>
       </section>
 
@@ -110,10 +120,18 @@ function FirewallPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border text-left text-xs tracking-wide text-muted-foreground uppercase">
-                <th scope="col" className="px-4 py-2 font-medium">Superfície</th>
-                <th scope="col" className="px-4 py-2 font-medium">Porta</th>
-                <th scope="col" className="px-4 py-2 font-medium">Exposição</th>
-                <th scope="col" className="px-4 py-2 font-medium">Controle</th>
+                <th scope="col" className="px-4 py-2 font-medium">
+                  Superfície
+                </th>
+                <th scope="col" className="px-4 py-2 font-medium">
+                  Porta
+                </th>
+                <th scope="col" className="px-4 py-2 font-medium">
+                  Exposição
+                </th>
+                <th scope="col" className="px-4 py-2 font-medium">
+                  Controle
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -126,7 +144,13 @@ function FirewallPage() {
                   <td className="px-4 py-2">
                     <StatusBadge
                       status={row.exposure}
-                      tone={row.exposure === "Public" ? "warn" : row.exposure === "Private" ? "ok" : "info"}
+                      tone={
+                        row.exposure === "Public"
+                          ? "warn"
+                          : row.exposure === "Private"
+                            ? "ok"
+                            : "info"
+                      }
                     />
                   </td>
                   <td className="px-4 py-2 text-xs text-muted-foreground">{row.control}</td>

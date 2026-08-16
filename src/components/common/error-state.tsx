@@ -19,9 +19,15 @@ export function describeError(error: unknown): { title: string; detail: string }
       case 404:
         return { title: "Não encontrado", detail: "O recurso solicitado não existe mais." };
       case 409:
-        return { title: "Conflito", detail: "O recurso foi alterado. Recarregue e tente novamente." };
+        return {
+          title: "Conflito",
+          detail: "O recurso foi alterado. Recarregue e tente novamente.",
+        };
       case 422:
-        return { title: "Requisição inválida", detail: "Alguns campos foram rejeitados pelo servidor." };
+        return {
+          title: "Requisição inválida",
+          detail: "Alguns campos foram rejeitados pelo servidor.",
+        };
       case 429:
         return {
           title: "Limite de taxa excedido",
@@ -39,7 +45,8 @@ export function describeError(error: unknown): { title: string; detail: string }
   }
   return {
     title: "Dados indisponíveis",
-    detail: "Não foi possível acessar a API de gestão. Verifique a conectividade e tente novamente.",
+    detail:
+      "Não foi possível acessar a API de gestão. Verifique a conectividade e tente novamente.",
   };
 }
 

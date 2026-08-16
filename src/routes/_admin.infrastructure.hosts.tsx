@@ -61,7 +61,12 @@ function HostsPage() {
       ),
       sortValue: (row) => row.environment,
     },
-    { id: "cpu", header: "CPU", cell: (row) => <Utilisation value={row.cpu} />, sortValue: (row) => row.cpu },
+    {
+      id: "cpu",
+      header: "CPU",
+      cell: (row) => <Utilisation value={row.cpu} />,
+      sortValue: (row) => row.cpu,
+    },
     {
       id: "memory",
       header: "Memória",
@@ -74,7 +79,11 @@ function HostsPage() {
       cell: (row) => <Utilisation value={row.storage} />,
       sortValue: (row) => row.storage,
     },
-    { id: "uptime", header: "Uptime", cell: (row) => <span className="mono-xs">{row.uptime}</span> },
+    {
+      id: "uptime",
+      header: "Uptime",
+      cell: (row) => <span className="mono-xs">{row.uptime}</span>,
+    },
     {
       id: "status",
       header: "Status",

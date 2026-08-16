@@ -207,7 +207,12 @@ export function CategoryBarChart({
         layout={horizontal ? "vertical" : "horizontal"}
         margin={{ top: 4, right: 12, left: horizontal ? 8 : -16, bottom: 0 }}
       >
-        <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={horizontal} horizontal={!horizontal} />
+        <CartesianGrid
+          stroke="var(--border)"
+          strokeDasharray="3 3"
+          vertical={horizontal}
+          horizontal={!horizontal}
+        />
         <XAxis
           {...(horizontal
             ? { type: "number" as const, tickFormatter: (v: number) => formatCompact(v) }
@@ -223,7 +228,9 @@ export function CategoryBarChart({
         <Tooltip {...tooltipStyle} formatter={(value: number) => formatCompact(value)} />
         <Bar dataKey={dataKey} radius={3} fill="var(--chart-1)" {...motion}>
           {colorByIndex &&
-            data.map((entry, i) => <Cell key={String(entry.t)} fill={PALETTE[i % PALETTE.length]} />)}
+            data.map((entry, i) => (
+              <Cell key={String(entry.t)} fill={PALETTE[i % PALETTE.length]} />
+            ))}
         </Bar>
       </BarChart>
     </ResponsiveContainer>

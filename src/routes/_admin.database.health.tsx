@@ -21,7 +21,10 @@ export const Route = createFileRoute("/_admin/database/health")({
           "Saúde do PostgreSQL da plataforma CB67 Labs: pool de conexões, throughput, taxa de acerto de cache, locks e deadlocks.",
       },
       { property: "og:title", content: "Saúde do Banco de Dados — CB67 Labs Control Center" },
-      { property: "og:description", content: "Pool de conexões, throughput e saúde de locks do PostgreSQL." },
+      {
+        property: "og:description",
+        content: "Pool de conexões, throughput e saúde de locks do PostgreSQL.",
+      },
     ],
   }),
   component: DatabaseHealthPage,
@@ -116,14 +119,20 @@ function DatabaseHealthPage() {
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Dados do cluster" description="Características de implantação relevantes para operadores." />
+        <SectionTitle
+          title="Dados do cluster"
+          description="Características de implantação relevantes para operadores."
+        />
         <section className="panel p-4">
           <dl>
             <StatRow label="Motor" value="PostgreSQL (on-premises)" />
             <StatRow label="Plataforma do host" value="Debian 13 no Proxmox" />
             <StatRow label="Exposição" value="Apenas rede de gerenciamento" />
             <StatRow label="Locks mantidos" value={db ? formatNumber(db.locks) : "—"} />
-            <StatRow label="Plataforma" value={<code className="mono-xs">{platformMeta.publicDomain}</code>} />
+            <StatRow
+              label="Plataforma"
+              value={<code className="mono-xs">{platformMeta.publicDomain}</code>}
+            />
           </dl>
         </section>
       </div>

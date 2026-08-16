@@ -32,7 +32,12 @@ function StoragePage() {
   const database = useQuery(q.databaseHealth());
 
   const columns: Column<Host>[] = [
-    { id: "name", header: "Host", cell: (row) => <span className="font-medium">{row.name}</span>, sortValue: (r) => r.name },
+    {
+      id: "name",
+      header: "Host",
+      cell: (row) => <span className="font-medium">{row.name}</span>,
+      sortValue: (r) => r.name,
+    },
     { id: "role", header: "Função", cell: (row) => <span className="mono-xs">{row.role}</span> },
     {
       id: "storage",

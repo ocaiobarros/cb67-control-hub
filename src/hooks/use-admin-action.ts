@@ -10,8 +10,11 @@ import { describeError } from "@/components/common/error-state";
 export function useAdminAction() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (input: { action: string; resourceId: string; payload?: Record<string, unknown> }) =>
-      api.performAction(input),
+    mutationFn: (input: {
+      action: string;
+      resourceId: string;
+      payload?: Record<string, unknown>;
+    }) => api.performAction(input),
     onSuccess: (result, variables) => {
       toast.success(`${variables.action} enviada`, { description: result.message });
       void queryClient.invalidateQueries();

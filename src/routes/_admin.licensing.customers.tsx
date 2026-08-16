@@ -65,7 +65,9 @@ function CustomersPage() {
     {
       id: "created",
       header: "Cliente desde",
-      cell: (row) => <span className="mono-xs text-muted-foreground">{formatDate(row.createdAt)}</span>,
+      cell: (row) => (
+        <span className="mono-xs text-muted-foreground">{formatDate(row.createdAt)}</span>
+      ),
       sortValue: (row) => row.createdAt,
       align: "right",
     },
@@ -106,7 +108,10 @@ function CustomersPage() {
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Registro de clientes" description="Ordenado e filtrado no navegador." />
+        <SectionTitle
+          title="Registro de clientes"
+          description="Ordenado e filtrado no navegador."
+        />
         <DataTable
           data={customers.data}
           columns={columns}

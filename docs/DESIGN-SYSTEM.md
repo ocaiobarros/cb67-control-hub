@@ -57,15 +57,15 @@ tiles and overlays only.
 
 ## Typography
 
-| Utility | Use |
-| --- | --- |
-| `text-display` | Public plane hero headlines |
-| `text-page-title` | One per page, via `PageHeader` |
-| `text-section-title` | Uppercase tracked section labels |
-| `text-metric` | Metric values, tabular figures |
-| `text-caption` | Hints and metadata |
-| `mono-xs` | Identifiers, request IDs, fingerprints, environment badges |
-| `tabular` | Any numeric column |
+| Utility              | Use                                                        |
+| -------------------- | ---------------------------------------------------------- |
+| `text-display`       | Public plane hero headlines                                |
+| `text-page-title`    | One per page, via `PageHeader`                             |
+| `text-section-title` | Uppercase tracked section labels                           |
+| `text-metric`        | Metric values, tabular figures                             |
+| `text-caption`       | Hints and metadata                                         |
+| `mono-xs`            | Identifiers, request IDs, fingerprints, environment badges |
+| `tabular`            | Any numeric column                                         |
 
 Fonts: IBM Plex Sans and IBM Plex Mono, loaded via `<link>` in
 `src/routes/__root.tsx`.
@@ -77,12 +77,12 @@ of four tones so meaning stays consistent across sections. Critical dots carry
 `status-pulse`; every badge pairs the tone with a text label so colour is never
 the only signal.
 
-| Tone | Meaning | Examples |
-| --- | --- | --- |
-| `ok` | Nominal | `healthy`, `active`, `verified`, `passed`, `allowed` |
-| `warn` | Attention, not yet failing | `degraded`, `grace`, `pending`, `expiring`, `throttled` |
-| `crit` | Failing or blocked | `unavailable`, `revoked`, `failed`, `denied`, `critical` |
-| `info` | Neutral state | `maintenance`, `disabled`, `info`, `staging` |
+| Tone   | Meaning                    | Examples                                                 |
+| ------ | -------------------------- | -------------------------------------------------------- |
+| `ok`   | Nominal                    | `healthy`, `active`, `verified`, `passed`, `allowed`     |
+| `warn` | Attention, not yet failing | `degraded`, `grace`, `pending`, `expiring`, `throttled`  |
+| `crit` | Failing or blocked         | `unavailable`, `revoked`, `failed`, `denied`, `critical` |
+| `info` | Neutral state              | `maintenance`, `disabled`, `info`, `staging`             |
 
 ## Layout rules
 

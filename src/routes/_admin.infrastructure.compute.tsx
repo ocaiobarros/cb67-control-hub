@@ -15,7 +15,8 @@ export const Route = createFileRoute("/_admin/infrastructure/compute")({
       { title: "CPU e Memória — CB67 Labs Control Center" },
       {
         name: "description",
-        content: "Tendências de CPU, memória e load average para o cluster on-premises da CB67 Labs.",
+        content:
+          "Tendências de CPU, memória e load average para o cluster on-premises da CB67 Labs.",
       },
       { property: "og:title", content: "CPU e Memória — CB67 Labs Control Center" },
       { property: "og:description", content: "Tendências de uso de computação no cluster." },

@@ -19,7 +19,10 @@ export const Route = createFileRoute("/_admin/licensing/leases")({
           "Concessões de licença assinadas com carimbos de emissão e expiração, instalação vinculada e a chave de assinatura utilizada.",
       },
       { property: "og:title", content: "Concessões — CB67 Labs Control Center" },
-      { property: "og:description", content: "Ciclo de vida da concessão, validade e rotação de chave de assinatura." },
+      {
+        property: "og:description",
+        content: "Ciclo de vida da concessão, validade e rotação de chave de assinatura.",
+      },
     ],
   }),
   component: LeasesPage,
@@ -125,16 +128,22 @@ function LeasesPage() {
             <StatRow key={keyId} label={keyId} value={`${count} concessões`} />
           ))}
           {byKey.length === 0 && (
-            <p className="text-xs text-muted-foreground">Nenhuma concessão emitida neste conjunto de dados.</p>
+            <p className="text-xs text-muted-foreground">
+              Nenhuma concessão emitida neste conjunto de dados.
+            </p>
           )}
         </dl>
         <p className="mt-3 text-xs text-muted-foreground">
-          A rotação de chaves é gerenciada pelo serviço de licenciamento; as instalações confiam no conjunto de chaves publicado.
+          A rotação de chaves é gerenciada pelo serviço de licenciamento; as instalações confiam no
+          conjunto de chaves publicado.
         </p>
       </section>
 
       <div className="space-y-3">
-        <SectionTitle title="Registro de concessões" description="Ordenado por expiração quando classificado nessa coluna." />
+        <SectionTitle
+          title="Registro de concessões"
+          description="Ordenado por expiração quando classificado nessa coluna."
+        />
         <DataTable
           data={leases.data}
           columns={columns}

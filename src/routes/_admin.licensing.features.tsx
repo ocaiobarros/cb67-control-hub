@@ -101,7 +101,10 @@ function FeaturesPage() {
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Catálogo de recursos" description="Os códigos são identificadores estáveis consumidos pelos produtos." />
+        <SectionTitle
+          title="Catálogo de recursos"
+          description="Os códigos são identificadores estáveis consumidos pelos produtos."
+        />
         <DataTable
           data={features.data}
           columns={columns}

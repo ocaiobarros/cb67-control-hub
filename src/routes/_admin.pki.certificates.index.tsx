@@ -19,7 +19,10 @@ export const Route = createFileRoute("/_admin/pki/certificates/")({
           "Inventário interno de PKI: certificados de cliente, servidor e intermediários com emissor, número de série, fingerprint e validade.",
       },
       { property: "og:title", content: "Certificados — CB67 Labs Control Center" },
-      { property: "og:description", content: "Inventário de certificados mTLS e estado de validade." },
+      {
+        property: "og:description",
+        content: "Inventário de certificados mTLS e estado de validade.",
+      },
     ],
   }),
   component: CertificatesPage,
@@ -86,7 +89,11 @@ function CertificatesPage() {
             <span className="mono-xs">{formatDate(row.expiresAt)}</span>
             <p
               className={
-                days <= 0 ? "mono-xs text-crit" : days <= 30 ? "mono-xs text-warn" : "mono-xs text-muted-foreground"
+                days <= 0
+                  ? "mono-xs text-crit"
+                  : days <= 30
+                    ? "mono-xs text-warn"
+                    : "mono-xs text-muted-foreground"
               }
             >
               {days <= 0 ? "expirado" : `${days} dias`}
@@ -146,7 +153,10 @@ function CertificatesPage() {
       </ChartPanel>
 
       <div className="space-y-3">
-        <SectionTitle title="Inventário de certificados" description="Selecione um certificado para inspecionar seu registro completo." />
+        <SectionTitle
+          title="Inventário de certificados"
+          description="Selecione um certificado para inspecionar seu registro completo."
+        />
         <DataTable
           data={certificates.data}
           columns={columns}

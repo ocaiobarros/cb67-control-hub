@@ -15,7 +15,8 @@ export const Route = createFileRoute("/docs")({
       { property: "og:title", content: "Documentação — CB67 Labs API Platform" },
       {
         property: "og:description",
-        content: "Autenticação, escopos, versionamento, limites de taxa, cotas e integração de licenciamento.",
+        content:
+          "Autenticação, escopos, versionamento, limites de taxa, cotas e integração de licenciamento.",
       },
     ],
   }),
@@ -93,8 +94,8 @@ function DocsPage() {
           <h1 className="text-2xl font-semibold tracking-tight">Documentação</h1>
           <p className="max-w-2xl text-sm text-muted-foreground">
             Referência de integração para a plataforma de API da CB67 Labs, publicada em{" "}
-            <code className="mono-xs">{platformMeta.docsDomain}</code>. A referência em nível de endpoint é gerada
-            a partir da especificação da plataforma e não é duplicada aqui.
+            <code className="mono-xs">{platformMeta.docsDomain}</code>. A referência em nível de
+            endpoint é gerada a partir da especificação da plataforma e não é duplicada aqui.
           </p>
         </header>
 
@@ -135,7 +136,8 @@ function DocsPage() {
             <section className="panel space-y-2 p-5">
               <h2 className="text-sm font-semibold">Operando a plataforma</h2>
               <p className="text-sm text-muted-foreground">
-                Operadores gerenciam aplicações, clientes, licenciamento e certificados a partir do Control Center.
+                Operadores gerenciam aplicações, clientes, licenciamento e certificados a partir do
+                Control Center.
               </p>
               <AppLink to="/login" className="text-sm text-primary hover:underline">
                 Abrir o Control Center

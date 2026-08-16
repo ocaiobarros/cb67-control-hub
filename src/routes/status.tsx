@@ -32,7 +32,8 @@ function StatusPage() {
   const services = status.data?.services ?? [];
   const incidents = status.data?.incidents ?? [];
 
-  const allHealthy = services.length > 0 && services.every((service) => service.status === "healthy");
+  const allHealthy =
+    services.length > 0 && services.every((service) => service.status === "healthy");
 
   return (
     <PublicShell>
@@ -43,8 +44,9 @@ function StatusPage() {
             {services.length > 0 && <StatusBadge status={allHealthy ? "healthy" : "degraded"} />}
           </div>
           <p className="max-w-2xl text-sm text-muted-foreground">
-            Disponibilidade dos serviços públicos em <code className="mono-xs">{platformMeta.publicDomain}</code>. Esta
-            página reporta o estado observado; ela nunca expõe dados de clientes ou identificadores internos.
+            Disponibilidade dos serviços públicos em{" "}
+            <code className="mono-xs">{platformMeta.publicDomain}</code>. Esta página reporta o
+            estado observado; ela nunca expõe dados de clientes ou identificadores internos.
           </p>
         </header>
 
@@ -78,7 +80,10 @@ function StatusPage() {
           {status.isLoading ? (
             <Skeleton className="h-24 w-full" />
           ) : incidents.length === 0 ? (
-            <EmptyState message="Nenhum incidente reportado" hint="A plataforma não possui incidentes registrados na janela publicada." />
+            <EmptyState
+              message="Nenhum incidente reportado"
+              hint="A plataforma não possui incidentes registrados na janela publicada."
+            />
           ) : (
             <div className="space-y-4">
               {incidents.map((incident) => (
@@ -88,13 +93,16 @@ function StatusPage() {
                     <StatusBadge status={incident.state} />
                   </div>
                   <p className="mono-xs text-muted-foreground">
-                    Iniciado em {formatDateTime(incident.startedAt)} · {formatRelative(incident.startedAt)}
+                    Iniciado em {formatDateTime(incident.startedAt)} ·{" "}
+                    {formatRelative(incident.startedAt)}
                   </p>
                   <ol className="space-y-3 border-l border-border pl-4">
                     {incident.updates.map((update) => (
                       <li key={`${incident.id}-${update.at}`} className="space-y-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="mono-xs text-muted-foreground">{formatDateTime(update.at)}</span>
+                          <span className="mono-xs text-muted-foreground">
+                            {formatDateTime(update.at)}
+                          </span>
                           <StatusBadge status={update.state} />
                         </div>
                         <p className="text-sm">{update.message}</p>

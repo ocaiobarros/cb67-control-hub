@@ -10,13 +10,7 @@
 export type Environment = "production" | "staging" | "development";
 
 export type EntityStatus =
-  | "active"
-  | "disabled"
-  | "revoked"
-  | "expired"
-  | "pending"
-  | "suspended"
-  | "grace";
+  "active" | "disabled" | "revoked" | "expired" | "pending" | "suspended" | "grace";
 
 export type HealthStatus = "healthy" | "degraded" | "unavailable" | "disabled" | "maintenance";
 

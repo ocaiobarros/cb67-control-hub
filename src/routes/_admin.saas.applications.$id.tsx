@@ -66,8 +66,18 @@ function ApplicationDetailPage() {
       cell: (row) => <IdentifierCell value={row.installationId} label="id da instalação" />,
       sortValue: (row) => row.installationId,
     },
-    { id: "host", header: "Host", cell: (row) => <span className="text-sm">{row.hostLabel}</span>, sortValue: (row) => row.hostLabel },
-    { id: "version", header: "Versão", cell: (row) => <span className="mono-xs">{row.version}</span>, sortValue: (row) => row.version },
+    {
+      id: "host",
+      header: "Host",
+      cell: (row) => <span className="text-sm">{row.hostLabel}</span>,
+      sortValue: (row) => row.hostLabel,
+    },
+    {
+      id: "version",
+      header: "Versão",
+      cell: (row) => <span className="mono-xs">{row.version}</span>,
+      sortValue: (row) => row.version,
+    },
     {
       id: "certificate",
       header: "Certificado",
@@ -77,7 +87,9 @@ function ApplicationDetailPage() {
     {
       id: "lastSeen",
       header: "Visto por último",
-      cell: (row) => <span className="text-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>,
+      cell: (row) => (
+        <span className="text-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>
+      ),
       sortValue: (row) => row.lastSeen,
     },
     {
@@ -89,7 +101,9 @@ function ApplicationDetailPage() {
   ];
 
   const timeline = (audit.data ?? [])
-    .filter((event) => !app || event.resourceId === app.apiClientId || event.resource === "application")
+    .filter(
+      (event) => !app || event.resourceId === app.apiClientId || event.resource === "application",
+    )
     .slice(0, 8)
     .map((event) => ({
       id: event.id,
@@ -138,7 +152,10 @@ function ApplicationDetailPage() {
               tone={app.errorRate > 1 ? "warn" : "ok"}
               hint={`${formatNumber(app.errors30d)} requisições com falha`}
             />
-            <MetricCard label="p95 / p99" value={`${formatMs(app.p95Ms)} / ${formatMs(app.p99Ms)}`} />
+            <MetricCard
+              label="p95 / p99"
+              value={`${formatMs(app.p95Ms)} / ${formatMs(app.p99Ms)}`}
+            />
             <MetricCard
               label="Limitadas por taxa"
               value={formatNumber(app.rateLimited)}
@@ -162,8 +179,14 @@ function ApplicationDetailPage() {
                     label="ID do cliente de API"
                     value={<IdentifierCell value={app.apiClientId} label="id do cliente" />}
                   />
-                  <StatRow label="Código da aplicação" value={<code className="mono-xs">{app.code}</code>} />
-                  <StatRow label="Status da licença" value={<StatusBadge status={app.licenseStatus} />} />
+                  <StatRow
+                    label="Código da aplicação"
+                    value={<code className="mono-xs">{app.code}</code>}
+                  />
+                  <StatRow
+                    label="Status da licença"
+                    value={<StatusBadge status={app.licenseStatus} />}
+                  />
                   <StatRow
                     label="Certificado"
                     value={
@@ -192,7 +215,11 @@ function ApplicationDetailPage() {
                     </p>
                     <div className="mt-1.5 flex flex-wrap gap-1.5">
                       {app.allowedServices.map((service) => (
-                        <Badge key={service} variant="outline" className="mono-xs border-ok/40 text-ok">
+                        <Badge
+                          key={service}
+                          variant="outline"
+                          className="mono-xs border-ok/40 text-ok"
+                        >
                           {service}
                         </Badge>
                       ))}
@@ -204,10 +231,16 @@ function ApplicationDetailPage() {
                     </p>
                     <div className="mt-1.5 flex flex-wrap gap-1.5">
                       {app.blockedServices.length === 0 ? (
-                        <span className="text-xs text-muted-foreground">Nenhuma negação explícita.</span>
+                        <span className="text-xs text-muted-foreground">
+                          Nenhuma negação explícita.
+                        </span>
                       ) : (
                         app.blockedServices.map((service) => (
-                          <Badge key={service} variant="outline" className="mono-xs border-crit/40 text-crit">
+                          <Badge
+                            key={service}
+                            variant="outline"
+                            className="mono-xs border-crit/40 text-crit"
+                          >
                             {service}
                           </Badge>
                         ))

@@ -104,7 +104,10 @@ function PlansPage() {
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Catálogo de planos" description="Os pacotes de recursos são resolvidos na emissão da concessão." />
+        <SectionTitle
+          title="Catálogo de planos"
+          description="Os pacotes de recursos são resolvidos na emissão da concessão."
+        />
         <DataTable
           data={plans.data}
           columns={columns}

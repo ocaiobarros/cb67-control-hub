@@ -20,7 +20,10 @@ export const Route = createFileRoute("/_admin/backups/")({
           "Postura de backup da plataforma CB67 Labs: rotinas agendadas, execuções recentes, verificação de checksum e confiança na restauração.",
       },
       { property: "og:title", content: "Visão Geral de Backups — CB67 Labs Control Center" },
-      { property: "og:description", content: "Rotinas agendadas, execuções recentes e confiança na restauração." },
+      {
+        property: "og:description",
+        content: "Rotinas agendadas, execuções recentes e confiança na restauração.",
+      },
     ],
   }),
   component: BackupsOverview,
@@ -35,7 +38,9 @@ function BackupsOverview() {
   const runRows = runs.data ?? [];
   const testRows = tests.data ?? [];
 
-  const failedRuns = runRows.filter((row) => row.status === "unavailable" || row.checksum === "failed");
+  const failedRuns = runRows.filter(
+    (row) => row.status === "unavailable" || row.checksum === "failed",
+  );
   const totalSize = runRows.reduce((sum, row) => sum + row.sizeBytes, 0);
   const lastTest = testRows[0];
 
@@ -110,7 +115,11 @@ function BackupsOverview() {
           tone={failedRuns.length > 0 ? "crit" : "ok"}
           isLoading={runs.isLoading}
         />
-        <MetricCard label="Volume armazenado" value={formatBytes(totalSize)} isLoading={runs.isLoading} />
+        <MetricCard
+          label="Volume armazenado"
+          value={formatBytes(totalSize)}
+          isLoading={runs.isLoading}
+        />
         <MetricCard
           label="Último teste de restauração"
           value={lastTest ? lastTest.result : "—"}

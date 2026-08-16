@@ -19,7 +19,10 @@ export const Route = createFileRoute("/_admin/database/growth")({
           "Crescimento de armazenamento do cluster PostgreSQL da plataforma com distribuição por domínio e expectativas de retenção.",
       },
       { property: "og:title", content: "Crescimento do Banco de Dados — CB67 Labs Control Center" },
-      { property: "og:description", content: "Tendência de tamanho do cluster, distribuição por domínio e retenção." },
+      {
+        property: "og:description",
+        content: "Tendência de tamanho do cluster, distribuição por domínio e retenção.",
+      },
     ],
   }),
   component: GrowthPage,
@@ -60,7 +63,11 @@ function GrowthPage() {
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Tamanho do cluster" value={formatBytes(size)} isLoading={health.isLoading} />
+        <MetricCard
+          label="Tamanho do cluster"
+          value={formatBytes(size)}
+          isLoading={health.isLoading}
+        />
         <MetricCard
           label="Maior domínio"
           value="auditoria"
@@ -73,7 +80,11 @@ function GrowthPage() {
           tone="info"
           isLoading={series.isLoading}
         />
-        <MetricCard label="Meta de retenção" value="18 meses" hint="histórico de auditoria e requisições" />
+        <MetricCard
+          label="Meta de retenção"
+          value="18 meses"
+          hint="histórico de auditoria e requisições"
+        />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-2">
@@ -98,13 +109,22 @@ function GrowthPage() {
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Notas de capacidade" description="Premissas repassadas à equipe de infraestrutura." />
+        <SectionTitle
+          title="Notas de capacidade"
+          description="Premissas repassadas à equipe de infraestrutura."
+        />
         <section className="panel p-4">
           <dl>
             <StatRow label="Volume" value="Volume LVM dedicado no nó do banco de dados" />
             <StatRow label="Limite de alerta" value="Aviso em 75% do volume, crítico em 90%" />
-            <StatRow label="Particionamento" value="Tabelas de auditoria e requisições de API particionadas mensalmente" />
-            <StatRow label="Arquivamento" value="Partições frias exportadas pelo pipeline de backup" />
+            <StatRow
+              label="Particionamento"
+              value="Tabelas de auditoria e requisições de API particionadas mensalmente"
+            />
+            <StatRow
+              label="Arquivamento"
+              value="Partições frias exportadas pelo pipeline de backup"
+            />
           </dl>
         </section>
       </div>

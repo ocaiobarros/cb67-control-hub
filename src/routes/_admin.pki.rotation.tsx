@@ -34,7 +34,10 @@ const POLICY = [
   { label: "Tempo de vida do certificado de servidor", value: "6 meses (provisório)" },
   { label: "Janela de rotação", value: "30 dias antes da expiração" },
   { label: "Sobreposição", value: "O certificado anterior permanece válido até a expiração" },
-  { label: "Geração de chaves", value: "Realizada pelo host emissor; as chaves nunca transitam pela interface" },
+  {
+    label: "Geração de chaves",
+    value: "Realizada pelo host emissor; as chaves nunca transitam pela interface",
+  },
 ];
 
 function RotationPage() {
@@ -69,7 +72,11 @@ function RotationPage() {
       cell: (row) => {
         const days = daysUntil(row.expiresAt);
         return (
-          <span className={days <= 7 ? "tabular text-crit" : days <= 30 ? "tabular text-warn" : "tabular"}>
+          <span
+            className={
+              days <= 7 ? "tabular text-crit" : days <= 30 ? "tabular text-warn" : "tabular"
+            }
+          >
             {days <= 0 ? "expirado" : `${days} dias`}
           </span>
         );
@@ -80,7 +87,9 @@ function RotationPage() {
     {
       id: "expires",
       header: "Expira",
-      cell: (row) => <span className="mono-xs text-muted-foreground">{formatDate(row.expiresAt)}</span>,
+      cell: (row) => (
+        <span className="mono-xs text-muted-foreground">{formatDate(row.expiresAt)}</span>
+      ),
       sortValue: (row) => row.expiresAt,
       align: "right",
     },
@@ -120,7 +129,11 @@ function RotationPage() {
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Certificados rotacionáveis" value={rows.length} isLoading={certificates.isLoading} />
+        <MetricCard
+          label="Certificados rotacionáveis"
+          value={rows.length}
+          isLoading={certificates.isLoading}
+        />
         <MetricCard
           label="Dentro da janela de rotação"
           value={candidates.length}
@@ -148,8 +161,8 @@ function RotationPage() {
           ))}
         </dl>
         <p className="mt-3 text-xs text-muted-foreground">
-          Os tempos de vida são provisórios até que a configuração da autoridade certificadora seja publicada pela
-          equipe de backend.
+          Os tempos de vida são provisórios até que a configuração da autoridade certificadora seja
+          publicada pela equipe de backend.
         </p>
       </section>
 

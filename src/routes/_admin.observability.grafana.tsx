@@ -16,7 +16,10 @@ export const Route = createFileRoute("/_admin/observability/grafana")({
           "Pontos de entrada para a instância Grafana da CB67 Labs, com dashboards detalhados que vivem fora do Control Center.",
       },
       { property: "og:title", content: "Grafana — CB67 Labs Control Center" },
-      { property: "og:description", content: "Dashboards detalhados hospedados na rede de gerenciamento." },
+      {
+        property: "og:description",
+        content: "Dashboards detalhados hospedados na rede de gerenciamento.",
+      },
     ],
   }),
   component: GrafanaPage,
@@ -26,7 +29,8 @@ const DASHBOARDS = [
   {
     slug: "platform-overview",
     name: "Visão geral da plataforma",
-    description: "Sinais essenciais do gateway de API, serviço de licenciamento e componentes de suporte.",
+    description:
+      "Sinais essenciais do gateway de API, serviço de licenciamento e componentes de suporte.",
   },
   {
     slug: "api-performance",
@@ -36,7 +40,8 @@ const DASHBOARDS = [
   {
     slug: "provider-integrations",
     name: "Integrações com provedores",
-    description: "Latência upstream, limitação de taxa e atribuição de falhas por provedor externo.",
+    description:
+      "Latência upstream, limitação de taxa e atribuição de falhas por provedor externo.",
   },
   {
     slug: "infrastructure",
@@ -46,7 +51,8 @@ const DASHBOARDS = [
   {
     slug: "postgresql",
     name: "PostgreSQL",
-    description: "Conexões, throughput de transações, taxa de acerto de cache e contenção de locks.",
+    description:
+      "Conexões, throughput de transações, taxa de acerto de cache e contenção de locks.",
   },
 ];
 
@@ -78,7 +84,10 @@ function GrafanaPage() {
             label="URL configurada"
             value={base ? <code className="mono-xs">{base}</code> : "Não configurado"}
           />
-          <StatRow label="Chave de configuração" value={<code className="mono-xs">VITE_GRAFANA_URL</code>} />
+          <StatRow
+            label="Chave de configuração"
+            value={<code className="mono-xs">VITE_GRAFANA_URL</code>}
+          />
           <StatRow label="Rede" value="Apenas rede de gerenciamento; não publicada na internet" />
         </dl>
       </section>

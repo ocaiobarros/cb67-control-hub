@@ -621,7 +621,13 @@ export const MockLatency: LatencyBreakdown[] = [
 export const MockRateLimits: RateLimitRule[] = MockApplications.slice(0, 5).map((app, i) => ({
   id: `rl-${i}`,
   applicationName: app.name,
-  api: ["Geração de IA", "Geocodificação de Mapas", "Embeddings de IA", "Rotas de Mapas", "Validação de Licença"][i]!,
+  api: [
+    "Geração de IA",
+    "Geocodificação de Mapas",
+    "Embeddings de IA",
+    "Rotas de Mapas",
+    "Validação de Licença",
+  ][i]!,
   rps: [20, 15, 10, 8, 30][i]!,
   rpm: [1200, 900, 600, 480, 1800][i]!,
   daily: [200000, 120000, 80000, 40000, 300000][i]!,
@@ -634,7 +640,13 @@ export const MockRateLimits: RateLimitRule[] = MockApplications.slice(0, 5).map(
 export const MockQuotas: QuotaRecord[] = MockApplications.slice(0, 5).map((app, i) => ({
   id: `q-${i}`,
   applicationName: app.name,
-  api: ["Geração de IA", "Geocodificação de Mapas", "Embeddings de IA", "Rotas de Mapas", "Validação de Licença"][i]!,
+  api: [
+    "Geração de IA",
+    "Geocodificação de Mapas",
+    "Embeddings de IA",
+    "Rotas de Mapas",
+    "Validação de Licença",
+  ][i]!,
   rateLimitPerMin: [1200, 900, 600, 480, 1800][i]!,
   monthlyQuota: app.monthlyQuota,
   used: app.quotaUsed,
@@ -1052,7 +1064,14 @@ export const MockPlans: LicensePlan[] = [
     name: "Enterprise",
     code: "ENT",
     maxInstallations: 25,
-    features: ["Agendamento", "Painel de IA", "Importação Bancária", "API Externa", "OpenAI", "Gemini"],
+    features: [
+      "Agendamento",
+      "Painel de IA",
+      "Importação Bancária",
+      "API Externa",
+      "OpenAI",
+      "Gemini",
+    ],
     activeLicenses: 17,
     status: "active",
   },
@@ -1501,7 +1520,13 @@ export const MockServices: ServiceHealth[] = [
     detail: "14/100 connections",
     uptime: "99.99%",
   },
-  { id: "svc-valkey", name: "Valkey", status: "healthy", detail: "hit ratio 97%", uptime: "99.97%" },
+  {
+    id: "svc-valkey",
+    name: "Valkey",
+    status: "healthy",
+    detail: "hit ratio 97%",
+    uptime: "99.97%",
+  },
   {
     id: "svc-prom",
     name: "Prometheus",
@@ -1509,7 +1534,13 @@ export const MockServices: ServiceHealth[] = [
     detail: "scrape backlog",
     uptime: "99.51%",
   },
-  { id: "svc-grafana", name: "Grafana", status: "healthy", detail: "9 dashboards", uptime: "99.9%" },
+  {
+    id: "svc-grafana",
+    name: "Grafana",
+    status: "healthy",
+    detail: "9 dashboards",
+    uptime: "99.9%",
+  },
   {
     id: "svc-license",
     name: "License Service",
@@ -1764,13 +1795,21 @@ export const MockIncidents: Incident[] = [
     state: "monitoring",
     startedAt: iso(0, 11),
     updates: [
-      { at: iso(0, 13), state: "monitoring", message: "Latência de volta ao normal. Em monitoramento." },
+      {
+        at: iso(0, 13),
+        state: "monitoring",
+        message: "Latência de volta ao normal. Em monitoramento.",
+      },
       {
         at: iso(0, 12),
         state: "identified",
         message: "Degradação do provedor upstream identificada. Tráfego rebalanceado.",
       },
-      { at: iso(0, 11), state: "investigating", message: "Investigando tempos de resposta elevados." },
+      {
+        at: iso(0, 11),
+        state: "investigating",
+        message: "Investigando tempos de resposta elevados.",
+      },
     ],
   },
   {
@@ -1797,12 +1836,18 @@ export const MockChangelog: ChangelogEntry[] = [
   {
     version: "2026.07.2",
     date: "2026-07-24",
-    changes: ["Endpoint de rotas do Maps adicionado ao catálogo de API.", "Linha do tempo de expiração de certificados."],
+    changes: [
+      "Endpoint de rotas do Maps adicionado ao catálogo de API.",
+      "Linha do tempo de expiração de certificados.",
+    ],
   },
   {
     version: "2026.07.1",
     date: "2026-07-03",
-    changes: ["Página de status pública inicial.", "Modelo de autorização baseado em escopo publicado."],
+    changes: [
+      "Página de status pública inicial.",
+      "Modelo de autorização baseado em escopo publicado.",
+    ],
   },
 ];
 
@@ -1819,7 +1864,11 @@ export const MockCharts = {
       11,
     ),
   errors: (range: TimeRange) =>
-    buildSeries(range, { errors4xx: { base: 22, spread: 14 }, errors5xx: { base: 3, spread: 4 } }, 5),
+    buildSeries(
+      range,
+      { errors4xx: { base: 22, spread: 14 }, errors5xx: { base: 3, spread: 4 } },
+      5,
+    ),
   providerLatency: (range: TimeRange) =>
     buildSeries(
       range,
@@ -1833,7 +1882,11 @@ export const MockCharts = {
   resources: (range: TimeRange) =>
     buildSeries(
       range,
-      { cpu: { base: 31, spread: 14 }, memory: { base: 47, spread: 10 }, storage: { base: 28, spread: 3 } },
+      {
+        cpu: { base: 31, spread: 14 },
+        memory: { base: 47, spread: 10 },
+        storage: { base: 28, spread: 3 },
+      },
       23,
     ),
   network: (range: TimeRange) =>
@@ -1851,7 +1904,11 @@ export const MockCharts = {
   auth: (range: TimeRange) =>
     buildSeries(
       range,
-      { success: { base: 940, spread: 220 }, failed: { base: 18, spread: 16 }, mtls: { base: 4, spread: 5 } },
+      {
+        success: { base: 940, spread: 220 },
+        failed: { base: 18, spread: 16 },
+        mtls: { base: 4, spread: 5 },
+      },
       37,
     ),
   authorization: (range: TimeRange) =>
@@ -1860,8 +1917,7 @@ export const MockCharts = {
       { allowed: { base: 1500, spread: 320 }, denied: { base: 26, spread: 18 } },
       41,
     ),
-  security: (range: TimeRange) =>
-    buildSeries(range, { events: { base: 40, spread: 30 } }, 43),
+  security: (range: TimeRange) => buildSeries(range, { events: { base: 40, spread: 30 } }, 43),
 };
 
 export const MockRequestsBySaas: MetricPoint[] = MockApplications.map((a) => ({

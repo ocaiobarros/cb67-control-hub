@@ -56,7 +56,13 @@ function ApplicationsPage() {
       ),
       sortValue: (row) => row.environment,
     },
-    { id: "instances", header: "Instâncias", cell: (row) => <span className="tabular">{row.instances}</span>, sortValue: (row) => row.instances, align: "right" },
+    {
+      id: "instances",
+      header: "Instâncias",
+      cell: (row) => <span className="tabular">{row.instances}</span>,
+      sortValue: (row) => row.instances,
+      align: "right",
+    },
     {
       id: "requests",
       header: "Requisições 30d",
@@ -75,7 +81,13 @@ function ApplicationsPage() {
       sortValue: (row) => row.errorRate,
       align: "right",
     },
-    { id: "p95", header: "p95", cell: (row) => <span className="tabular">{formatMs(row.p95Ms)}</span>, sortValue: (row) => row.p95Ms, align: "right" },
+    {
+      id: "p95",
+      header: "p95",
+      cell: (row) => <span className="tabular">{formatMs(row.p95Ms)}</span>,
+      sortValue: (row) => row.p95Ms,
+      align: "right",
+    },
     {
       id: "license",
       header: "Licença",
@@ -92,7 +104,9 @@ function ApplicationsPage() {
     {
       id: "lastSeen",
       header: "Visto por último",
-      cell: (row) => <span className="text-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>,
+      cell: (row) => (
+        <span className="text-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>
+      ),
       sortValue: (row) => row.lastSeen,
     },
     {

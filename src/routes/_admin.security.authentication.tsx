@@ -138,7 +138,10 @@ function AuthenticationPage() {
           <StatRow label="Clientes de máquina" value="TLS mútuo mais credenciais de cliente" />
           <StatRow label="Operadores" value="Identidade federada com sessões de curta duração" />
           <StatRow label="Tempo de vida do token" value="Controlado pelo backend (provisório)" />
-          <StatRow label="Armazenamento de credenciais" value="Somente no servidor; nunca retornado a esta interface" />
+          <StatRow
+            label="Armazenamento de credenciais"
+            value="Somente no servidor; nunca retornado a esta interface"
+          />
         </dl>
       </section>
 

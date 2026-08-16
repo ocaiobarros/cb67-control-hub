@@ -20,7 +20,10 @@ export const Route = createFileRoute("/_admin/saas/clients")({
           "Clientes máquina a máquina autorizados na plataforma CB67 Labs, com escopos concedidos e estado de certificado.",
       },
       { property: "og:title", content: "Clientes de Máquina — CB67 Labs Control Center" },
-      { property: "og:description", content: "Clientes M2M, escopos concedidos e estado de certificado." },
+      {
+        property: "og:description",
+        content: "Clientes M2M, escopos concedidos e estado de certificado.",
+      },
     ],
   }),
   component: ClientsPage,
@@ -79,7 +82,9 @@ function ClientsPage() {
     {
       id: "lastSeen",
       header: "Último uso",
-      cell: (row) => <span className="text-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>,
+      cell: (row) => (
+        <span className="text-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>
+      ),
       sortValue: (row) => row.lastSeen,
     },
     {

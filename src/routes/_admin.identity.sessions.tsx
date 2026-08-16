@@ -23,7 +23,10 @@ export const Route = createFileRoute("/_admin/identity/sessions")({
           "Sessões abertas do Control Center com dispositivo de origem, endereço de origem, atividade e expiração, além de controles de encerramento.",
       },
       { property: "og:title", content: "Sessões Administrativas — CB67 Labs Control Center" },
-      { property: "og:description", content: "Sessões ativas de operadores e controles de encerramento." },
+      {
+        property: "og:description",
+        content: "Sessões ativas de operadores e controles de encerramento.",
+      },
     ],
   }),
   component: SessionsPage,
@@ -133,7 +136,10 @@ function SessionsPage() {
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Sessões abertas" description="Ordenado por última atividade quando essa coluna é selecionada." />
+        <SectionTitle
+          title="Sessões abertas"
+          description="Ordenado por última atividade quando essa coluna é selecionada."
+        />
         <DataTable
           data={sessions.data}
           columns={columns}

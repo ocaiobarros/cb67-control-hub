@@ -19,7 +19,10 @@ export const Route = createFileRoute("/_admin/database/performance")({
           "Throughput de consultas, eficiência de cache e contenção de locks do cluster PostgreSQL da plataforma em uma janela selecionável.",
       },
       { property: "og:title", content: "Desempenho do Banco de Dados — CB67 Labs Control Center" },
-      { property: "og:description", content: "Throughput, eficiência de cache e contenção de locks." },
+      {
+        property: "og:description",
+        content: "Throughput, eficiência de cache e contenção de locks.",
+      },
     ],
   }),
   component: PerformancePage,
@@ -78,7 +81,10 @@ function PerformancePage() {
           error={series.error ?? undefined}
           isEmpty={(series.data?.length ?? 0) === 0}
         >
-          <TimeSeriesChart data={series.data ?? []} series={[{ key: "queries", label: "Consultas/s" }]} />
+          <TimeSeriesChart
+            data={series.data ?? []}
+            series={[{ key: "queries", label: "Consultas/s" }]}
+          />
         </ChartPanel>
         <ChartPanel
           title="Contenção de locks"
@@ -87,7 +93,11 @@ function PerformancePage() {
           error={series.error ?? undefined}
           isEmpty={(series.data?.length ?? 0) === 0}
         >
-          <TimeSeriesChart data={series.data ?? []} series={[{ key: "locks", label: "Locks" }]} variant="line" />
+          <TimeSeriesChart
+            data={series.data ?? []}
+            series={[{ key: "locks", label: "Locks" }]}
+            variant="line"
+          />
         </ChartPanel>
       </div>
 
@@ -98,10 +108,16 @@ function PerformancePage() {
         />
         <section className="panel p-4">
           <dl>
-            <StatRow label="Taxa de acerto de cache" value="≥ 99% em regime estável, aviso abaixo de 95%" />
+            <StatRow
+              label="Taxa de acerto de cache"
+              value="≥ 99% em regime estável, aviso abaixo de 95%"
+            />
             <StatRow label="Deadlocks" value="0 tolerado; qualquer ocorrência gera um alerta" />
             <StatRow label="Saturação do pool" value="aviso em 80%, crítico em 92%" />
-            <StatRow label="Transações longas" value="aviso acima de 60s, encerramento acima de 300s" />
+            <StatRow
+              label="Transações longas"
+              value="aviso acima de 60s, encerramento acima de 300s"
+            />
           </dl>
         </section>
       </div>

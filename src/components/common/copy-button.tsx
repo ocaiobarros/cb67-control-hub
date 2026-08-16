@@ -53,7 +53,10 @@ export function IdentifierCell({
 /** Secrets are never retrievable in this UI; only a masked placeholder is shown. */
 export function MaskedSecret() {
   return (
-    <span className="mono-xs text-muted-foreground" title="Valores de segredo não podem ser recuperados">
+    <span
+      className="mono-xs text-muted-foreground"
+      title="Valores de segredo não podem ser recuperados"
+    >
       ••••••••••••••••
     </span>
   );

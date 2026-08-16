@@ -47,7 +47,10 @@ function PermissionsPage() {
         row.roles[role] ? (
           <Check className="mx-auto size-4 text-ok" aria-label={`${role} concedida`} />
         ) : (
-          <Minus className="mx-auto size-4 text-muted-foreground" aria-label={`${role} não concedida`} />
+          <Minus
+            className="mx-auto size-4 text-muted-foreground"
+            aria-label={`${role} não concedida`}
+          />
         ),
       sortValue: (row) => (row.roles[role] ? 1 : 0),
       align: "right",
@@ -63,7 +66,11 @@ function PermissionsPage() {
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard label="Permissões" value={rows.length} isLoading={permissions.isLoading} />
-        <MetricCard label="Funções comparadas" value={roleCodes.length} isLoading={permissions.isLoading} />
+        <MetricCard
+          label="Funções comparadas"
+          value={roleCodes.length}
+          isLoading={permissions.isLoading}
+        />
         <MetricCard
           label="Capacidades de escrita"
           value={rows.filter((row) => row.code.includes(":write")).length}

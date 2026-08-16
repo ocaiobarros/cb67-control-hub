@@ -21,7 +21,10 @@ export const Route = createFileRoute("/_admin/observability/logs")({
           "Fluxo estruturado de logs da plataforma filtrado por nível e serviço, correlacionado com identificadores de requisição e cliente.",
       },
       { property: "og:title", content: "Logs — CB67 Labs Control Center" },
-      { property: "og:description", content: "Fluxo estruturado de logs com filtros de nível e serviço." },
+      {
+        property: "og:description",
+        content: "Fluxo estruturado de logs com filtros de nível e serviço.",
+      },
     ],
   }),
   component: LogsPage,
@@ -37,7 +40,8 @@ function LogsPage() {
   const all = logs.data ?? [];
   const services = ["all", ...new Set(all.map((row) => row.service))];
   const rows = all.filter(
-    (row) => (level === "all" || row.level === level) && (service === "all" || row.service === service),
+    (row) =>
+      (level === "all" || row.level === level) && (service === "all" || row.service === service),
   );
 
   const columns: Column<LogEntry>[] = [
@@ -99,11 +103,18 @@ function LogsPage() {
           tone="warn"
           isLoading={logs.isLoading}
         />
-        <MetricCard label="Serviços reportando" value={services.length - 1} isLoading={logs.isLoading} />
+        <MetricCard
+          label="Serviços reportando"
+          value={services.length - 1}
+          isLoading={logs.isLoading}
+        />
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Fluxo de logs" description="Filtre por nível e serviço, depois pesquise o corpo da mensagem." />
+        <SectionTitle
+          title="Fluxo de logs"
+          description="Filtre por nível e serviço, depois pesquise o corpo da mensagem."
+        />
         <DataTable
           data={rows}
           columns={columns}
@@ -116,7 +127,11 @@ function LogsPage() {
           dense
           toolbar={
             <div className="flex flex-wrap items-center gap-2">
-              <div role="group" aria-label="Nível de log" className="inline-flex overflow-hidden rounded-md border border-border">
+              <div
+                role="group"
+                aria-label="Nível de log"
+                className="inline-flex overflow-hidden rounded-md border border-border"
+              >
                 {LEVELS.map((value) => (
                   <button
                     key={value}

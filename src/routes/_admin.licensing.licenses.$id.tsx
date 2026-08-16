@@ -27,7 +27,10 @@ export const Route = createFileRoute("/_admin/licensing/licenses/$id")({
           "Registro de licença com direitos do plano, instalações vinculadas, concessões emitidas e controles de revogação.",
       },
       { property: "og:title", content: "Registro de Licença — CB67 Labs Control Center" },
-      { property: "og:description", content: "Direitos, instalações, concessões e trilha de auditoria." },
+      {
+        property: "og:description",
+        content: "Direitos, instalações, concessões e trilha de auditoria.",
+      },
     ],
   }),
   component: LicenseDetail,
@@ -47,7 +50,9 @@ function LicenseDetail() {
   const issued = (leases.data ?? []).filter((row) => row.licenseKey === record?.key);
 
   const timeline: TimelineItem[] = (audit.data ?? [])
-    .filter((event) => (record ? event.resourceId === record.id || event.resourceId === record.key : false))
+    .filter((event) =>
+      record ? event.resourceId === record.id || event.resourceId === record.key : false,
+    )
     .slice(0, 10)
     .map((event) => ({
       id: event.id,
@@ -60,8 +65,14 @@ function LicenseDetail() {
   if (license.isError) {
     return (
       <div className="space-y-6">
-        <PageHeader title="Licença indisponível" description="O registro de licença não pôde ser carregado." />
-        <EmptyState message="Licença não encontrada" hint="Verifique o identificador e tente novamente." />
+        <PageHeader
+          title="Licença indisponível"
+          description="O registro de licença não pôde ser carregado."
+        />
+        <EmptyState
+          message="Licença não encontrada"
+          hint="Verifique o identificador e tente novamente."
+        />
       </div>
     );
   }
@@ -82,7 +93,9 @@ function LicenseDetail() {
     {
       id: "lastSeen",
       header: "Visto por último",
-      cell: (row) => <span className="mono-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>,
+      cell: (row) => (
+        <span className="mono-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>
+      ),
       sortValue: (row) => row.lastSeen,
       align: "right",
     },
@@ -197,7 +210,9 @@ function LicenseDetail() {
             <StatRow label="Plano" value={record?.plan ?? "—"} />
             <StatRow
               label="Validade"
-              value={record ? `${formatDate(record.startsAt)} → ${formatDate(record.expiresAt)}` : "—"}
+              value={
+                record ? `${formatDate(record.startsAt)} → ${formatDate(record.expiresAt)}` : "—"
+              }
             />
             <StatRow
               label="Chave de licença"
@@ -215,7 +230,9 @@ function LicenseDetail() {
               </li>
             ))}
             {(record?.features.length ?? 0) === 0 && !license.isLoading && (
-              <li className="text-xs text-muted-foreground">Nenhum recurso associado a este plano.</li>
+              <li className="text-xs text-muted-foreground">
+                Nenhum recurso associado a este plano.
+              </li>
             )}
           </ul>
         </section>
@@ -228,7 +245,10 @@ function LicenseDetail() {
           <TabsTrigger value="activity">Atividade</TabsTrigger>
         </TabsList>
         <TabsContent value="installations" className="mt-4 space-y-3">
-          <SectionTitle title="Instalações vinculadas" description="Cada instalação consome um assento." />
+          <SectionTitle
+            title="Instalações vinculadas"
+            description="Cada instalação consome um assento."
+          />
           <DataTable
             data={bound}
             columns={installationColumns}
@@ -239,7 +259,10 @@ function LicenseDetail() {
           />
         </TabsContent>
         <TabsContent value="leases" className="mt-4 space-y-3">
-          <SectionTitle title="Concessões emitidas" description="Autorizações assinadas e de curta duração para execução." />
+          <SectionTitle
+            title="Concessões emitidas"
+            description="Autorizações assinadas e de curta duração para execução."
+          />
           <DataTable
             data={issued}
             columns={leaseColumns}

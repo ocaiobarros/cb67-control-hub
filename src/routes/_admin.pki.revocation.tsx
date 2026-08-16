@@ -23,7 +23,10 @@ export const Route = createFileRoute("/_admin/pki/revocation")({
           "Lista de revogação de certificados com números de série revogados, motivos e os controles para revogar um certificado ativo.",
       },
       { property: "og:title", content: "Revogação de Certificados — CB67 Labs Control Center" },
-      { property: "og:description", content: "Lista de revogação e controles de revogação imediata." },
+      {
+        property: "og:description",
+        content: "Lista de revogação e controles de revogação imediata.",
+      },
     ],
   }),
   component: RevocationPage,
@@ -163,8 +166,17 @@ function RevocationPage() {
           tone={revoked.length > 0 ? "crit" : "ok"}
           isLoading={certificates.isLoading}
         />
-        <MetricCard label="Certificados ativos" value={active.length} tone="ok" isLoading={certificates.isLoading} />
-        <MetricCard label="Entradas do registro" value={ledger.length} isLoading={revocations.isLoading} />
+        <MetricCard
+          label="Certificados ativos"
+          value={active.length}
+          tone="ok"
+          isLoading={certificates.isLoading}
+        />
+        <MetricCard
+          label="Entradas do registro"
+          value={ledger.length}
+          isLoading={revocations.isLoading}
+        />
         <MetricCard
           label="Última revogação"
           value={ledger[0] ? formatRelative(ledger[0].createdAt) : "—"}
@@ -175,14 +187,23 @@ function RevocationPage() {
       <section className="panel p-4">
         <h3 className="text-sm font-semibold">Distribuição</h3>
         <dl className="mt-2">
-          <StatRow label="Publicação" value="Lista de revogação servida pela autoridade certificadora interna" />
+          <StatRow
+            label="Publicação"
+            value="Lista de revogação servida pela autoridade certificadora interna"
+          />
           <StatRow label="Propagação" value="Aplicada no próximo handshake TLS" />
-          <StatRow label="Reversibilidade" value="Nenhuma — um certificado substituto deve ser emitido" />
+          <StatRow
+            label="Reversibilidade"
+            value="Nenhuma — um certificado substituto deve ser emitido"
+          />
         </dl>
       </section>
 
       <div className="space-y-3">
-        <SectionTitle title="Registro de revogação" description="Somente entradas de certificados." />
+        <SectionTitle
+          title="Registro de revogação"
+          description="Somente entradas de certificados."
+        />
         <DataTable
           data={ledger}
           columns={ledgerColumns}
@@ -195,7 +216,10 @@ function RevocationPage() {
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Certificados revogados" description="Números de série rejeitados na fronteira mTLS." />
+        <SectionTitle
+          title="Certificados revogados"
+          description="Números de série rejeitados na fronteira mTLS."
+        />
         <DataTable
           data={revoked}
           columns={revokedColumns}

@@ -149,7 +149,10 @@ function RestoreTestsPage() {
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Histórico de exercícios" description="Pesquisar por nome do exercício ou artefato de origem." />
+        <SectionTitle
+          title="Histórico de exercícios"
+          description="Pesquisar por nome do exercício ou artefato de origem."
+        />
         <DataTable
           data={tests.data}
           columns={columns}

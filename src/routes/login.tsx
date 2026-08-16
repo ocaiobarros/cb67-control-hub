@@ -18,7 +18,10 @@ export const Route = createFileRoute("/login")({
           "Autentique-se como operador da plataforma para acessar o CB67 Labs Control Center. O acesso é restrito à rede de gestão.",
       },
       { property: "og:title", content: "Login do operador — CB67 Labs Control Center" },
-      { property: "og:description", content: "Acesso restrito de operador ao CB67 Labs Control Center." },
+      {
+        property: "og:description",
+        content: "Acesso restrito de operador ao CB67 Labs Control Center.",
+      },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -61,7 +64,8 @@ function LoginPage() {
           </span>
           <h1 className="text-lg font-semibold tracking-tight">{platformMeta.productName}</h1>
           <p className="text-sm text-muted-foreground">
-            Acesso somente para operadores. Autenticação e autorização são aplicadas pela plataforma.
+            Acesso somente para operadores. Autenticação e autorização são aplicadas pela
+            plataforma.
           </p>
         </div>
 

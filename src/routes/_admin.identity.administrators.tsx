@@ -23,7 +23,10 @@ export const Route = createFileRoute("/_admin/identity/administrators")({
           "Operadores humanos com acesso ao CB67 Labs Control Center, sua função atribuída, contagem de sessões e último login.",
       },
       { property: "og:title", content: "Administradores — CB67 Labs Control Center" },
-      { property: "og:description", content: "Contas de operadores, funções e atividade de login." },
+      {
+        property: "og:description",
+        content: "Contas de operadores, funções e atividade de login.",
+      },
     ],
   }),
   component: AdministratorsPage,
@@ -58,14 +61,18 @@ function AdministratorsPage() {
     {
       id: "lastLogin",
       header: "Último login",
-      cell: (row) => <span className="mono-xs text-muted-foreground">{formatRelative(row.lastLoginAt)}</span>,
+      cell: (row) => (
+        <span className="mono-xs text-muted-foreground">{formatRelative(row.lastLoginAt)}</span>
+      ),
       sortValue: (row) => row.lastLoginAt,
       align: "right",
     },
     {
       id: "created",
       header: "Criado",
-      cell: (row) => <span className="mono-xs text-muted-foreground">{formatDate(row.createdAt)}</span>,
+      cell: (row) => (
+        <span className="mono-xs text-muted-foreground">{formatDate(row.createdAt)}</span>
+      ),
       sortValue: (row) => row.createdAt,
       align: "right",
       hideByDefault: true,
@@ -106,7 +113,11 @@ function AdministratorsPage() {
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Administradores" value={rows.length} isLoading={administrators.isLoading} />
+        <MetricCard
+          label="Administradores"
+          value={rows.length}
+          isLoading={administrators.isLoading}
+        />
         <MetricCard
           label="Ativos"
           value={rows.filter((row) => row.status === "active").length}
@@ -127,7 +138,10 @@ function AdministratorsPage() {
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Contas de operadores" description="As funções são gerenciadas em Identidade → Funções." />
+        <SectionTitle
+          title="Contas de operadores"
+          description="As funções são gerenciadas em Identidade → Funções."
+        />
         <DataTable
           data={administrators.data}
           columns={columns}
@@ -160,7 +174,10 @@ function AdministratorsPage() {
         environmentNotice="O encerramento de sessão é executado e auditado no servidor."
         onConfirm={async () => {
           if (!target) return;
-          await action.mutateAsync({ action: "administrator.revoke-sessions", resourceId: target.id });
+          await action.mutateAsync({
+            action: "administrator.revoke-sessions",
+            resourceId: target.id,
+          });
           setTarget(null);
         }}
       />

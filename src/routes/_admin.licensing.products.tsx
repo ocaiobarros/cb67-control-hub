@@ -56,9 +56,7 @@ function ProductsPage() {
     {
       id: "plans",
       header: "Planos",
-      cell: (row) => (
-        <span className="text-xs text-muted-foreground">{row.plans.join(" · ")}</span>
-      ),
+      cell: (row) => <span className="text-xs text-muted-foreground">{row.plans.join(" · ")}</span>,
     },
     {
       id: "active",
@@ -104,7 +102,10 @@ function ProductsPage() {
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Registro de produtos" description="O suporte a versões orienta a compatibilidade da concessão." />
+        <SectionTitle
+          title="Registro de produtos"
+          description="O suporte a versões orienta a compatibilidade da concessão."
+        />
         <DataTable
           data={products.data}
           columns={columns}

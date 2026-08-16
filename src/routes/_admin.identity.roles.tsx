@@ -86,7 +86,9 @@ function RolesPage() {
         />
         <MetricCard
           label="Função mais abrangente"
-          value={[...rows].sort((a, b) => b.permissions.length - a.permissions.length)[0]?.name ?? "—"}
+          value={
+            [...rows].sort((a, b) => b.permissions.length - a.permissions.length)[0]?.name ?? "—"
+          }
           isLoading={roles.isLoading}
         />
       </div>

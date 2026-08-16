@@ -25,7 +25,10 @@ export const Route = createFileRoute("/_admin/observability/alerts")({
           "Inventário de alertas com severidade, regra de origem, duração do disparo e controles de reconhecimento para operadores da plataforma.",
       },
       { property: "og:title", content: "Alertas — CB67 Labs Control Center" },
-      { property: "og:description", content: "Alertas da plataforma disparando, reconhecidos e resolvidos." },
+      {
+        property: "og:description",
+        content: "Alertas da plataforma disparando, reconhecidos e resolvidos.",
+      },
     ],
   }),
   component: AlertsPage,
@@ -154,7 +157,10 @@ function AlertsPage() {
       </ChartPanel>
 
       <div className="space-y-3">
-        <SectionTitle title="Inventário de alertas" description="Ordenado por severidade ou horário de início." />
+        <SectionTitle
+          title="Inventário de alertas"
+          description="Ordenado por severidade ou horário de início."
+        />
         <DataTable
           data={alerts.data}
           columns={columns}

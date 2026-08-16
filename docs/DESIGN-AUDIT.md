@@ -6,20 +6,20 @@ touched; every change is presentation-layer.
 
 ## Findings — before
 
-| # | Finding | Severity | Consequence |
-| --- | --- | --- | --- |
-| 1 | Default shadcn/new-york look: flat cards, `shadow`, `rounded-xl`, generic slate palette | High | Indistinguishable from any template dashboard; no product identity |
-| 2 | Single depth level — everything sat on the same plane | High | No hierarchy between chrome, content and overlays; overlays felt pasted on |
-| 3 | No material concept; `bg-card` opaque everywhere, chrome identical to content | High | Sidebar, topbar and dialogs read as more content instead of as chrome |
-| 4 | Light theme was near-white with grey text; dark theme was flat graphite | Medium | Light mode looked unfinished; dark mode looked lifeless |
-| 5 | Motion limited to `transition-colors` plus default shadcn zoom | Medium | No feedback on press, no continuity across routes, state changes unexplained |
-| 6 | Typography had no scale — ad-hoc `text-lg` / `text-2xl` / uppercase `text-xs` per page | Medium | Inconsistent page titles, section labels and metric values |
-| 7 | Radii mixed `rounded-md`, `-lg`, `-xl` arbitrarily | Low | Optically inconsistent corners between adjacent elements |
-| 8 | Web fonts declared (`IBM Plex`) but never loaded | High | The product rendered in a system fallback font everywhere |
-| 9 | `min-h-screen` on full-height layouts | Low | Mobile viewport clipping under browser chrome |
-| 10 | Metric values re-rendered with no transition on refresh | Low | Numbers changed silently; operators could miss updates |
-| 11 | Status dots identical for nominal and critical states | Low | Critical state had no attentional weight |
-| 12 | Chart tooltips used flat popover styling with no elevation | Low | Tooltips merged into the chart surface |
+| #   | Finding                                                                                 | Severity | Consequence                                                                  |
+| --- | --------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------- |
+| 1   | Default shadcn/new-york look: flat cards, `shadow`, `rounded-xl`, generic slate palette | High     | Indistinguishable from any template dashboard; no product identity           |
+| 2   | Single depth level — everything sat on the same plane                                   | High     | No hierarchy between chrome, content and overlays; overlays felt pasted on   |
+| 3   | No material concept; `bg-card` opaque everywhere, chrome identical to content           | High     | Sidebar, topbar and dialogs read as more content instead of as chrome        |
+| 4   | Light theme was near-white with grey text; dark theme was flat graphite                 | Medium   | Light mode looked unfinished; dark mode looked lifeless                      |
+| 5   | Motion limited to `transition-colors` plus default shadcn zoom                          | Medium   | No feedback on press, no continuity across routes, state changes unexplained |
+| 6   | Typography had no scale — ad-hoc `text-lg` / `text-2xl` / uppercase `text-xs` per page  | Medium   | Inconsistent page titles, section labels and metric values                   |
+| 7   | Radii mixed `rounded-md`, `-lg`, `-xl` arbitrarily                                      | Low      | Optically inconsistent corners between adjacent elements                     |
+| 8   | Web fonts declared (`IBM Plex`) but never loaded                                        | High     | The product rendered in a system fallback font everywhere                    |
+| 9   | `min-h-screen` on full-height layouts                                                   | Low      | Mobile viewport clipping under browser chrome                                |
+| 10  | Metric values re-rendered with no transition on refresh                                 | Low      | Numbers changed silently; operators could miss updates                       |
+| 11  | Status dots identical for nominal and critical states                                   | Low      | Critical state had no attentional weight                                     |
+| 12  | Chart tooltips used flat popover styling with no elevation                              | Low      | Tooltips merged into the chart surface                                       |
 
 ## Decisions
 

@@ -22,7 +22,10 @@ export const Route = createFileRoute("/_admin/security/")({
           "Postura de autenticação e autorização: rejeições mTLS, tokens inválidos, respostas não autorizadas e proibidas, limitação de taxa e clientes suspeitos.",
       },
       { property: "og:title", content: "Visão Geral de Segurança — CB67 Labs Control Center" },
-      { property: "og:description", content: "Rejeições, negações e atividade de clientes suspeitos." },
+      {
+        property: "og:description",
+        content: "Rejeições, negações e atividade de clientes suspeitos.",
+      },
     ],
   }),
   component: SecurityOverviewPage,

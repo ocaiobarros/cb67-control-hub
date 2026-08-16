@@ -34,8 +34,17 @@ function ServicesPage() {
       cell: (row) => <span className="text-sm font-medium">{row.name}</span>,
       sortValue: (row) => row.name,
     },
-    { id: "detail", header: "Detalhe", cell: (row) => <span className="text-xs text-muted-foreground">{row.detail}</span> },
-    { id: "uptime", header: "Uptime", cell: (row) => <span className="mono-xs">{row.uptime}</span>, sortValue: (row) => row.uptime },
+    {
+      id: "detail",
+      header: "Detalhe",
+      cell: (row) => <span className="text-xs text-muted-foreground">{row.detail}</span>,
+    },
+    {
+      id: "uptime",
+      header: "Uptime",
+      cell: (row) => <span className="mono-xs">{row.uptime}</span>,
+      sortValue: (row) => row.uptime,
+    },
     {
       id: "status",
       header: "Status",
@@ -53,8 +62,18 @@ function ServicesPage() {
       />
 
       <div className="grid gap-3 sm:grid-cols-3">
-        <MetricCard label="Saudáveis" value={rows.filter((r) => r.status === "healthy").length} tone="ok" isLoading={services.isLoading} />
-        <MetricCard label="Degradados" value={rows.filter((r) => r.status === "degraded").length} tone="warn" isLoading={services.isLoading} />
+        <MetricCard
+          label="Saudáveis"
+          value={rows.filter((r) => r.status === "healthy").length}
+          tone="ok"
+          isLoading={services.isLoading}
+        />
+        <MetricCard
+          label="Degradados"
+          value={rows.filter((r) => r.status === "degraded").length}
+          tone="warn"
+          isLoading={services.isLoading}
+        />
         <MetricCard
           label="Indisponíveis"
           value={rows.filter((r) => r.status === "unavailable").length}

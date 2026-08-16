@@ -21,7 +21,10 @@ export const Route = createFileRoute("/_admin/security/events")({
           "Fluxo completo de eventos de segurança com severidade, categoria, cliente de origem, endereço de origem e o identificador de requisição correlacionado.",
       },
       { property: "og:title", content: "Eventos de Segurança — CB67 Labs Control Center" },
-      { property: "og:description", content: "Fluxo de eventos de segurança filtrado por severidade." },
+      {
+        property: "og:description",
+        content: "Fluxo de eventos de segurança filtrado por severidade.",
+      },
     ],
   }),
   component: SecurityEventsPage,
@@ -131,7 +134,11 @@ function SecurityEventsPage() {
           pageSize={20}
           dense
           toolbar={
-            <div role="group" aria-label="Filtro de severidade" className="inline-flex overflow-hidden rounded-md border border-border">
+            <div
+              role="group"
+              aria-label="Filtro de severidade"
+              className="inline-flex overflow-hidden rounded-md border border-border"
+            >
               {SEVERITIES.map((value) => (
                 <button
                   key={value}
