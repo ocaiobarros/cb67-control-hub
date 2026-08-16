@@ -10,33 +10,194 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/_admin'
+import { Route as AdminOverviewRouteImport } from './routes/_admin.overview'
+import { Route as AdminApisEndpointsRouteImport } from './routes/_admin.apis.endpoints'
+import { Route as AdminApisRequestsRouteImport } from './routes/_admin.apis.requests'
+import { Route as AdminInfrastructureComputeRouteImport } from './routes/_admin.infrastructure.compute'
+import { Route as AdminInfrastructureHostsRouteImport } from './routes/_admin.infrastructure.hosts'
+import { Route as AdminInfrastructureNetworkRouteImport } from './routes/_admin.infrastructure.network'
+import { Route as AdminInfrastructureServicesRouteImport } from './routes/_admin.infrastructure.services'
+import { Route as AdminInfrastructureStorageRouteImport } from './routes/_admin.infrastructure.storage'
+import { Route as AdminSaasApplicationsRouteImport } from './routes/_admin.saas.applications'
+import { Route as AdminSaasClientsRouteImport } from './routes/_admin.saas.clients'
+import { Route as AdminSaasInstancesRouteImport } from './routes/_admin.saas.instances'
+import { Route as AdminSaasApplicationsIdRouteImport } from './routes/_admin.saas.applications.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/_admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminOverviewRoute = AdminOverviewRouteImport.update({
+  id: '/overview',
+  path: '/overview',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminApisEndpointsRoute = AdminApisEndpointsRouteImport.update({
+  id: '/apis/endpoints',
+  path: '/apis/endpoints',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminApisRequestsRoute = AdminApisRequestsRouteImport.update({
+  id: '/apis/requests',
+  path: '/apis/requests',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminInfrastructureComputeRoute =
+  AdminInfrastructureComputeRouteImport.update({
+    id: '/infrastructure/compute',
+    path: '/infrastructure/compute',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminInfrastructureHostsRoute =
+  AdminInfrastructureHostsRouteImport.update({
+    id: '/infrastructure/hosts',
+    path: '/infrastructure/hosts',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminInfrastructureNetworkRoute =
+  AdminInfrastructureNetworkRouteImport.update({
+    id: '/infrastructure/network',
+    path: '/infrastructure/network',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminInfrastructureServicesRoute =
+  AdminInfrastructureServicesRouteImport.update({
+    id: '/infrastructure/services',
+    path: '/infrastructure/services',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminInfrastructureStorageRoute =
+  AdminInfrastructureStorageRouteImport.update({
+    id: '/infrastructure/storage',
+    path: '/infrastructure/storage',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminSaasApplicationsRoute = AdminSaasApplicationsRouteImport.update({
+  id: '/saas/applications',
+  path: '/saas/applications',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSaasClientsRoute = AdminSaasClientsRouteImport.update({
+  id: '/saas/clients',
+  path: '/saas/clients',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSaasInstancesRoute = AdminSaasInstancesRouteImport.update({
+  id: '/saas/instances',
+  path: '/saas/instances',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSaasApplicationsIdRoute = AdminSaasApplicationsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminSaasApplicationsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/overview': typeof AdminOverviewRoute
+  '/apis/endpoints': typeof AdminApisEndpointsRoute
+  '/apis/requests': typeof AdminApisRequestsRoute
+  '/infrastructure/compute': typeof AdminInfrastructureComputeRoute
+  '/infrastructure/hosts': typeof AdminInfrastructureHostsRoute
+  '/infrastructure/network': typeof AdminInfrastructureNetworkRoute
+  '/infrastructure/services': typeof AdminInfrastructureServicesRoute
+  '/infrastructure/storage': typeof AdminInfrastructureStorageRoute
+  '/saas/applications': typeof AdminSaasApplicationsRouteWithChildren
+  '/saas/clients': typeof AdminSaasClientsRoute
+  '/saas/instances': typeof AdminSaasInstancesRoute
+  '/saas/applications/$id': typeof AdminSaasApplicationsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/overview': typeof AdminOverviewRoute
+  '/apis/endpoints': typeof AdminApisEndpointsRoute
+  '/apis/requests': typeof AdminApisRequestsRoute
+  '/infrastructure/compute': typeof AdminInfrastructureComputeRoute
+  '/infrastructure/hosts': typeof AdminInfrastructureHostsRoute
+  '/infrastructure/network': typeof AdminInfrastructureNetworkRoute
+  '/infrastructure/services': typeof AdminInfrastructureServicesRoute
+  '/infrastructure/storage': typeof AdminInfrastructureStorageRoute
+  '/saas/applications': typeof AdminSaasApplicationsRouteWithChildren
+  '/saas/clients': typeof AdminSaasClientsRoute
+  '/saas/instances': typeof AdminSaasInstancesRoute
+  '/saas/applications/$id': typeof AdminSaasApplicationsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_admin': typeof AdminRouteWithChildren
+  '/_admin/overview': typeof AdminOverviewRoute
+  '/_admin/apis/endpoints': typeof AdminApisEndpointsRoute
+  '/_admin/apis/requests': typeof AdminApisRequestsRoute
+  '/_admin/infrastructure/compute': typeof AdminInfrastructureComputeRoute
+  '/_admin/infrastructure/hosts': typeof AdminInfrastructureHostsRoute
+  '/_admin/infrastructure/network': typeof AdminInfrastructureNetworkRoute
+  '/_admin/infrastructure/services': typeof AdminInfrastructureServicesRoute
+  '/_admin/infrastructure/storage': typeof AdminInfrastructureStorageRoute
+  '/_admin/saas/applications': typeof AdminSaasApplicationsRouteWithChildren
+  '/_admin/saas/clients': typeof AdminSaasClientsRoute
+  '/_admin/saas/instances': typeof AdminSaasInstancesRoute
+  '/_admin/saas/applications/$id': typeof AdminSaasApplicationsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/overview'
+    | '/apis/endpoints'
+    | '/apis/requests'
+    | '/infrastructure/compute'
+    | '/infrastructure/hosts'
+    | '/infrastructure/network'
+    | '/infrastructure/services'
+    | '/infrastructure/storage'
+    | '/saas/applications'
+    | '/saas/clients'
+    | '/saas/instances'
+    | '/saas/applications/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/overview'
+    | '/apis/endpoints'
+    | '/apis/requests'
+    | '/infrastructure/compute'
+    | '/infrastructure/hosts'
+    | '/infrastructure/network'
+    | '/infrastructure/services'
+    | '/infrastructure/storage'
+    | '/saas/applications'
+    | '/saas/clients'
+    | '/saas/instances'
+    | '/saas/applications/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/_admin'
+    | '/_admin/overview'
+    | '/_admin/apis/endpoints'
+    | '/_admin/apis/requests'
+    | '/_admin/infrastructure/compute'
+    | '/_admin/infrastructure/hosts'
+    | '/_admin/infrastructure/network'
+    | '/_admin/infrastructure/services'
+    | '/_admin/infrastructure/storage'
+    | '/_admin/saas/applications'
+    | '/_admin/saas/clients'
+    | '/_admin/saas/instances'
+    | '/_admin/saas/applications/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +209,146 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_admin': {
+      id: '/_admin'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_admin/overview': {
+      id: '/_admin/overview'
+      path: '/overview'
+      fullPath: '/overview'
+      preLoaderRoute: typeof AdminOverviewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/apis/endpoints': {
+      id: '/_admin/apis/endpoints'
+      path: '/apis/endpoints'
+      fullPath: '/apis/endpoints'
+      preLoaderRoute: typeof AdminApisEndpointsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/apis/requests': {
+      id: '/_admin/apis/requests'
+      path: '/apis/requests'
+      fullPath: '/apis/requests'
+      preLoaderRoute: typeof AdminApisRequestsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/infrastructure/compute': {
+      id: '/_admin/infrastructure/compute'
+      path: '/infrastructure/compute'
+      fullPath: '/infrastructure/compute'
+      preLoaderRoute: typeof AdminInfrastructureComputeRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/infrastructure/hosts': {
+      id: '/_admin/infrastructure/hosts'
+      path: '/infrastructure/hosts'
+      fullPath: '/infrastructure/hosts'
+      preLoaderRoute: typeof AdminInfrastructureHostsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/infrastructure/network': {
+      id: '/_admin/infrastructure/network'
+      path: '/infrastructure/network'
+      fullPath: '/infrastructure/network'
+      preLoaderRoute: typeof AdminInfrastructureNetworkRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/infrastructure/services': {
+      id: '/_admin/infrastructure/services'
+      path: '/infrastructure/services'
+      fullPath: '/infrastructure/services'
+      preLoaderRoute: typeof AdminInfrastructureServicesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/infrastructure/storage': {
+      id: '/_admin/infrastructure/storage'
+      path: '/infrastructure/storage'
+      fullPath: '/infrastructure/storage'
+      preLoaderRoute: typeof AdminInfrastructureStorageRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/saas/applications': {
+      id: '/_admin/saas/applications'
+      path: '/saas/applications'
+      fullPath: '/saas/applications'
+      preLoaderRoute: typeof AdminSaasApplicationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/saas/clients': {
+      id: '/_admin/saas/clients'
+      path: '/saas/clients'
+      fullPath: '/saas/clients'
+      preLoaderRoute: typeof AdminSaasClientsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/saas/instances': {
+      id: '/_admin/saas/instances'
+      path: '/saas/instances'
+      fullPath: '/saas/instances'
+      preLoaderRoute: typeof AdminSaasInstancesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/saas/applications/$id': {
+      id: '/_admin/saas/applications/$id'
+      path: '/$id'
+      fullPath: '/saas/applications/$id'
+      preLoaderRoute: typeof AdminSaasApplicationsIdRouteImport
+      parentRoute: typeof AdminSaasApplicationsRoute
+    }
   }
 }
 
+interface AdminSaasApplicationsRouteChildren {
+  AdminSaasApplicationsIdRoute: typeof AdminSaasApplicationsIdRoute
+}
+
+const AdminSaasApplicationsRouteChildren: AdminSaasApplicationsRouteChildren = {
+  AdminSaasApplicationsIdRoute: AdminSaasApplicationsIdRoute,
+}
+
+const AdminSaasApplicationsRouteWithChildren =
+  AdminSaasApplicationsRoute._addFileChildren(
+    AdminSaasApplicationsRouteChildren,
+  )
+
+interface AdminRouteChildren {
+  AdminOverviewRoute: typeof AdminOverviewRoute
+  AdminApisEndpointsRoute: typeof AdminApisEndpointsRoute
+  AdminApisRequestsRoute: typeof AdminApisRequestsRoute
+  AdminInfrastructureComputeRoute: typeof AdminInfrastructureComputeRoute
+  AdminInfrastructureHostsRoute: typeof AdminInfrastructureHostsRoute
+  AdminInfrastructureNetworkRoute: typeof AdminInfrastructureNetworkRoute
+  AdminInfrastructureServicesRoute: typeof AdminInfrastructureServicesRoute
+  AdminInfrastructureStorageRoute: typeof AdminInfrastructureStorageRoute
+  AdminSaasApplicationsRoute: typeof AdminSaasApplicationsRouteWithChildren
+  AdminSaasClientsRoute: typeof AdminSaasClientsRoute
+  AdminSaasInstancesRoute: typeof AdminSaasInstancesRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminOverviewRoute: AdminOverviewRoute,
+  AdminApisEndpointsRoute: AdminApisEndpointsRoute,
+  AdminApisRequestsRoute: AdminApisRequestsRoute,
+  AdminInfrastructureComputeRoute: AdminInfrastructureComputeRoute,
+  AdminInfrastructureHostsRoute: AdminInfrastructureHostsRoute,
+  AdminInfrastructureNetworkRoute: AdminInfrastructureNetworkRoute,
+  AdminInfrastructureServicesRoute: AdminInfrastructureServicesRoute,
+  AdminInfrastructureStorageRoute: AdminInfrastructureStorageRoute,
+  AdminSaasApplicationsRoute: AdminSaasApplicationsRouteWithChildren,
+  AdminSaasClientsRoute: AdminSaasClientsRoute,
+  AdminSaasInstancesRoute: AdminSaasInstancesRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
