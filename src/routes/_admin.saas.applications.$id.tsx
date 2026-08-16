@@ -29,16 +29,16 @@ import type { Instance } from "@/types";
 export const Route = createFileRoute("/_admin/saas/applications/$id")({
   head: () => ({
     meta: [
-      { title: "Application Detail — CB67 Labs Control Center" },
+      { title: "Detalhe da Aplicação — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Credentials, scopes, quotas, instances and audit history for a single SaaS application registered on the CB67 Labs platform.",
+          "Credenciais, escopos, cotas, instâncias e histórico de auditoria de uma aplicação SaaS registrada na plataforma CB67 Labs.",
       },
-      { property: "og:title", content: "Application Detail — CB67 Labs Control Center" },
+      { property: "og:title", content: "Detalhe da Aplicação — CB67 Labs Control Center" },
       {
         property: "og:description",
-        content: "Credentials, scopes, quotas, instances and audit history.",
+        content: "Credenciais, escopos, cotas, instâncias e histórico de auditoria.",
       },
     ],
   }),
@@ -62,21 +62,21 @@ function ApplicationDetailPage() {
   const instanceColumns: Column<Instance>[] = [
     {
       id: "installation",
-      header: "Installation",
-      cell: (row) => <IdentifierCell value={row.installationId} label="installation id" />,
+      header: "Instalação",
+      cell: (row) => <IdentifierCell value={row.installationId} label="id da instalação" />,
       sortValue: (row) => row.installationId,
     },
     { id: "host", header: "Host", cell: (row) => <span className="text-sm">{row.hostLabel}</span>, sortValue: (row) => row.hostLabel },
-    { id: "version", header: "Version", cell: (row) => <span className="mono-xs">{row.version}</span>, sortValue: (row) => row.version },
+    { id: "version", header: "Versão", cell: (row) => <span className="mono-xs">{row.version}</span>, sortValue: (row) => row.version },
     {
       id: "certificate",
-      header: "Certificate",
+      header: "Certificado",
       cell: (row) => <StatusBadge status={row.certificateStatus} />,
       sortValue: (row) => row.certificateStatus,
     },
     {
       id: "lastSeen",
-      header: "Last seen",
+      header: "Visto por último",
       cell: (row) => <span className="text-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>,
       sortValue: (row) => row.lastSeen,
     },
@@ -95,15 +95,15 @@ function ApplicationDetailPage() {
       id: event.id,
       at: event.timestamp,
       title: `${event.action} · ${event.resource}`,
-      detail: `${event.actor} from ${event.source}`,
+      detail: `${event.actor} de ${event.source}`,
       status: event.result,
     }));
 
   return (
     <div className="space-y-6">
       <PageHeader
-        title={app?.name ?? "Application"}
-        description="Consolidated view of a SaaS consumer: identity, authorised scopes, quota consumption, deployed instances and recorded activity."
+        title={app?.name ?? "Aplicação"}
+        description="Visão consolidada de um consumidor SaaS: identidade, escopos autorizados, consumo de cota, instâncias implantadas e atividade registrada."
         meta={
           app ? (
             <>
@@ -117,10 +117,10 @@ function ApplicationDetailPage() {
         actions={
           <Permitted permission="saas.write">
             <Button variant="outline" size="sm" onClick={() => setPending("rotate")}>
-              Rotate credential
+              Rotacionar credencial
             </Button>
             <Button variant="destructive" size="sm" onClick={() => setPending("suspend")}>
-              Suspend access
+              Suspender acesso
             </Button>
           </Permitted>
         }
@@ -131,41 +131,41 @@ function ApplicationDetailPage() {
       ) : (
         <>
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            <MetricCard label="Requests 30d" value={formatCompact(app.requests30d)} />
+            <MetricCard label="Requisições 30d" value={formatCompact(app.requests30d)} />
             <MetricCard
-              label="Error rate"
+              label="Taxa de erro"
               value={formatPercent(app.errorRate)}
               tone={app.errorRate > 1 ? "warn" : "ok"}
-              hint={`${formatNumber(app.errors30d)} failed requests`}
+              hint={`${formatNumber(app.errors30d)} requisições com falha`}
             />
             <MetricCard label="p95 / p99" value={`${formatMs(app.p95Ms)} / ${formatMs(app.p99Ms)}`} />
             <MetricCard
-              label="Rate limited"
+              label="Limitadas por taxa"
               value={formatNumber(app.rateLimited)}
-              hint="429 responses in 30 days"
+              hint="respostas 429 em 30 dias"
             />
           </div>
 
           <Tabs defaultValue="identity">
             <TabsList>
-              <TabsTrigger value="identity">Identity</TabsTrigger>
-              <TabsTrigger value="quotas">Quotas</TabsTrigger>
-              <TabsTrigger value="instances">Instances</TabsTrigger>
-              <TabsTrigger value="activity">Activity</TabsTrigger>
+              <TabsTrigger value="identity">Identidade</TabsTrigger>
+              <TabsTrigger value="quotas">Cotas</TabsTrigger>
+              <TabsTrigger value="instances">Instâncias</TabsTrigger>
+              <TabsTrigger value="activity">Atividade</TabsTrigger>
             </TabsList>
 
             <TabsContent value="identity" className="grid gap-3 lg:grid-cols-2">
               <section className="panel p-4">
-                <h2 className="pb-2 text-sm font-semibold">Client identity</h2>
+                <h2 className="pb-2 text-sm font-semibold">Identidade do cliente</h2>
                 <dl>
                   <StatRow
-                    label="API client ID"
-                    value={<IdentifierCell value={app.apiClientId} label="client id" />}
+                    label="ID do cliente de API"
+                    value={<IdentifierCell value={app.apiClientId} label="id do cliente" />}
                   />
-                  <StatRow label="Application code" value={<code className="mono-xs">{app.code}</code>} />
-                  <StatRow label="License status" value={<StatusBadge status={app.licenseStatus} />} />
+                  <StatRow label="Código da aplicação" value={<code className="mono-xs">{app.code}</code>} />
+                  <StatRow label="Status da licença" value={<StatusBadge status={app.licenseStatus} />} />
                   <StatRow
-                    label="Certificate"
+                    label="Certificado"
                     value={
                       <span className="flex items-center gap-2">
                         <StatusBadge status={app.certificateStatus} />
@@ -175,20 +175,20 @@ function ApplicationDetailPage() {
                       </span>
                     }
                   />
-                  <StatRow label="Last seen" value={formatRelative(app.lastSeen)} />
+                  <StatRow label="Visto por último" value={formatRelative(app.lastSeen)} />
                 </dl>
                 <p className="mt-3 text-xs text-muted-foreground">
-                  Client secrets and private keys are never displayed. Rotation issues new material
-                  through the platform PKI and invalidates the previous credential.
+                  Segredos de cliente e chaves privadas nunca são exibidos. A rotação emite novo
+                  material pela PKI da plataforma e invalida a credencial anterior.
                 </p>
               </section>
 
               <section className="panel p-4">
-                <h2 className="pb-2 text-sm font-semibold">Service authorisation</h2>
+                <h2 className="pb-2 text-sm font-semibold">Autorização de serviços</h2>
                 <div className="space-y-3">
                   <div>
                     <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-                      Allowed
+                      Permitidos
                     </p>
                     <div className="mt-1.5 flex flex-wrap gap-1.5">
                       {app.allowedServices.map((service) => (
@@ -200,11 +200,11 @@ function ApplicationDetailPage() {
                   </div>
                   <div>
                     <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-                      Blocked
+                      Bloqueados
                     </p>
                     <div className="mt-1.5 flex flex-wrap gap-1.5">
                       {app.blockedServices.length === 0 ? (
-                        <span className="text-xs text-muted-foreground">No explicit denials.</span>
+                        <span className="text-xs text-muted-foreground">Nenhuma negação explícita.</span>
                       ) : (
                         app.blockedServices.map((service) => (
                           <Badge key={service} variant="outline" className="mono-xs border-crit/40 text-crit">
@@ -220,17 +220,17 @@ function ApplicationDetailPage() {
 
             <TabsContent value="quotas" className="grid gap-3 sm:grid-cols-2">
               <UsageCard
-                label="Monthly quota"
+                label="Cota mensal"
                 used={app.quotaUsed}
                 total={app.monthlyQuota}
                 formatValue={formatCompact}
-                hint="Requests consumed in the current billing window"
+                hint="Requisições consumidas na janela de cobrança atual"
               />
               <MetricCard
-                label="Rate limited"
+                label="Limitadas por taxa"
                 value={formatNumber(app.rateLimited)}
                 tone={app.rateLimited > 0 ? "warn" : "ok"}
-                hint="Requests rejected with 429"
+                hint="Requisições rejeitadas com 429"
               />
             </TabsContent>
 
@@ -241,8 +241,8 @@ function ApplicationDetailPage() {
                 rowKey={(row) => row.id}
                 isLoading={instances.isLoading}
                 error={instances.error ?? undefined}
-                searchPlaceholder="Search installations…"
-                emptyMessage="No instances reporting for this application."
+                searchPlaceholder="Buscar instalações…"
+                emptyMessage="Nenhuma instância reportando para esta aplicação."
               />
             </TabsContent>
 
@@ -256,20 +256,20 @@ function ApplicationDetailPage() {
       <ConfirmActionDialog
         open={pending === "suspend"}
         onOpenChange={(open) => setPending(open ? "suspend" : null)}
-        title="Suspend application access"
-        warning="The application will immediately receive 403 responses on every endpoint. Running instances stop functioning until access is restored."
+        title="Suspender acesso da aplicação"
+        warning="A aplicação passará a receber imediatamente respostas 403 em todos os endpoints. Instâncias em execução deixam de funcionar até o acesso ser restabelecido."
         details={[
-          { label: "Application", value: app?.name ?? "—" },
-          { label: "Client ID", value: <code className="mono-xs">{app?.apiClientId}</code> },
-          { label: "Instances affected", value: app?.instances ?? 0 },
+          { label: "Aplicação", value: app?.name ?? "—" },
+          { label: "ID do cliente", value: <code className="mono-xs">{app?.apiClientId}</code> },
+          { label: "Instâncias afetadas", value: app?.instances ?? 0 },
         ]}
         environmentNotice={
           app?.environment === "production"
-            ? "This application runs in PRODUCTION. Confirm the change window before proceeding."
+            ? "Esta aplicação roda em PRODUÇÃO. Confirme a janela de mudança antes de prosseguir."
             : undefined
         }
         requireTypedValue={app?.code}
-        confirmLabel="Suspend access"
+        confirmLabel="Suspender acesso"
         onConfirm={async () => {
           await action.mutateAsync({ action: "saas.suspend", resourceId: id });
         }}
@@ -278,14 +278,14 @@ function ApplicationDetailPage() {
       <ConfirmActionDialog
         open={pending === "rotate"}
         onOpenChange={(open) => setPending(open ? "rotate" : null)}
-        title="Rotate client credential"
-        warning="A new credential is issued and the current one is invalidated after the grace period defined by platform policy. Instances must pick up the new material."
+        title="Rotacionar credencial do cliente"
+        warning="Uma nova credencial é emitida e a atual é invalidada após o período de carência definido pela política da plataforma. As instâncias precisam adotar o novo material."
         details={[
-          { label: "Application", value: app?.name ?? "—" },
-          { label: "Client ID", value: <code className="mono-xs">{app?.apiClientId}</code> },
+          { label: "Aplicação", value: app?.name ?? "—" },
+          { label: "ID do cliente", value: <code className="mono-xs">{app?.apiClientId}</code> },
         ]}
         destructive={false}
-        confirmLabel="Rotate credential"
+        confirmLabel="Rotacionar credencial"
         onConfirm={async () => {
           await action.mutateAsync({ action: "saas.rotate-credential", resourceId: id });
         }}
