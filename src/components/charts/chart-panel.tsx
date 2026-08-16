@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   Area,
   AreaChart,
@@ -55,6 +55,24 @@ const tooltipStyle = {
   },
   labelStyle: { color: "var(--muted-foreground)" },
 } as const;
+
+/**
+ * MOTION — charts animate once, briefly, to explain that data arrived.
+ * Under prefers-reduced-motion the animation is skipped entirely.
+ */
+const CHART_MOTION_MS = 480;
+
+function useChartMotion() {
+  const [enabled, setEnabled] = useState(true);
+  useEffect(() => {
+    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setEnabled(!mql.matches);
+    sync();
+    mql.addEventListener("change", sync);
+    return () => mql.removeEventListener("change", sync);
+  }, []);
+  return { isAnimationActive: enabled, animationDuration: enabled ? CHART_MOTION_MS : 0 };
+}
 
 function labelFor(value: string) {
   return value.includes("T") && value.endsWith("Z") ? formatTime(value) : value;
@@ -117,6 +135,7 @@ export function TimeSeriesChart({
   unit?: string | undefined;
 }) {
   const Chart = variant === "area" ? AreaChart : LineChart;
+  const motion = useChartMotion();
   return (
     <ResponsiveContainer width="100%" height="100%">
       <Chart data={data} margin={{ top: 4, right: 8, left: -16, bottom: 0 }}>
@@ -149,6 +168,7 @@ export function TimeSeriesChart({
               fillOpacity={0.14}
               strokeWidth={1.8}
               dot={false}
+              {...motion}
             />
           ) : (
             <Line
@@ -158,6 +178,7 @@ export function TimeSeriesChart({
               stroke={s.color ?? PALETTE[i % PALETTE.length]}
               strokeWidth={1.8}
               dot={false}
+              {...motion}
             />
           ),
         )}
@@ -178,6 +199,7 @@ export function CategoryBarChart({
   colorByIndex?: boolean | undefined;
 }) {
   const horizontal = layout === "horizontal";
+  const motion = useChartMotion();
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
@@ -199,7 +221,7 @@ export function CategoryBarChart({
           {...axisProps}
         />
         <Tooltip {...tooltipStyle} formatter={(value: number) => formatCompact(value)} />
-        <Bar dataKey={dataKey} radius={3} fill="var(--chart-1)">
+        <Bar dataKey={dataKey} radius={3} fill="var(--chart-1)" {...motion}>
           {colorByIndex &&
             data.map((entry, i) => <Cell key={String(entry.t)} fill={PALETTE[i % PALETTE.length]} />)}
         </Bar>
@@ -209,6 +231,7 @@ export function CategoryBarChart({
 }
 
 export function DonutChart({ data, dataKey = "value" }: { data: MetricPoint[]; dataKey?: string }) {
+  const motion = useChartMotion();
   return (
     <ResponsiveContainer width="100%" height="100%">
       <PieChart>
@@ -219,7 +242,8 @@ export function DonutChart({ data, dataKey = "value" }: { data: MetricPoint[]; d
           innerRadius="55%"
           outerRadius="80%"
           paddingAngle={2}
-          stroke="var(--card)"
+          stroke="var(--surface-solid)"
+          {...motion}
         >
           {data.map((entry, i) => (
             <Cell key={String(entry.t)} fill={PALETTE[i % PALETTE.length]} />

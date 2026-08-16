@@ -41,6 +41,7 @@ TanStack Query · Tailwind CSS v4 · shadcn/ui · Recharts · Lucide · Sonner.
 | `docs/LIQUID-MATERIAL.md` | CB67 Liquid material grades, composition order and rules |
 | `docs/MOTION-SYSTEM.md` | Duration/easing scale, motion vocabulary, reduced motion |
 | `docs/DESIGN-AUDIT.md` | Pre-redesign findings and the decisions taken |
+| `docs/VISUAL-ACCEPTANCE.md` | Final visual acceptance gate results per surface, component and motion |
 | `docs/ROUTES.md` | Complete route map and how to add a page |
 | `docs/MANIFEST.md` | This delivery manifest |
 
