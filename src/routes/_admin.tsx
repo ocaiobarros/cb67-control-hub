@@ -13,8 +13,11 @@ export const Route = createFileRoute("/_admin")({
 
 function BrandMark() {
   return (
-    <AppLink to="/overview" className="flex h-14 items-center gap-2 border-b border-border px-4">
-      <span className="grid size-7 place-items-center rounded bg-primary text-xs font-bold text-primary-foreground">
+    <AppLink
+      to="/overview"
+      className="group flex h-14 items-center gap-2.5 border-b border-border px-4"
+    >
+      <span className="relative grid size-7 place-items-center overflow-hidden rounded-lg bg-primary text-[0.6875rem] font-bold text-primary-foreground shadow-depth-2 before:absolute before:inset-x-0 before:top-0 before:h-1/2 before:bg-gradient-to-b before:from-white/25 before:to-transparent">
         C7
       </span>
       <span className="leading-tight">
@@ -32,8 +35,10 @@ function AdminLayout() {
 
   return (
     <ProtectedRoute>
-      <div className="flex min-h-screen bg-background">
-        <aside className="hidden w-64 shrink-0 flex-col border-r border-border bg-sidebar lg:flex">
+      {/* LEVEL 0 canvas: the atmospheric gradient lives on body::before. */}
+      <div className="flex min-h-dvh">
+        {/* LEVEL 1 navigation: liquid glass chrome over the canvas. */}
+        <aside className="liquid-nav hidden w-64 shrink-0 flex-col border-r border-border lg:flex">
           <BrandMark />
           <div className="min-h-0 flex-1">
             <SidebarNav pathname={pathname} />
@@ -41,12 +46,12 @@ function AdminLayout() {
         </aside>
 
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-          <SheetContent side="left" className="w-72 p-0">
+          <SheetContent side="left" className="w-72 rounded-r-3xl p-0">
             <SheetHeader className="sr-only">
               <SheetTitle>Navigation</SheetTitle>
             </SheetHeader>
             <BrandMark />
-            <div className="h-[calc(100vh-3.5rem)]">
+            <div className="h-[calc(100dvh-3.5rem)]">
               <SidebarNav pathname={pathname} onNavigate={() => setMobileOpen(false)} />
             </div>
           </SheetContent>
@@ -58,7 +63,8 @@ function AdminLayout() {
             onOpenSidebar={() => setMobileOpen(true)}
             onOpenSearch={() => setSearchOpen(true)}
           />
-          <main className="min-w-0 flex-1 px-4 py-6 lg:px-6">
+          {/* LEVEL 2 content plane. Keyed reveal gives route changes continuity. */}
+          <main key={pathname} className="content-enter min-w-0 flex-1 px-4 py-6 lg:px-7 lg:py-7">
             <Outlet />
           </main>
         </div>
