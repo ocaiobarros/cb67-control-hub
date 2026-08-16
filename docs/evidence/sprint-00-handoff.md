@@ -262,7 +262,7 @@ _not_ retrying.
 bound to it; login carries that token; on success the server rotates the session
 identifier (defeating fixation) and invalidates the pre-authentication token.
 
-**23 tests, all passing.** Coverage is deliberately weighted toward failure
+**25 tests, all passing.** Coverage is deliberately weighted toward failure
 paths, because those are the security-relevant ones:
 
 | Group              | Cases                                                                                                                                                                                                                                           |

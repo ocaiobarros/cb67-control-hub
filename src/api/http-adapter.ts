@@ -136,8 +136,10 @@ async function send(
     headers: {
       Accept: "application/json",
       ...(init?.body ? { "Content-Type": "application/json" } : {}),
-      ...(MUTATING.has(method) && token ? { "X-CSRF-Token": token } : {}),
       ...init?.headers,
+      // Spread LAST so a caller cannot override the security header. The
+      // adapter owns CSRF; callers must not be able to weaken it.
+      ...(MUTATING.has(method) && token ? { "X-CSRF-Token": token } : {}),
     },
   });
 }
@@ -191,7 +193,18 @@ const range = (r: TimeRange) => ({ query: { range: r } });
 export const httpAdapter: PlatformAdapter = {
   kind: "http",
 
-  login: (input) => request("v1/admin/auth/login", { method: "POST", body: JSON.stringify(input) }),
+  login: async (input) => {
+    const user = await request<Awaited<ReturnType<PlatformAdapter["login"]>>>(
+      "v1/admin/auth/login",
+      { method: "POST", body: JSON.stringify(input) },
+    );
+    // The server rotates the session id and invalidates the pre-authentication
+    // CSRF token on success, so the cached one is stale by definition. Clearing
+    // it here means the next mutation fetches a fresh token instead of taking a
+    // guaranteed 403 first.
+    resetCsrfToken();
+    return user;
+  },
   currentUser: () => request("v1/admin/auth/session"),
   logout: async () => {
     try {

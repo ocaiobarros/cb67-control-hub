@@ -348,4 +348,39 @@ describe("CSRF — token lifecycle", () => {
     expect(seen.length).toBeGreaterThanOrEqual(3); // read + token fetch + mutation
     for (const c of seen) expect(c).toBe("include");
   });
+  test("login clears the pre-authentication token so the next mutation gets a fresh one", async () => {
+    let issued = 0;
+    stubFetch((call) => {
+      if (call.url.includes("/auth/csrf")) {
+        issued += 1;
+        return jsonResponse({ token: `tok-${issued}` });
+      }
+      return jsonResponse({ id: "u1", name: "op" });
+    });
+    const { httpAdapter, request } = await loadAdapter();
+
+    await httpAdapter.login({ email: "op@example.test", password: "x" } as never);
+    await request("v1/admin/thing", { method: "POST" });
+
+    // One token for login, one for the post-login mutation — the pre-auth token
+    // is invalidated server-side, so reusing it would guarantee a wasted 403.
+    expect(tokenFetches()).toHaveLength(2);
+    expect(mutations().at(-1)?.headers["x-csrf-token"]).toBe("tok-2");
+  });
+
+  test("a caller cannot override the CSRF header", async () => {
+    stubFetch((call) => {
+      if (call.url.includes("/auth/csrf")) return jsonResponse({ token: "tok-real" });
+      return jsonResponse({ ok: true });
+    });
+    const { request } = await loadAdapter();
+
+    await request("v1/admin/thing", {
+      method: "POST",
+      headers: { "X-CSRF-Token": "attacker-supplied" },
+    });
+
+    // The adapter owns this header; a caller must not be able to weaken it.
+    expect(mutations()[0]?.headers["x-csrf-token"]).toBe("tok-real");
+  });
 });

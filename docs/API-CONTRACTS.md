@@ -86,6 +86,36 @@ returns a stable, contractual code:
 403 → { "code": "csrf_token_invalid", "message": "...", "requestId": "..." }
 ```
 
+#### `csrf_token_invalid` is a pre-handler rejection — normative
+
+The client replays a mutation on this code. That replay is only safe if the
+rejected request had **no effect whatsoever**, so this is a hard requirement on
+the backend, not an implementation detail:
+
+- CSRF validation and `Origin`/`Referer` validation run **before** the operation
+  handler, before any authorization-dependent mutation logic, and **before any
+  database transaction is opened**.
+- A request rejected with `csrf_token_invalid` performs **zero** application
+  side effects: no writes, no event publication, no outbound provider call, and
+  no success audit record. An audit entry recording the _rejection_ is expected
+  and is not a side effect of the operation.
+- The server **must never** return `csrf_token_invalid` after partial execution.
+  If a CSRF problem is somehow detected mid-operation, it must be reported under
+  a different code so the client does not replay.
+
+Why this is stated so strictly: the admin plane performs destructive operations
+such as licence revocation. If a partially-executed request returned this code,
+the client's single retry would apply the operation twice. The strict
+pre-handler guarantee is what makes automatic replay acceptable here.
+
+Independently retryable sensitive operations should additionally accept an
+**idempotency key**, so correctness does not rest on this guarantee alone. CSRF
+retry itself relies on the pre-handler rule above.
+
+Backend integration tests must prove the guarantee once the backend exists: a
+request rejected with `csrf_token_invalid` leaves no row, no event and no audit
+success entry behind.
+
 - **Only** a `403` carrying `code: "csrf_token_invalid"` is retried. The client
   re-fetches the token once and replays the request once. It does not loop.
 - **Every other `403` surfaces immediately and is never replayed** — insufficient
@@ -136,9 +166,11 @@ or a readable cookie — and is cleared on logout so a new session cannot reuse 
 session identifier on privilege change (session fixation).
 
 Implemented in `src/api/http-adapter.ts`; behaviour covered by
-`src/api/http-adapter.test.ts` (8 tests: reads carry no token, mutations do,
-caching, single-retry-on-403, no-loop, all mutating verbs, credentials always
-included).
+`src/api/http-adapter.test.ts` (23 tests, weighted toward failure paths: nine
+fail-closed cases each asserting zero mutation attempts; six covering 403
+classification, including that an authorization 403 is _not_ retried; plus
+concurrency de-duplication, body preservation across retry, and cache clearing
+on login and logout).
 
 **Frontend guards are UX only.** Authorization is enforced by the backend and
 never by the client.
