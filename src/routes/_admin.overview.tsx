@@ -194,7 +194,7 @@ function OverviewPage() {
             <div key={service.id} className="panel flex items-center justify-between gap-3 p-4">
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium">{service.name}</p>
-                <p className="mono-xs truncate text-muted-foreground">{service.host}</p>
+                <p className="mono-xs truncate text-muted-foreground">{service.detail}</p>
               </div>
               <StatusBadge status={service.status} />
             </div>
@@ -237,8 +237,8 @@ function OverviewPage() {
         />
         <MetricCard
           label="Providers degraded"
-          value={data ? formatNumber(data.providers.filter((p) => p.status !== "operational").length) : "—"}
-          tone={data && data.providers.some((p) => p.status === "down") ? "crit" : "neutral"}
+          value={data ? formatNumber(data.providers.filter((p) => p.status !== "healthy").length) : "—"}
+          tone={data && data.providers.some((p) => p.status === "unavailable") ? "crit" : "neutral"}
           hint="External dependencies"
           isLoading={overview.isLoading}
         />
