@@ -1,3 +1,13 @@
+/* Self-hosted IBM Plex — same typefaces and weights previously loaded from
+   fonts.googleapis.com. Served locally so the admin plane has no third-party
+   runtime dependency and no request leaks to Google on every page view. */
+@import "@fontsource/ibm-plex-sans/400.css";
+@import "@fontsource/ibm-plex-sans/500.css";
+@import "@fontsource/ibm-plex-sans/600.css";
+@import "@fontsource/ibm-plex-sans/700.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+@import "@fontsource/ibm-plex-mono/600.css";
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";

@@ -28,9 +28,18 @@ The interface ships entirely in Brazilian Portuguese, including error surfaces
 (401, 403, 404, 429, 500, 503), destructive dialogs, toasts and `aria-label`
 values.
 
-Date and number presentation is centralised in `src/utils/format.ts` and nowhere
-else — no component calls `toLocaleString()` directly. Presentation follows
-Brazilian convention:
+Date and number presentation is centralised in `src/utils/format.ts`. Application
+code must not call `toLocaleString()` directly.
+
+One documented exception: `src/components/ui/calendar.tsx` calls
+`toLocaleString("pt-BR")` and `toLocaleDateString("pt-BR")` for the month
+dropdown and a `data-day` attribute, because react-day-picker's formatter API
+supplies `Date` objects rather than the ISO strings the shared helpers accept.
+The locale is passed explicitly, so there is no browser-locale drift — but the
+call is not routed through the shared layer, and claiming otherwise would be
+false. Any _new_ direct call outside that primitive should be rejected in review.
+
+Presentation follows Brazilian convention:
 
 | Helper           | Output              |
 | ---------------- | ------------------- |

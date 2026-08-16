@@ -4,6 +4,23 @@ import * as RechartsPrimitive from "recharts";
 import { cn } from "@/lib/utils";
 import { formatNumber } from "@/utils/format";
 
+/**
+ * Recharts tooltip values may be numeric or string-like. Coercing every value
+ * with Number() renders NaN for legitimate non-numeric strings, so only genuine
+ * numbers are localised and anything else is passed through untouched.
+ */
+function formatChartValue(value: unknown): string {
+  if (typeof value === "number")
+    return Number.isFinite(value) ? formatNumber(value) : String(value);
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (trimmed === "") return value;
+    const parsed = Number(trimmed);
+    return Number.isFinite(parsed) ? formatNumber(parsed) : value;
+  }
+  return String(value ?? "");
+}
+
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const;
 
@@ -223,7 +240,7 @@ const ChartTooltipContent = React.forwardRef<
                         </div>
                         {item.value && (
                           <span className="font-mono font-medium tabular-nums text-foreground">
-                            {formatNumber(Number(item.value))}
+                            {formatChartValue(item.value)}
                           </span>
                         )}
                       </div>

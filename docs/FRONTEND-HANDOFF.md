@@ -73,6 +73,11 @@ locale: pt-BR
 The UI is fully localised to Brazilian Portuguese. Error surfaces, destructive
 dialogs, toasts and accessibility labels are included — not just page copy.
 
-Date and number formatting lives exclusively in `src/utils/format.ts`
-(`dd/MM/yyyy`, `dd/MM/yyyy HH:mm`). Adding a `toLocaleString()` call elsewhere
-reintroduces browser-locale drift and should be rejected in review.
+Date and number formatting lives in `src/utils/format.ts` (`dd/MM/yyyy`,
+`dd/MM/yyyy HH:mm`). Adding a `toLocaleString()` call elsewhere reintroduces
+browser-locale drift and should be rejected in review.
+
+Known exception: `src/components/ui/calendar.tsx` passes `"pt-BR"` explicitly to
+`toLocaleString`/`toLocaleDateString` because react-day-picker hands it `Date`
+objects. Explicit locale, so no drift — but it is outside the shared layer and
+is documented rather than hidden.

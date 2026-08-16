@@ -30,3 +30,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment — this repository is PUBLIC and Vite inlines VITE_* values into
+# the browser bundle at build time. Never commit a real environment file.
+.env
+.env.*
+!.env.example
