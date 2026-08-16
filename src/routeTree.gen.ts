@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/_admin'
 import { Route as AdminOverviewRouteImport } from './routes/_admin.overview'
+import { Route as AdminInfrastructureHostsRouteImport } from './routes/_admin.infrastructure.hosts'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -27,27 +28,41 @@ const AdminOverviewRoute = AdminOverviewRouteImport.update({
   path: '/overview',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminInfrastructureHostsRoute =
+  AdminInfrastructureHostsRouteImport.update({
+    id: '/infrastructure/hosts',
+    path: '/infrastructure/hosts',
+    getParentRoute: () => AdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/overview': typeof AdminOverviewRoute
+  '/infrastructure/hosts': typeof AdminInfrastructureHostsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/overview': typeof AdminOverviewRoute
+  '/infrastructure/hosts': typeof AdminInfrastructureHostsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_admin': typeof AdminRouteWithChildren
   '/_admin/overview': typeof AdminOverviewRoute
+  '/_admin/infrastructure/hosts': typeof AdminInfrastructureHostsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/overview'
+  fullPaths: '/' | '/overview' | '/infrastructure/hosts'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/overview'
-  id: '__root__' | '/' | '/_admin' | '/_admin/overview'
+  to: '/' | '/overview' | '/infrastructure/hosts'
+  id:
+    | '__root__'
+    | '/'
+    | '/_admin'
+    | '/_admin/overview'
+    | '/_admin/infrastructure/hosts'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -78,15 +93,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminOverviewRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_admin/infrastructure/hosts': {
+      id: '/_admin/infrastructure/hosts'
+      path: '/infrastructure/hosts'
+      fullPath: '/infrastructure/hosts'
+      preLoaderRoute: typeof AdminInfrastructureHostsRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
   AdminOverviewRoute: typeof AdminOverviewRoute
+  AdminInfrastructureHostsRoute: typeof AdminInfrastructureHostsRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminOverviewRoute: AdminOverviewRoute,
+  AdminInfrastructureHostsRoute: AdminInfrastructureHostsRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
