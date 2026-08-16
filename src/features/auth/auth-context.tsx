@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { api } from "@/api/client";
+import { isMfaChallenge } from "@/api/adapter";
 import type { AuthenticatedUser } from "@/types";
 
 /**
@@ -12,7 +13,9 @@ import type { AuthenticatedUser } from "@/types";
 interface AuthState {
   user: AuthenticatedUser | null;
   loading: boolean;
-  login: (input: { username: string; password: string }) => Promise<void>;
+  /** Resolves true when a second factor is required before the session exists. */
+  login: (input: { username: string; password: string }) => Promise<boolean>;
+  verifyMfa: (input: { code: string }) => Promise<void>;
   logout: () => Promise<void>;
   can: (permission: string) => boolean;
 }
@@ -50,7 +53,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (input: { username: string; password: string }) => {
     const next = await api.login(input);
+    if (isMfaChallenge(next)) {
+      // No user is set: there is no session yet, so nothing may render as
+      // authenticated.
+      return true;
+    }
     setUser(next);
+    return false;
+  }, []);
+
+  const verifyMfa = useCallback(async (input: { code: string }) => {
+    setUser(await api.verifyMfa(input));
   }, []);
 
   const logout = useCallback(async () => {
@@ -64,8 +77,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const value = useMemo(
-    () => ({ user, loading, login, logout, can }),
-    [user, loading, login, logout, can],
+    () => ({ user, loading, login, verifyMfa, logout, can }),
+    [user, loading, login, verifyMfa, logout, can],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

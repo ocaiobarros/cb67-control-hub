@@ -297,3 +297,18 @@ acknowledgement, not as proof of completion.
 Mock endpoints return full collections and the UI paginates client-side. When server-side
 pagination is introduced, add `page`/`pageSize` and return
 `{ items, page, pageSize, total }`; only `http-adapter.ts` and `DataTable` internals change.
+
+## Identity — `role` is a display field
+
+`Administrator.role` and `AuthenticatedUser.role` carry a **single** role code,
+but an administrator may hold several roles. The value is chosen
+deterministically: the role granting the most permissions, ties broken
+alphabetically.
+
+Permission count is not privilege rank, so this is a **display** role, not an
+authoritative one. **Effective authorization is always the union of every role's
+permissions**, which is what `permissions[]` contains and what the backend
+enforces. Never derive an access decision from `role`.
+
+A future revision may expose `roles[]`, designate an explicit primary role, or
+constrain administrators to one role. Until then, treat `role` as a label.

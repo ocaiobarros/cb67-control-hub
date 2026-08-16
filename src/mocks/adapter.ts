@@ -42,6 +42,15 @@ export const mockAdapter: PlatformAdapter = {
     }
     return delay({ ...mockUser, name: username }, 500);
   },
+  async verifyMfa({ code }) {
+    // The mock has no second factor enrolled, so this is only reachable if a
+    // caller invents a challenge. Refusing keeps the mock honest rather than
+    // rubber-stamping any code.
+    if (!code.trim()) {
+      throw new Error("Código obrigatório.");
+    }
+    throw new Error("O modo mock não possui segundo fator cadastrado.");
+  },
   async currentUser() {
     return readSession();
   },

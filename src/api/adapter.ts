@@ -53,10 +53,29 @@ import type {
  * Both MockAdapter and HttpAdapter implement this interface, so components and
  * hooks are indifferent to the data origin.
  */
+export interface MfaChallenge {
+  readonly mfaRequired: true;
+  readonly expiresAt: string;
+}
+
+export type LoginResult = AuthenticatedUser | MfaChallenge;
+
+/** Narrows a login result to the second-factor case. */
+export function isMfaChallenge(result: LoginResult): result is MfaChallenge {
+  return (result as MfaChallenge).mfaRequired === true;
+}
+
 export interface PlatformAdapter {
   readonly kind: "mock" | "http";
 
-  login(input: { username: string; password: string }): Promise<AuthenticatedUser>;
+  /**
+   * Returns the authenticated user, or a challenge when a second factor is
+   * enrolled. The union is deliberate: a caller cannot treat a half-finished
+   * login as a finished one without first narrowing the type.
+   */
+  login(input: { username: string; password: string }): Promise<LoginResult>;
+  /** Completes a login that stopped at the second factor. */
+  verifyMfa(input: { code: string }): Promise<AuthenticatedUser>;
   currentUser(): Promise<AuthenticatedUser | null>;
   logout(): Promise<void>;
 

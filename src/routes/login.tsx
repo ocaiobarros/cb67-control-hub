@@ -29,12 +29,17 @@ export const Route = createFileRoute("/login")({
 });
 
 function LoginPage() {
-  const { user, loading, login } = useAuth();
+  const { user, loading, login, verifyMfa } = useAuth();
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  // When true the password step succeeded and the server is holding a
+  // challenge. The password is cleared at that point: it has been spent, and
+  // keeping it in component state serves no purpose.
+  const [awaitingCode, setAwaitingCode] = useState(false);
+  const [code, setCode] = useState("");
 
   useEffect(() => {
     if (!loading && user) void navigate({ to: "/overview" as never, replace: true });
@@ -45,7 +50,17 @@ function LoginPage() {
     setSubmitting(true);
     setError(null);
     try {
-      await login({ username, password });
+      if (awaitingCode) {
+        await verifyMfa({ code });
+      } else {
+        const needsCode = await login({ username, password });
+        if (needsCode) {
+          setPassword("");
+          setCode("");
+          setAwaitingCode(true);
+          return;
+        }
+      }
       await navigate({ to: "/overview" as never, replace: true });
     } catch (cause) {
       const { title, detail } = describeError(cause);
@@ -70,29 +85,50 @@ function LoginPage() {
         </div>
 
         <form onSubmit={onSubmit} className="liquid-modal edge-light space-y-4 rounded-3xl p-6">
-          <div className="space-y-1.5">
-            <Label htmlFor="username">Operador</Label>
-            <Input
-              id="username"
-              name="username"
-              autoComplete="username"
-              value={username}
-              onChange={(event) => setUsername(event.target.value)}
-              required
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="password">Senha</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              required
-            />
-          </div>
+          {awaitingCode ? (
+            <div className="space-y-1.5">
+              <Label htmlFor="code">Código de verificação</Label>
+              <Input
+                id="code"
+                name="code"
+                inputMode="text"
+                autoComplete="one-time-code"
+                autoFocus
+                value={code}
+                onChange={(event) => setCode(event.target.value)}
+                required
+              />
+              <p className="text-xs text-muted-foreground">
+                Informe o código do aplicativo autenticador, ou um código de recuperação.
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="space-y-1.5">
+                <Label htmlFor="username">Operador</Label>
+                <Input
+                  id="username"
+                  name="username"
+                  autoComplete="username"
+                  value={username}
+                  onChange={(event) => setUsername(event.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="password">Senha</Label>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  required
+                />
+              </div>
+            </>
+          )}
 
           {error && (
             <p role="alert" className="text-sm text-crit">
@@ -101,8 +137,26 @@ function LoginPage() {
           )}
 
           <Button type="submit" className="w-full" disabled={submitting}>
-            {submitting ? "Entrando…" : "Entrar"}
+            {submitting ? "Verificando…" : awaitingCode ? "Verificar" : "Entrar"}
           </Button>
+
+          {awaitingCode && (
+            <Button
+              type="button"
+              variant="ghost"
+              className="w-full"
+              disabled={submitting}
+              onClick={() => {
+                // Returning to the credentials step abandons the challenge; the
+                // server expires it on its own and it grants nothing meanwhile.
+                setAwaitingCode(false);
+                setCode("");
+                setError(null);
+              }}
+            >
+              Voltar
+            </Button>
+          )}
 
           <p className="text-xs text-muted-foreground">
             Ambiente: <code className="mono-xs">{env.environment}</code>

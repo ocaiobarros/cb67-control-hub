@@ -59,8 +59,35 @@ export class CsrfError extends Error {
 let csrfToken: string | null = null;
 let csrfInFlight: Promise<string> | null = null;
 
+/**
+ * Resolves the API base.
+ *
+ * A relative base ("/" or "/api") means the management API is served from the
+ * SAME origin as the page, behind the reverse proxy. That is the deployment
+ * that actually works remotely: an absolute address baked into the bundle
+ * breaks the moment an operator connects from any machine other than the one
+ * that address refers to — "127.0.0.1:8080" means the operator's own computer.
+ *
+ * Same-origin also removes CORS from the picture entirely.
+ */
+function resolveBase(): string {
+  const configured = env.apiBaseUrl;
+  if (/^https?:\/\//i.test(configured)) {
+    return configured.replace(/\/?$/, "/");
+  }
+  // Relative base. In the browser, resolve against the current origin.
+  if (typeof window !== "undefined" && window.location) {
+    const prefix = configured.replace(/^\/?/, "/").replace(/\/?$/, "/");
+    return new URL(prefix, window.location.origin).toString();
+  }
+  // During SSR there is no origin to resolve against. Requests are made from
+  // the browser, so this path is not exercised; returning the raw value keeps
+  // the error message honest if it ever is.
+  return configured;
+}
+
 function buildUrl(path: string, query?: Record<string, string | undefined>): URL {
-  const url = new URL(path.replace(/^\//, ""), env.apiBaseUrl.replace(/\/?$/, "/"));
+  const url = new URL(path.replace(/^\//, ""), resolveBase());
   for (const [key, value] of Object.entries(query ?? {})) {
     if (value !== undefined) url.searchParams.set(key, value);
   }
@@ -202,6 +229,16 @@ export const httpAdapter: PlatformAdapter = {
     // CSRF token on success, so the cached one is stale by definition. Clearing
     // it here means the next mutation fetches a fresh token instead of taking a
     // guaranteed 403 first.
+    resetCsrfToken();
+    return user;
+  },
+  verifyMfa: async (input) => {
+    const user = await request<Awaited<ReturnType<PlatformAdapter["verifyMfa"]>>>(
+      "v1/admin/auth/mfa/verify",
+      { method: "POST", body: JSON.stringify(input) },
+    );
+    // A session is created here, so the pre-verification CSRF token is stale for
+    // the same reason it is after a single-step login.
     resetCsrfToken();
     return user;
   },
