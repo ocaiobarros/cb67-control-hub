@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Menu, Moon, Search, Sun, LogOut, UserRound } from "lucide-react";
 import { useRouter } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,13 @@ import { breadcrumbsFor } from "@/config/navigation";
 import { useAuth } from "@/features/auth/auth-context";
 import { useTheme } from "@/features/theme/theme-context";
 import { env } from "@/config/env";
+import { cn } from "@/lib/utils";
 
+/**
+ * CB67 Liquid Interface — adaptive chrome.
+ * The topbar is a liquid glass layer that gains blur, tint and depth once
+ * content scrolls beneath it, so the material reacts to what is behind it.
+ */
 export function Topbar({
   pathname,
   onOpenSidebar,
@@ -37,9 +43,22 @@ export function Topbar({
   const { user, logout } = useAuth();
   const { theme, toggle } = useTheme();
   const router = useRouter();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 4);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-border bg-background/85 px-3 backdrop-blur lg:px-5">
+    <header
+      className={cn(
+        "sticky top-0 z-30 flex h-14 items-center gap-2 px-3 transition-[background-color,box-shadow,border-color] duration-300 ease-standard lg:px-5",
+        scrolled ? "liquid-nav border-b border-border" : "border-b border-transparent",
+      )}
+    >
       <Button
         variant="ghost"
         size="icon"
@@ -51,16 +70,16 @@ export function Topbar({
       </Button>
 
       <Breadcrumb className="hidden min-w-0 sm:block">
-        <BreadcrumbList>
+        <BreadcrumbList className="text-[0.8125rem]">
           {crumbs.map((crumb, index) => (
             <Fragment key={`${crumb.label}-${index}`}>
               <BreadcrumbItem>
                 {crumb.to && index < crumbs.length - 1 ? (
-                  <AppLink to={crumb.to} className="hover:text-foreground">
+                  <AppLink to={crumb.to} className="transition-colors hover:text-foreground">
                     {crumb.label}
                   </AppLink>
                 ) : (
-                  <BreadcrumbPage className="truncate">{crumb.label}</BreadcrumbPage>
+                  <BreadcrumbPage className="truncate font-medium">{crumb.label}</BreadcrumbPage>
                 )}
               </BreadcrumbItem>
               {index < crumbs.length - 1 && <BreadcrumbSeparator />}
@@ -69,14 +88,14 @@ export function Topbar({
         </BreadcrumbList>
       </Breadcrumb>
 
-      <div className="ml-auto flex items-center gap-2">
+      <div className="ml-auto flex items-center gap-1.5">
         <Badge variant="outline" className="mono-xs hidden md:inline-flex">
           {env.environment.toUpperCase()}
         </Badge>
         {env.useMockApi && (
           <Badge
             variant="outline"
-            className="mono-xs hidden border-warn/40 text-warn md:inline-flex"
+            className="mono-xs hidden border-warn/40 bg-warn/10 text-warn md:inline-flex"
             title="No backend connected — data comes from the local mock adapter"
           >
             MOCK DATA
@@ -84,10 +103,10 @@ export function Topbar({
         )}
 
         <Button
-          variant="outline"
+          variant="glass"
           size="sm"
           onClick={onOpenSearch}
-          className="text-muted-foreground"
+          className="ml-1 gap-2 text-muted-foreground"
         >
           <Search className="size-3.5" aria-hidden />
           <span className="hidden sm:inline">Search</span>
