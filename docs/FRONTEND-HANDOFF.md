@@ -47,14 +47,14 @@ route/component  ->  q.<query>()  ->  PlatformAdapter  ->  MockAdapter | HttpAda
 
 ## Where to change what
 
-| Need | File |
-| --- | --- |
-| Add a backend call | `src/api/adapter.ts`, `src/api/http-adapter.ts`, `src/api/queries.ts` |
-| Change a domain shape | `src/types/index.ts` |
-| Add a page | `src/routes/_admin.<section>.<page>.tsx` + `src/config/navigation.ts` |
-| Change tokens/theme | `src/styles.css` |
-| Change runtime config | `src/config/env.ts` (env vars only) |
-| Adjust mock scenarios | `src/mocks/data.ts` |
+| Need                  | File                                                                  |
+| --------------------- | --------------------------------------------------------------------- |
+| Add a backend call    | `src/api/adapter.ts`, `src/api/http-adapter.ts`, `src/api/queries.ts` |
+| Change a domain shape | `src/types/index.ts`                                                  |
+| Add a page            | `src/routes/_admin.<section>.<page>.tsx` + `src/config/navigation.ts` |
+| Change tokens/theme   | `src/styles.css`                                                      |
+| Change runtime config | `src/config/env.ts` (env vars only)                                   |
+| Adjust mock scenarios | `src/mocks/data.ts`                                                   |
 
 ## Known gaps for the backend team
 
@@ -62,3 +62,17 @@ route/component  ->  q.<query>()  ->  PlatformAdapter  ->  MockAdapter | HttpAda
 - Database growth trend is derived from current size; a real series is needed.
 - Grafana dashboard slugs must match the provisioned dashboards.
 - `performAction` accepts every request in mock mode; real authorization is pending.
+
+## Localization
+
+```
+default_locale: pt-BR
+locale: pt-BR
+```
+
+The UI is fully localised to Brazilian Portuguese. Error surfaces, destructive
+dialogs, toasts and accessibility labels are included — not just page copy.
+
+Date and number formatting lives exclusively in `src/utils/format.ts`
+(`dd/MM/yyyy`, `dd/MM/yyyy HH:mm`). Adding a `toLocaleString()` call elsewhere
+reintroduces browser-locale drift and should be rejected in review.
