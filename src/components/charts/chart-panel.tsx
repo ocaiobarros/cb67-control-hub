@@ -45,9 +45,11 @@ const axisProps = {
 
 const tooltipStyle = {
   contentStyle: {
-    background: "var(--popover)",
-    border: "1px solid var(--border)",
-    borderRadius: "8px",
+    background: "var(--surface-solid)",
+    border: "1px solid var(--border-strong)",
+    borderRadius: "12px",
+    boxShadow: "var(--depth-4)",
+    padding: "8px 12px",
     fontSize: "12px",
     color: "var(--popover-foreground)",
   },
