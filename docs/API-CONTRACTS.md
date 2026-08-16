@@ -34,12 +34,41 @@ issues and revokes licences.
 with mTLS client certificates. The two planes have different threat models and
 deliberately different mechanisms.
 
-| Method | Path           | Returns                      |
-| ------ | -------------- | ---------------------------- |
-| POST   | `/auth/login`  | `AuthenticatedUser`          |
-| GET    | `/auth/me`     | `AuthenticatedUser \| null`  |
-| POST   | `/auth/logout` | `204`                        |
-| GET    | `/auth/csrf`   | `{ token }` — see CSRF below |
+| Method | Path                      | Returns                                  |
+| ------ | ------------------------- | ---------------------------------------- |
+| POST   | `/auth/login`             | `AuthenticatedUser \| MfaChallenge`      |
+| POST   | `/auth/mfa/verify`        | `AuthenticatedUser`                      |
+| GET    | `/auth/mfa`               | `MfaStatus`                              |
+| POST   | `/auth/mfa/enrol`         | `{ secret, uri, recoveryCodes }`         |
+| POST   | `/auth/mfa/enrol/confirm` | `MfaStatus`                              |
+| POST   | `/auth/mfa/disable`       | `{ enabled: false }`                     |
+| GET    | `/auth/me`                | `AuthenticatedUser \| null`              |
+| POST   | `/auth/logout`            | `204`                                    |
+| GET    | `/auth/csrf`              | `{ token }` — see CSRF below             |
+
+### Second factor
+
+`POST /auth/login` returns one of two shapes. When the administrator has a TOTP
+factor enrolled it returns `{ mfaRequired: true, expiresAt }` and **no session is
+created** — the response carries no identity, and every protected endpoint still
+refuses the client. The account midway through logging in is held server-side in
+a short-lived, single-use, address-bound challenge, delivered as an HttpOnly
+cookie; it authorises nothing on its own.
+
+`POST /auth/mfa/verify` completes the login with either a TOTP code or a
+recovery code, and is the point at which a session appears.
+
+The union is intentional. An optional `mfaRequired?: boolean` on the user type
+would typecheck while letting a challenge flow straight into application state
+as though it were an authenticated user.
+
+Failure codes: `mfa_code_invalid` (wrong, or a code whose 30-second step already
+authenticated something) and `mfa_challenge_expired` (expired, exhausted after
+five attempts, or answered from a different address). Both mean "start again";
+neither reveals whether the account exists or has a factor.
+
+`/auth/mfa/enrol` returns the recovery codes **exactly once**. They are stored
+hashed and cannot be shown again.
 
 ### Cookie attributes the backend must set
 
