@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/_admin'
 import { Route as AdminOverviewRouteImport } from './routes/_admin.overview'
+import { Route as AdminInfrastructureComputeRouteImport } from './routes/_admin.infrastructure.compute'
 import { Route as AdminInfrastructureHostsRouteImport } from './routes/_admin.infrastructure.hosts'
 
 const IndexRoute = IndexRouteImport.update({
@@ -28,6 +29,12 @@ const AdminOverviewRoute = AdminOverviewRouteImport.update({
   path: '/overview',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminInfrastructureComputeRoute =
+  AdminInfrastructureComputeRouteImport.update({
+    id: '/infrastructure/compute',
+    path: '/infrastructure/compute',
+    getParentRoute: () => AdminRoute,
+  } as any)
 const AdminInfrastructureHostsRoute =
   AdminInfrastructureHostsRouteImport.update({
     id: '/infrastructure/hosts',
@@ -38,11 +45,13 @@ const AdminInfrastructureHostsRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/overview': typeof AdminOverviewRoute
+  '/infrastructure/compute': typeof AdminInfrastructureComputeRoute
   '/infrastructure/hosts': typeof AdminInfrastructureHostsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/overview': typeof AdminOverviewRoute
+  '/infrastructure/compute': typeof AdminInfrastructureComputeRoute
   '/infrastructure/hosts': typeof AdminInfrastructureHostsRoute
 }
 export interface FileRoutesById {
@@ -50,18 +59,21 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_admin': typeof AdminRouteWithChildren
   '/_admin/overview': typeof AdminOverviewRoute
+  '/_admin/infrastructure/compute': typeof AdminInfrastructureComputeRoute
   '/_admin/infrastructure/hosts': typeof AdminInfrastructureHostsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/overview' | '/infrastructure/hosts'
+  fullPaths:
+    '/' | '/overview' | '/infrastructure/compute' | '/infrastructure/hosts'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/overview' | '/infrastructure/hosts'
+  to: '/' | '/overview' | '/infrastructure/compute' | '/infrastructure/hosts'
   id:
     | '__root__'
     | '/'
     | '/_admin'
     | '/_admin/overview'
+    | '/_admin/infrastructure/compute'
     | '/_admin/infrastructure/hosts'
   fileRoutesById: FileRoutesById
 }
@@ -93,6 +105,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminOverviewRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_admin/infrastructure/compute': {
+      id: '/_admin/infrastructure/compute'
+      path: '/infrastructure/compute'
+      fullPath: '/infrastructure/compute'
+      preLoaderRoute: typeof AdminInfrastructureComputeRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/_admin/infrastructure/hosts': {
       id: '/_admin/infrastructure/hosts'
       path: '/infrastructure/hosts'
@@ -105,11 +124,13 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminOverviewRoute: typeof AdminOverviewRoute
+  AdminInfrastructureComputeRoute: typeof AdminInfrastructureComputeRoute
   AdminInfrastructureHostsRoute: typeof AdminInfrastructureHostsRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminOverviewRoute: AdminOverviewRoute,
+  AdminInfrastructureComputeRoute: AdminInfrastructureComputeRoute,
   AdminInfrastructureHostsRoute: AdminInfrastructureHostsRoute,
 }
 
