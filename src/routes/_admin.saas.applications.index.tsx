@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatCompact, formatMs, formatPercent, formatRelative } from "@/utils/format";
 import type { Application } from "@/types";
 
-export const Route = createFileRoute("/_admin/saas/applications")({
+export const Route = createFileRoute("/_admin/saas/applications/")({
   head: () => ({
     meta: [
       { title: "SaaS Applications — CB67 Labs Control Center" },
