@@ -28,15 +28,15 @@ export const Route = createFileRoute("/_admin/observability/prometheus")({
 /**
  * Reference PromQL expressions, opened in the Prometheus expression browser.
  *
- * These replace what would have been Grafana dashboards. Grafana was removed
- * from platform scope to keep the memory budget on a constrained host, so the
- * Control Center links to Prometheus' own query interface instead of promising
- * dashboards that are not provisioned.
+ * Prometheus is an internal collector with no public exposure. The Control
+ * Center is the operator's observability interface; no external dashboard tool
+ * is part of the platform, so this page links to Prometheus' own query
+ * interface rather than promising dashboards that are not provisioned.
  *
- * PROVISIONAL. Every expression below names metrics that the platform has not
- * yet emitted. Replacing unverified Grafana dashboards with unverified PromQL
- * would be the same defect wearing a different label, so each entry declares
- * which component must produce it and is rendered as provisional in the UI.
+ * PROVISIONAL. Every expression below names metrics the platform has not yet
+ * emitted. Shipping unverified PromQL as though it were a working query would
+ * be a fictitious capability wearing a different label, so each entry declares
+ * which component must produce the metric and renders as provisional in the UI.
  * Verify names and labels against the real instrumentation and exporter
  * versions before treating any of them as a functional contract.
  */
@@ -135,7 +135,7 @@ function PrometheusPage() {
       <div className="space-y-3">
         <SectionTitle
           title="Consultas de referência (provisórias)"
-          description="Expressões PromQL abertas no navegador de consultas do Prometheus. Substituem os dashboards do Grafana, que não faz parte do escopo da plataforma. As métricas ainda não são emitidas pela plataforma — cada consulta indica o componente responsável por produzi-la."
+          description="Expressões PromQL abertas no navegador de consultas do Prometheus, que é coletor interno e não tem exposição pública. O Control Center é a interface de observabilidade do operador. As métricas ainda não são emitidas pela plataforma — cada consulta indica o componente responsável por produzi-la."
         />
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {QUERIES.map((query) => (
