@@ -37,9 +37,9 @@ export function CommandPalette({
       open={open}
       onOpenChange={onOpenChange}
     >
-      <CommandInput placeholder="Search sections, resources, actions…" />
+      <CommandInput placeholder="Search sections, resources, actions…" className="h-12" />
       <CommandList>
-        <CommandEmpty>No matching section.</CommandEmpty>
+        <CommandEmpty className="py-8 text-sm text-muted-foreground">No matching section.</CommandEmpty>
         {groups.map((group) => (
           <CommandGroup key={group} heading={group}>
             {NAV_INDEX.filter((entry) => (entry.group ?? "Platform") === group).map((entry) => (
