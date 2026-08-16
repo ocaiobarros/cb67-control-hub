@@ -52,16 +52,18 @@ export function Topbar({
       <Breadcrumb className="hidden min-w-0 sm:block">
         <BreadcrumbList>
           {crumbs.map((crumb, index) => (
-            <BreadcrumbItem key={`${crumb.label}-${index}`}>
-              {crumb.to && index < crumbs.length - 1 ? (
-                <AppLink to={crumb.to} className="hover:text-foreground">
-                  {crumb.label}
-                </AppLink>
-              ) : (
-                <BreadcrumbPage className="truncate">{crumb.label}</BreadcrumbPage>
-              )}
+            <Fragment key={`${crumb.label}-${index}`}>
+              <BreadcrumbItem>
+                {crumb.to && index < crumbs.length - 1 ? (
+                  <AppLink to={crumb.to} className="hover:text-foreground">
+                    {crumb.label}
+                  </AppLink>
+                ) : (
+                  <BreadcrumbPage className="truncate">{crumb.label}</BreadcrumbPage>
+                )}
+              </BreadcrumbItem>
               {index < crumbs.length - 1 && <BreadcrumbSeparator />}
-            </BreadcrumbItem>
+            </Fragment>
           ))}
         </BreadcrumbList>
       </Breadcrumb>
