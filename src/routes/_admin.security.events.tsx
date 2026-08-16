@@ -126,7 +126,7 @@ function SecurityEventsPage() {
           rowKey={(row) => row.id}
           isLoading={events.isLoading}
           error={events.error ?? undefined}
-          searchPlaceholder="Buscar cliente, origem, requisição…"
+          searchPlaceholder="Pesquisar cliente, origem, requisição…"
           searchValue={(row) => `${row.clientId} ${row.source} ${row.requestId} ${row.event}`}
           pageSize={20}
           dense

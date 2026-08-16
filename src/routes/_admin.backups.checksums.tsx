@@ -147,14 +147,14 @@ function ChecksumsPage() {
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Integridade dos artefatos" description="Buscar por identificador do artefato." />
+        <SectionTitle title="Integridade dos artefatos" description="Pesquisar por identificador do artefato." />
         <DataTable
           data={runs.data}
           columns={columns}
           rowKey={(row) => row.id}
           isLoading={runs.isLoading}
           error={runs.error ?? undefined}
-          searchPlaceholder="Buscar artefato…"
+          searchPlaceholder="Pesquisar artefato…"
           searchValue={(row) => `${row.id} ${row.type} ${row.checksum}`}
           pageSize={15}
           dense

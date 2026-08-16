@@ -101,7 +101,7 @@ function ScopesPage() {
             rowKey={(row) => row.scope}
             isLoading={scopes.isLoading}
             error={scopes.error ?? undefined}
-            searchPlaceholder="Buscar escopo…"
+            searchPlaceholder="Pesquisar escopo…"
             searchValue={(row) => `${row.scope} ${row.description}`}
             pageSize={20}
             dense

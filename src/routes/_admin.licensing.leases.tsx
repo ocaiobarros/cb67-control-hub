@@ -141,7 +141,7 @@ function LeasesPage() {
           rowKey={(row) => row.id}
           isLoading={leases.isLoading}
           error={leases.error ?? undefined}
-          searchPlaceholder="Buscar concessão, licença ou instalação…"
+          searchPlaceholder="Pesquisar concessão, licença ou instalação…"
           searchValue={(row) => `${row.leaseId} ${row.licenseKey} ${row.installationId}`}
           pageSize={15}
         />

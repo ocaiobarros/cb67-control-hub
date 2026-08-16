@@ -149,14 +149,14 @@ function RestoreTestsPage() {
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Histórico de exercícios" description="Buscar por nome do exercício ou artefato de origem." />
+        <SectionTitle title="Histórico de exercícios" description="Pesquisar por nome do exercício ou artefato de origem." />
         <DataTable
           data={tests.data}
           columns={columns}
           rowKey={(row) => row.id}
           isLoading={tests.isLoading}
           error={tests.error ?? undefined}
-          searchPlaceholder="Buscar exercício ou artefato…"
+          searchPlaceholder="Pesquisar exercício ou artefato…"
           searchValue={(row) => `${row.name} ${row.backup}`}
           pageSize={15}
         />

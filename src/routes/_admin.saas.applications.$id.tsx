@@ -241,7 +241,7 @@ function ApplicationDetailPage() {
                 rowKey={(row) => row.id}
                 isLoading={instances.isLoading}
                 error={instances.error ?? undefined}
-                searchPlaceholder="Buscar instalações…"
+                searchPlaceholder="Pesquisar instalações…"
                 emptyMessage="Nenhuma instância reportando para esta aplicação."
               />
             </TabsContent>

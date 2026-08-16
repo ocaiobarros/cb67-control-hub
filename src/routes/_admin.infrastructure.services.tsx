@@ -69,7 +69,7 @@ function ServicesPage() {
         rowKey={(row) => row.id}
         isLoading={services.isLoading}
         error={services.error ?? undefined}
-        searchPlaceholder="Buscar serviços…"
+        searchPlaceholder="Pesquisar serviços…"
         pageSize={20}
       />
     </div>

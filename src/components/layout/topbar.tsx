@@ -109,7 +109,7 @@ export function Topbar({
           className="ml-1 gap-2 text-muted-foreground"
         >
           <Search className="size-3.5" aria-hidden />
-          <span className="hidden sm:inline">Buscar</span>
+          <span className="hidden sm:inline">Pesquisar</span>
           <kbd className="mono-xs ml-1 hidden rounded border border-border px-1 sm:inline">⌘K</kbd>
         </Button>
 

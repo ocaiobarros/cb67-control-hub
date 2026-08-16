@@ -144,7 +144,7 @@ function InstallationsPage() {
           rowKey={(row) => row.id}
           isLoading={installations.isLoading}
           error={installations.error ?? undefined}
-          searchPlaceholder="Buscar instalação, licença ou produto…"
+          searchPlaceholder="Pesquisar instalação, licença ou produto…"
           searchValue={(row) => `${row.installationId} ${row.licenseKey} ${row.productName}`}
           pageSize={15}
         />

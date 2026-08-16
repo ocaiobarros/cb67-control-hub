@@ -88,7 +88,7 @@ function PermissionsPage() {
           rowKey={(row) => row.id}
           isLoading={permissions.isLoading}
           error={permissions.error ?? undefined}
-          searchPlaceholder="Buscar permissão…"
+          searchPlaceholder="Pesquisar permissão…"
           searchValue={(row) => `${row.code} ${row.label}`}
           pageSize={25}
           dense

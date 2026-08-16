@@ -140,7 +140,7 @@ function SessionsPage() {
           rowKey={(row) => row.id}
           isLoading={sessions.isLoading}
           error={sessions.error ?? undefined}
-          searchPlaceholder="Buscar administrador, dispositivo ou origem…"
+          searchPlaceholder="Pesquisar administrador, dispositivo ou origem…"
           searchValue={(row) => `${row.administrator} ${row.device} ${row.source}`}
           pageSize={15}
         />

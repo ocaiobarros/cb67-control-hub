@@ -184,7 +184,7 @@ function RateLimitsPage() {
           rowKey={(row) => row.id}
           isLoading={rateLimits.isLoading}
           error={rateLimits.error ?? undefined}
-          searchPlaceholder="Buscar aplicação ou API…"
+          searchPlaceholder="Pesquisar aplicação ou API…"
           searchValue={(row) => `${row.applicationName} ${row.api}`}
           pageSize={15}
         />

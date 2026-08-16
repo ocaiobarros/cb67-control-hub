@@ -110,7 +110,7 @@ function LogsPage() {
           rowKey={(row) => row.id}
           isLoading={logs.isLoading}
           error={logs.error ?? undefined}
-          searchPlaceholder="Buscar mensagem, requisição ou cliente…"
+          searchPlaceholder="Pesquisar mensagem, requisição ou cliente…"
           searchValue={(row) => `${row.message} ${row.requestId} ${row.clientId}`}
           pageSize={20}
           dense

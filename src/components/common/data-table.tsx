@@ -60,7 +60,7 @@ export function DataTable<T>({
   isLoading,
   error,
   searchable = true,
-  searchPlaceholder = "Buscar…",
+  searchPlaceholder = "Pesquisar…",
   searchValue,
   pageSize = 12,
   onRowClick,

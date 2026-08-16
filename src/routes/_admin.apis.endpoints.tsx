@@ -113,7 +113,7 @@ function EndpointsPage() {
         rowKey={(row) => row.id}
         isLoading={endpoints.isLoading}
         error={endpoints.error ?? undefined}
-        searchPlaceholder="Buscar caminhos, escopos…"
+        searchPlaceholder="Pesquisar caminhos, escopos…"
         pageSize={15}
       />
     </div>

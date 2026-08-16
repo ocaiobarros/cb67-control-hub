@@ -106,7 +106,7 @@ function RequestsPage() {
         rowKey={(row) => row.id}
         isLoading={requests.isLoading}
         error={requests.error ?? undefined}
-        searchPlaceholder="Buscar IDs de requisição, clientes, endpoints…"
+        searchPlaceholder="Pesquisar IDs de requisição, clientes, endpoints…"
         pageSize={20}
       />
 

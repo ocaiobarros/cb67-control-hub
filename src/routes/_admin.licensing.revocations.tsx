@@ -133,7 +133,7 @@ function RevocationsPage() {
           rowKey={(row) => row.id}
           isLoading={revocations.isLoading}
           error={revocations.error ?? undefined}
-          searchPlaceholder="Buscar objeto, motivo ou responsável…"
+          searchPlaceholder="Pesquisar objeto, motivo ou responsável…"
           searchValue={(row) => `${row.object} ${row.reason} ${row.actor}`}
           pageSize={15}
         />

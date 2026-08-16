@@ -113,7 +113,7 @@ function CustomersPage() {
           rowKey={(row) => row.id}
           isLoading={customers.isLoading}
           error={customers.error ?? undefined}
-          searchPlaceholder="Buscar cliente ou produto…"
+          searchPlaceholder="Pesquisar cliente ou produto…"
           searchValue={(row) => `${row.name} ${row.products.join(" ")}`}
           pageSize={15}
         />

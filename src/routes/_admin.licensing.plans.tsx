@@ -111,7 +111,7 @@ function PlansPage() {
           rowKey={(row) => row.id}
           isLoading={plans.isLoading}
           error={plans.error ?? undefined}
-          searchPlaceholder="Buscar plano ou código…"
+          searchPlaceholder="Pesquisar plano ou código…"
           searchValue={(row) => `${row.name} ${row.code}`}
           pageSize={15}
         />

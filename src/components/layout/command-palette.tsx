@@ -37,7 +37,7 @@ export function CommandPalette({
       open={open}
       onOpenChange={onOpenChange}
     >
-      <CommandInput placeholder="Buscar seções, recursos, ações…" className="h-12" />
+      <CommandInput placeholder="Pesquisar seções, recursos, ações…" className="h-12" />
       <CommandList>
         <CommandEmpty className="py-8 text-sm text-muted-foreground">Nenhuma seção corresponde.</CommandEmpty>
         {groups.map((group) => (

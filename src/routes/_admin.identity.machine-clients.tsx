@@ -124,7 +124,7 @@ function MachineClientsPage() {
           rowKey={(row) => row.id}
           isLoading={clients.isLoading}
           error={clients.error ?? undefined}
-          searchPlaceholder="Buscar cliente ou aplicativo…"
+          searchPlaceholder="Pesquisar cliente ou aplicativo…"
           searchValue={(row) => `${row.clientId} ${row.applicationName} ${row.scopes.join(" ")}`}
           pageSize={15}
         />

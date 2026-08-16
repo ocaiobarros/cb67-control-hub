@@ -166,7 +166,7 @@ function AuditPage() {
           rowKey={(row) => row.id}
           isLoading={audit.isLoading}
           error={audit.error ?? undefined}
-          searchPlaceholder="Buscar ator, ação, recurso ou requisição…"
+          searchPlaceholder="Pesquisar ator, ação, recurso ou requisição…"
           searchValue={(row) =>
             `${row.actor} ${row.action} ${row.resource} ${row.resourceId} ${row.requestId} ${row.source}`
           }

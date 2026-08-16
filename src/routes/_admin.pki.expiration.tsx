@@ -159,7 +159,7 @@ function ExpirationPage() {
           rowKey={(row) => row.id}
           isLoading={certificates.isLoading}
           error={certificates.error ?? undefined}
-          searchPlaceholder="Buscar sujeito ou cliente…"
+          searchPlaceholder="Pesquisar sujeito ou cliente…"
           searchValue={(row) => `${row.subject} ${row.clientId}`}
           pageSize={15}
         />

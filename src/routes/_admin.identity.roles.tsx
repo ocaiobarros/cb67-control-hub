@@ -102,7 +102,7 @@ function RolesPage() {
           rowKey={(row) => row.id}
           isLoading={roles.isLoading}
           error={roles.error ?? undefined}
-          searchPlaceholder="Buscar função ou permissão…"
+          searchPlaceholder="Pesquisar função ou permissão…"
           searchValue={(row) => `${row.name} ${row.code} ${row.permissions.join(" ")}`}
           pageSize={15}
         />

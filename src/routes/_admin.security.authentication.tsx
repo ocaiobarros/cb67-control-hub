@@ -154,7 +154,7 @@ function AuthenticationPage() {
           isLoading={events.isLoading}
           error={events.error ?? undefined}
           emptyMessage="Nenhum evento de autenticação no conjunto de dados atual."
-          searchPlaceholder="Buscar cliente, origem ou evento…"
+          searchPlaceholder="Pesquisar cliente, origem ou evento…"
           searchValue={(row) => `${row.clientId} ${row.source} ${row.event}`}
           pageSize={15}
         />

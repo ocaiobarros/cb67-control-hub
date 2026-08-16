@@ -125,7 +125,7 @@ function ClientsPage() {
         rowKey={(row) => row.id}
         isLoading={clients.isLoading}
         error={clients.error ?? undefined}
-        searchPlaceholder="Buscar clientes, aplicações…"
+        searchPlaceholder="Pesquisar clientes, aplicações…"
       />
 
       <section className="panel p-4">

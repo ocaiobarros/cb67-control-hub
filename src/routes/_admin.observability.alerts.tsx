@@ -161,7 +161,7 @@ function AlertsPage() {
           rowKey={(row) => row.id}
           isLoading={alerts.isLoading}
           error={alerts.error ?? undefined}
-          searchPlaceholder="Buscar alerta ou fonte…"
+          searchPlaceholder="Pesquisar alerta ou fonte…"
           searchValue={(row) => `${row.name} ${row.source}`}
           pageSize={15}
         />
