@@ -11,13 +11,28 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/_admin'
+import { Route as ChangelogRouteImport } from './routes/changelog'
+import { Route as DocsRouteImport } from './routes/docs'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as StatusRouteImport } from './routes/status'
+import { Route as AdminAuditRouteImport } from './routes/_admin.audit'
 import { Route as AdminOverviewRouteImport } from './routes/_admin.overview'
+import { Route as AdminSettingsRouteImport } from './routes/_admin.settings'
 import { Route as AdminApisEndpointsRouteImport } from './routes/_admin.apis.endpoints'
 import { Route as AdminApisErrorsRouteImport } from './routes/_admin.apis.errors'
 import { Route as AdminApisLatencyRouteImport } from './routes/_admin.apis.latency'
 import { Route as AdminApisQuotasRouteImport } from './routes/_admin.apis.quotas'
 import { Route as AdminApisRateLimitsRouteImport } from './routes/_admin.apis.rate-limits'
 import { Route as AdminApisRequestsRouteImport } from './routes/_admin.apis.requests'
+import { Route as AdminBackupsIndexRouteImport } from './routes/_admin.backups.index'
+import { Route as AdminBackupsChecksumsRouteImport } from './routes/_admin.backups.checksums'
+import { Route as AdminBackupsHistoryRouteImport } from './routes/_admin.backups.history'
+import { Route as AdminBackupsJobsRouteImport } from './routes/_admin.backups.jobs'
+import { Route as AdminBackupsRestoreTestsRouteImport } from './routes/_admin.backups.restore-tests'
+import { Route as AdminDatabaseConnectionsRouteImport } from './routes/_admin.database.connections'
+import { Route as AdminDatabaseGrowthRouteImport } from './routes/_admin.database.growth'
+import { Route as AdminDatabaseHealthRouteImport } from './routes/_admin.database.health'
+import { Route as AdminDatabasePerformanceRouteImport } from './routes/_admin.database.performance'
 import { Route as AdminIdentityAdministratorsRouteImport } from './routes/_admin.identity.administrators'
 import { Route as AdminIdentityMachineClientsRouteImport } from './routes/_admin.identity.machine-clients'
 import { Route as AdminIdentityPermissionsRouteImport } from './routes/_admin.identity.permissions'
@@ -72,9 +87,39 @@ const AdminRoute = AdminRouteImport.update({
   id: '/_admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChangelogRoute = ChangelogRouteImport.update({
+  id: '/changelog',
+  path: '/changelog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRoute = DocsRouteImport.update({
+  id: '/docs',
+  path: '/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StatusRoute = StatusRouteImport.update({
+  id: '/status',
+  path: '/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAuditRoute = AdminAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminOverviewRoute = AdminOverviewRouteImport.update({
   id: '/overview',
   path: '/overview',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminApisEndpointsRoute = AdminApisEndpointsRouteImport.update({
@@ -107,6 +152,54 @@ const AdminApisRequestsRoute = AdminApisRequestsRouteImport.update({
   path: '/apis/requests',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminBackupsIndexRoute = AdminBackupsIndexRouteImport.update({
+  id: '/backups/',
+  path: '/backups/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBackupsChecksumsRoute = AdminBackupsChecksumsRouteImport.update({
+  id: '/backups/checksums',
+  path: '/backups/checksums',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBackupsHistoryRoute = AdminBackupsHistoryRouteImport.update({
+  id: '/backups/history',
+  path: '/backups/history',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBackupsJobsRoute = AdminBackupsJobsRouteImport.update({
+  id: '/backups/jobs',
+  path: '/backups/jobs',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBackupsRestoreTestsRoute =
+  AdminBackupsRestoreTestsRouteImport.update({
+    id: '/backups/restore-tests',
+    path: '/backups/restore-tests',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminDatabaseConnectionsRoute =
+  AdminDatabaseConnectionsRouteImport.update({
+    id: '/database/connections',
+    path: '/database/connections',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminDatabaseGrowthRoute = AdminDatabaseGrowthRouteImport.update({
+  id: '/database/growth',
+  path: '/database/growth',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDatabaseHealthRoute = AdminDatabaseHealthRouteImport.update({
+  id: '/database/health',
+  path: '/database/health',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDatabasePerformanceRoute =
+  AdminDatabasePerformanceRouteImport.update({
+    id: '/database/performance',
+    path: '/database/performance',
+    getParentRoute: () => AdminRoute,
+  } as any)
 const AdminIdentityAdministratorsRoute =
   AdminIdentityAdministratorsRouteImport.update({
     id: '/identity/administrators',
@@ -351,13 +444,27 @@ const AdminSaasApplicationsIdRoute = AdminSaasApplicationsIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/changelog': typeof ChangelogRoute
+  '/docs': typeof DocsRoute
+  '/login': typeof LoginRoute
+  '/status': typeof StatusRoute
+  '/audit': typeof AdminAuditRoute
   '/overview': typeof AdminOverviewRoute
+  '/settings': typeof AdminSettingsRoute
   '/apis/endpoints': typeof AdminApisEndpointsRoute
   '/apis/errors': typeof AdminApisErrorsRoute
   '/apis/latency': typeof AdminApisLatencyRoute
   '/apis/quotas': typeof AdminApisQuotasRoute
   '/apis/rate-limits': typeof AdminApisRateLimitsRoute
   '/apis/requests': typeof AdminApisRequestsRoute
+  '/backups/checksums': typeof AdminBackupsChecksumsRoute
+  '/backups/history': typeof AdminBackupsHistoryRoute
+  '/backups/jobs': typeof AdminBackupsJobsRoute
+  '/backups/restore-tests': typeof AdminBackupsRestoreTestsRoute
+  '/database/connections': typeof AdminDatabaseConnectionsRoute
+  '/database/growth': typeof AdminDatabaseGrowthRoute
+  '/database/health': typeof AdminDatabaseHealthRoute
+  '/database/performance': typeof AdminDatabasePerformanceRoute
   '/identity/administrators': typeof AdminIdentityAdministratorsRoute
   '/identity/machine-clients': typeof AdminIdentityMachineClientsRoute
   '/identity/permissions': typeof AdminIdentityPermissionsRoute
@@ -392,6 +499,7 @@ export interface FileRoutesByFullPath {
   '/security/failed-attempts': typeof AdminSecurityFailedAttemptsRoute
   '/security/firewall': typeof AdminSecurityFirewallRoute
   '/security/sessions': typeof AdminSecuritySessionsRoute
+  '/backups/': typeof AdminBackupsIndexRoute
   '/licensing/': typeof AdminLicensingIndexRoute
   '/observability/': typeof AdminObservabilityIndexRoute
   '/providers/': typeof AdminProvidersIndexRoute
@@ -405,13 +513,27 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/changelog': typeof ChangelogRoute
+  '/docs': typeof DocsRoute
+  '/login': typeof LoginRoute
+  '/status': typeof StatusRoute
+  '/audit': typeof AdminAuditRoute
   '/overview': typeof AdminOverviewRoute
+  '/settings': typeof AdminSettingsRoute
   '/apis/endpoints': typeof AdminApisEndpointsRoute
   '/apis/errors': typeof AdminApisErrorsRoute
   '/apis/latency': typeof AdminApisLatencyRoute
   '/apis/quotas': typeof AdminApisQuotasRoute
   '/apis/rate-limits': typeof AdminApisRateLimitsRoute
   '/apis/requests': typeof AdminApisRequestsRoute
+  '/backups/checksums': typeof AdminBackupsChecksumsRoute
+  '/backups/history': typeof AdminBackupsHistoryRoute
+  '/backups/jobs': typeof AdminBackupsJobsRoute
+  '/backups/restore-tests': typeof AdminBackupsRestoreTestsRoute
+  '/database/connections': typeof AdminDatabaseConnectionsRoute
+  '/database/growth': typeof AdminDatabaseGrowthRoute
+  '/database/health': typeof AdminDatabaseHealthRoute
+  '/database/performance': typeof AdminDatabasePerformanceRoute
   '/identity/administrators': typeof AdminIdentityAdministratorsRoute
   '/identity/machine-clients': typeof AdminIdentityMachineClientsRoute
   '/identity/permissions': typeof AdminIdentityPermissionsRoute
@@ -446,6 +568,7 @@ export interface FileRoutesByTo {
   '/security/failed-attempts': typeof AdminSecurityFailedAttemptsRoute
   '/security/firewall': typeof AdminSecurityFirewallRoute
   '/security/sessions': typeof AdminSecuritySessionsRoute
+  '/backups': typeof AdminBackupsIndexRoute
   '/licensing': typeof AdminLicensingIndexRoute
   '/observability': typeof AdminObservabilityIndexRoute
   '/providers': typeof AdminProvidersIndexRoute
@@ -461,13 +584,27 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_admin': typeof AdminRouteWithChildren
+  '/changelog': typeof ChangelogRoute
+  '/docs': typeof DocsRoute
+  '/login': typeof LoginRoute
+  '/status': typeof StatusRoute
+  '/_admin/audit': typeof AdminAuditRoute
   '/_admin/overview': typeof AdminOverviewRoute
+  '/_admin/settings': typeof AdminSettingsRoute
   '/_admin/apis/endpoints': typeof AdminApisEndpointsRoute
   '/_admin/apis/errors': typeof AdminApisErrorsRoute
   '/_admin/apis/latency': typeof AdminApisLatencyRoute
   '/_admin/apis/quotas': typeof AdminApisQuotasRoute
   '/_admin/apis/rate-limits': typeof AdminApisRateLimitsRoute
   '/_admin/apis/requests': typeof AdminApisRequestsRoute
+  '/_admin/backups/checksums': typeof AdminBackupsChecksumsRoute
+  '/_admin/backups/history': typeof AdminBackupsHistoryRoute
+  '/_admin/backups/jobs': typeof AdminBackupsJobsRoute
+  '/_admin/backups/restore-tests': typeof AdminBackupsRestoreTestsRoute
+  '/_admin/database/connections': typeof AdminDatabaseConnectionsRoute
+  '/_admin/database/growth': typeof AdminDatabaseGrowthRoute
+  '/_admin/database/health': typeof AdminDatabaseHealthRoute
+  '/_admin/database/performance': typeof AdminDatabasePerformanceRoute
   '/_admin/identity/administrators': typeof AdminIdentityAdministratorsRoute
   '/_admin/identity/machine-clients': typeof AdminIdentityMachineClientsRoute
   '/_admin/identity/permissions': typeof AdminIdentityPermissionsRoute
@@ -502,6 +639,7 @@ export interface FileRoutesById {
   '/_admin/security/failed-attempts': typeof AdminSecurityFailedAttemptsRoute
   '/_admin/security/firewall': typeof AdminSecurityFirewallRoute
   '/_admin/security/sessions': typeof AdminSecuritySessionsRoute
+  '/_admin/backups/': typeof AdminBackupsIndexRoute
   '/_admin/licensing/': typeof AdminLicensingIndexRoute
   '/_admin/observability/': typeof AdminObservabilityIndexRoute
   '/_admin/providers/': typeof AdminProvidersIndexRoute
@@ -517,13 +655,27 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/changelog'
+    | '/docs'
+    | '/login'
+    | '/status'
+    | '/audit'
     | '/overview'
+    | '/settings'
     | '/apis/endpoints'
     | '/apis/errors'
     | '/apis/latency'
     | '/apis/quotas'
     | '/apis/rate-limits'
     | '/apis/requests'
+    | '/backups/checksums'
+    | '/backups/history'
+    | '/backups/jobs'
+    | '/backups/restore-tests'
+    | '/database/connections'
+    | '/database/growth'
+    | '/database/health'
+    | '/database/performance'
     | '/identity/administrators'
     | '/identity/machine-clients'
     | '/identity/permissions'
@@ -558,6 +710,7 @@ export interface FileRouteTypes {
     | '/security/failed-attempts'
     | '/security/firewall'
     | '/security/sessions'
+    | '/backups/'
     | '/licensing/'
     | '/observability/'
     | '/providers/'
@@ -571,13 +724,27 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/changelog'
+    | '/docs'
+    | '/login'
+    | '/status'
+    | '/audit'
     | '/overview'
+    | '/settings'
     | '/apis/endpoints'
     | '/apis/errors'
     | '/apis/latency'
     | '/apis/quotas'
     | '/apis/rate-limits'
     | '/apis/requests'
+    | '/backups/checksums'
+    | '/backups/history'
+    | '/backups/jobs'
+    | '/backups/restore-tests'
+    | '/database/connections'
+    | '/database/growth'
+    | '/database/health'
+    | '/database/performance'
     | '/identity/administrators'
     | '/identity/machine-clients'
     | '/identity/permissions'
@@ -612,6 +779,7 @@ export interface FileRouteTypes {
     | '/security/failed-attempts'
     | '/security/firewall'
     | '/security/sessions'
+    | '/backups'
     | '/licensing'
     | '/observability'
     | '/providers'
@@ -626,13 +794,27 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_admin'
+    | '/changelog'
+    | '/docs'
+    | '/login'
+    | '/status'
+    | '/_admin/audit'
     | '/_admin/overview'
+    | '/_admin/settings'
     | '/_admin/apis/endpoints'
     | '/_admin/apis/errors'
     | '/_admin/apis/latency'
     | '/_admin/apis/quotas'
     | '/_admin/apis/rate-limits'
     | '/_admin/apis/requests'
+    | '/_admin/backups/checksums'
+    | '/_admin/backups/history'
+    | '/_admin/backups/jobs'
+    | '/_admin/backups/restore-tests'
+    | '/_admin/database/connections'
+    | '/_admin/database/growth'
+    | '/_admin/database/health'
+    | '/_admin/database/performance'
     | '/_admin/identity/administrators'
     | '/_admin/identity/machine-clients'
     | '/_admin/identity/permissions'
@@ -667,6 +849,7 @@ export interface FileRouteTypes {
     | '/_admin/security/failed-attempts'
     | '/_admin/security/firewall'
     | '/_admin/security/sessions'
+    | '/_admin/backups/'
     | '/_admin/licensing/'
     | '/_admin/observability/'
     | '/_admin/providers/'
@@ -682,6 +865,10 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  ChangelogRoute: typeof ChangelogRoute
+  DocsRoute: typeof DocsRoute
+  LoginRoute: typeof LoginRoute
+  StatusRoute: typeof StatusRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -700,11 +887,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/changelog': {
+      id: '/changelog'
+      path: '/changelog'
+      fullPath: '/changelog'
+      preLoaderRoute: typeof ChangelogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs': {
+      id: '/docs'
+      path: '/docs'
+      fullPath: '/docs'
+      preLoaderRoute: typeof DocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/status': {
+      id: '/status'
+      path: '/status'
+      fullPath: '/status'
+      preLoaderRoute: typeof StatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_admin/audit': {
+      id: '/_admin/audit'
+      path: '/audit'
+      fullPath: '/audit'
+      preLoaderRoute: typeof AdminAuditRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/_admin/overview': {
       id: '/_admin/overview'
       path: '/overview'
       fullPath: '/overview'
       preLoaderRoute: typeof AdminOverviewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/settings': {
+      id: '/_admin/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/_admin/apis/endpoints': {
@@ -747,6 +976,69 @@ declare module '@tanstack/react-router' {
       path: '/apis/requests'
       fullPath: '/apis/requests'
       preLoaderRoute: typeof AdminApisRequestsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/backups/': {
+      id: '/_admin/backups/'
+      path: '/backups'
+      fullPath: '/backups/'
+      preLoaderRoute: typeof AdminBackupsIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/backups/checksums': {
+      id: '/_admin/backups/checksums'
+      path: '/backups/checksums'
+      fullPath: '/backups/checksums'
+      preLoaderRoute: typeof AdminBackupsChecksumsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/backups/history': {
+      id: '/_admin/backups/history'
+      path: '/backups/history'
+      fullPath: '/backups/history'
+      preLoaderRoute: typeof AdminBackupsHistoryRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/backups/jobs': {
+      id: '/_admin/backups/jobs'
+      path: '/backups/jobs'
+      fullPath: '/backups/jobs'
+      preLoaderRoute: typeof AdminBackupsJobsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/backups/restore-tests': {
+      id: '/_admin/backups/restore-tests'
+      path: '/backups/restore-tests'
+      fullPath: '/backups/restore-tests'
+      preLoaderRoute: typeof AdminBackupsRestoreTestsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/database/connections': {
+      id: '/_admin/database/connections'
+      path: '/database/connections'
+      fullPath: '/database/connections'
+      preLoaderRoute: typeof AdminDatabaseConnectionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/database/growth': {
+      id: '/_admin/database/growth'
+      path: '/database/growth'
+      fullPath: '/database/growth'
+      preLoaderRoute: typeof AdminDatabaseGrowthRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/database/health': {
+      id: '/_admin/database/health'
+      path: '/database/health'
+      fullPath: '/database/health'
+      preLoaderRoute: typeof AdminDatabaseHealthRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/database/performance': {
+      id: '/_admin/database/performance'
+      path: '/database/performance'
+      fullPath: '/database/performance'
+      preLoaderRoute: typeof AdminDatabasePerformanceRouteImport
       parentRoute: typeof AdminRoute
     }
     '/_admin/identity/administrators': {
@@ -1061,13 +1353,23 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminAuditRoute: typeof AdminAuditRoute
   AdminOverviewRoute: typeof AdminOverviewRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
   AdminApisEndpointsRoute: typeof AdminApisEndpointsRoute
   AdminApisErrorsRoute: typeof AdminApisErrorsRoute
   AdminApisLatencyRoute: typeof AdminApisLatencyRoute
   AdminApisQuotasRoute: typeof AdminApisQuotasRoute
   AdminApisRateLimitsRoute: typeof AdminApisRateLimitsRoute
   AdminApisRequestsRoute: typeof AdminApisRequestsRoute
+  AdminBackupsChecksumsRoute: typeof AdminBackupsChecksumsRoute
+  AdminBackupsHistoryRoute: typeof AdminBackupsHistoryRoute
+  AdminBackupsJobsRoute: typeof AdminBackupsJobsRoute
+  AdminBackupsRestoreTestsRoute: typeof AdminBackupsRestoreTestsRoute
+  AdminDatabaseConnectionsRoute: typeof AdminDatabaseConnectionsRoute
+  AdminDatabaseGrowthRoute: typeof AdminDatabaseGrowthRoute
+  AdminDatabaseHealthRoute: typeof AdminDatabaseHealthRoute
+  AdminDatabasePerformanceRoute: typeof AdminDatabasePerformanceRoute
   AdminIdentityAdministratorsRoute: typeof AdminIdentityAdministratorsRoute
   AdminIdentityMachineClientsRoute: typeof AdminIdentityMachineClientsRoute
   AdminIdentityPermissionsRoute: typeof AdminIdentityPermissionsRoute
@@ -1102,6 +1404,7 @@ interface AdminRouteChildren {
   AdminSecurityFailedAttemptsRoute: typeof AdminSecurityFailedAttemptsRoute
   AdminSecurityFirewallRoute: typeof AdminSecurityFirewallRoute
   AdminSecuritySessionsRoute: typeof AdminSecuritySessionsRoute
+  AdminBackupsIndexRoute: typeof AdminBackupsIndexRoute
   AdminLicensingIndexRoute: typeof AdminLicensingIndexRoute
   AdminObservabilityIndexRoute: typeof AdminObservabilityIndexRoute
   AdminProvidersIndexRoute: typeof AdminProvidersIndexRoute
@@ -1115,13 +1418,23 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAuditRoute: AdminAuditRoute,
   AdminOverviewRoute: AdminOverviewRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
   AdminApisEndpointsRoute: AdminApisEndpointsRoute,
   AdminApisErrorsRoute: AdminApisErrorsRoute,
   AdminApisLatencyRoute: AdminApisLatencyRoute,
   AdminApisQuotasRoute: AdminApisQuotasRoute,
   AdminApisRateLimitsRoute: AdminApisRateLimitsRoute,
   AdminApisRequestsRoute: AdminApisRequestsRoute,
+  AdminBackupsChecksumsRoute: AdminBackupsChecksumsRoute,
+  AdminBackupsHistoryRoute: AdminBackupsHistoryRoute,
+  AdminBackupsJobsRoute: AdminBackupsJobsRoute,
+  AdminBackupsRestoreTestsRoute: AdminBackupsRestoreTestsRoute,
+  AdminDatabaseConnectionsRoute: AdminDatabaseConnectionsRoute,
+  AdminDatabaseGrowthRoute: AdminDatabaseGrowthRoute,
+  AdminDatabaseHealthRoute: AdminDatabaseHealthRoute,
+  AdminDatabasePerformanceRoute: AdminDatabasePerformanceRoute,
   AdminIdentityAdministratorsRoute: AdminIdentityAdministratorsRoute,
   AdminIdentityMachineClientsRoute: AdminIdentityMachineClientsRoute,
   AdminIdentityPermissionsRoute: AdminIdentityPermissionsRoute,
@@ -1156,6 +1469,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminSecurityFailedAttemptsRoute: AdminSecurityFailedAttemptsRoute,
   AdminSecurityFirewallRoute: AdminSecurityFirewallRoute,
   AdminSecuritySessionsRoute: AdminSecuritySessionsRoute,
+  AdminBackupsIndexRoute: AdminBackupsIndexRoute,
   AdminLicensingIndexRoute: AdminLicensingIndexRoute,
   AdminObservabilityIndexRoute: AdminObservabilityIndexRoute,
   AdminProvidersIndexRoute: AdminProvidersIndexRoute,
@@ -1173,6 +1487,10 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  ChangelogRoute: ChangelogRoute,
+  DocsRoute: DocsRoute,
+  LoginRoute: LoginRoute,
+  StatusRoute: StatusRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
