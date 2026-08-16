@@ -7,13 +7,22 @@ const LOCALE = "pt-BR";
 export const DISPLAY_TIMEZONE = "UTC";
 
 const numberFmt = new Intl.NumberFormat(LOCALE);
+// Brazilian presentation is numeric dd/MM/yyyy, not the "16 de ago. de 2026"
+// that dateStyle:"medium" produces. Contractual timestamps are untouched -
+// this is presentation only.
 const dateTimeFmt = new Intl.DateTimeFormat(LOCALE, {
-  dateStyle: "medium",
-  timeStyle: "medium",
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
   timeZone: DISPLAY_TIMEZONE,
 });
 const dateFmt = new Intl.DateTimeFormat(LOCALE, {
-  dateStyle: "medium",
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
   timeZone: DISPLAY_TIMEZONE,
 });
 const timeFmt = new Intl.DateTimeFormat(LOCALE, {

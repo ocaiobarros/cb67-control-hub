@@ -35,14 +35,14 @@ export function AccessDenied({ permission }: { permission?: string | undefined }
     <div className="mx-auto flex max-w-md flex-col items-center gap-4 py-24 text-center">
       <ShieldAlert className="size-10 text-crit" aria-hidden />
       <div>
-        <h1 className="text-xl font-semibold">Access denied</h1>
+        <h1 className="text-xl font-semibold">Acesso negado</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Your role does not include the permission required for this surface
-          {permission ? ` (${permission})` : ""}. Authorization is enforced server-side.
+          Seu perfil não possui a permissão necessária para esta área
+          {permission ? ` (${permission})` : ""}. A autorização é aplicada no servidor.
         </p>
       </div>
       <Button asChild variant="outline">
-        <AppLink to="/overview">Back to overview</AppLink>
+        <AppLink to="/overview">Voltar para a visão geral</AppLink>
       </Button>
     </div>
   );
