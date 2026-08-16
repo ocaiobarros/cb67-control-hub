@@ -210,11 +210,20 @@ function OverviewPage() {
         </ChartPanel>
         <ChartPanel
           title="Provider latency"
-          description="Average upstream latency per external provider."
+          description="Average upstream latency per external provider, in milliseconds."
           isLoading={overview.isLoading}
           isEmpty={data?.charts.providerLatency.length === 0}
         >
-          <CategoryBarChart data={data?.charts.providerLatency ?? []} layout="horizontal" colorByIndex />
+          <TimeSeriesChart
+            variant="line"
+            unit="ms"
+            data={data?.charts.providerLatency ?? []}
+            series={[
+              { key: "openai", label: "OpenAI" },
+              { key: "gemini", label: "Gemini" },
+              { key: "maps", label: "Google Maps" },
+            ]}
+          />
         </ChartPanel>
       </div>
 
