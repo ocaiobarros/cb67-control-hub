@@ -44,12 +44,12 @@ function NetworkPage() {
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
           label="Ingress"
-          value={last ? `${formatCompact(Number(last.rx))} Mbit/s` : "—"}
+          value={last ? `${formatCompact(Number(last["rx"]))} Mbit/s` : "—"}
           isLoading={series.isLoading}
         />
         <MetricCard
           label="Egress"
-          value={last ? `${formatCompact(Number(last.tx))} Mbit/s` : "—"}
+          value={last ? `${formatCompact(Number(last["tx"]))} Mbit/s` : "—"}
           isLoading={series.isLoading}
         />
         <MetricCard
