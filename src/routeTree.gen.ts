@@ -18,6 +18,7 @@ import { Route as AdminInfrastructureNetworkRouteImport } from './routes/_admin.
 import { Route as AdminInfrastructureServicesRouteImport } from './routes/_admin.infrastructure.services'
 import { Route as AdminInfrastructureStorageRouteImport } from './routes/_admin.infrastructure.storage'
 import { Route as AdminSaasApplicationsRouteImport } from './routes/_admin.saas.applications'
+import { Route as AdminSaasClientsRouteImport } from './routes/_admin.saas.clients'
 import { Route as AdminSaasInstancesRouteImport } from './routes/_admin.saas.instances'
 import { Route as AdminSaasApplicationsIdRouteImport } from './routes/_admin.saas.applications.$id'
 
@@ -70,6 +71,11 @@ const AdminSaasApplicationsRoute = AdminSaasApplicationsRouteImport.update({
   path: '/saas/applications',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminSaasClientsRoute = AdminSaasClientsRouteImport.update({
+  id: '/saas/clients',
+  path: '/saas/clients',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminSaasInstancesRoute = AdminSaasInstancesRouteImport.update({
   id: '/saas/instances',
   path: '/saas/instances',
@@ -90,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/infrastructure/services': typeof AdminInfrastructureServicesRoute
   '/infrastructure/storage': typeof AdminInfrastructureStorageRoute
   '/saas/applications': typeof AdminSaasApplicationsRouteWithChildren
+  '/saas/clients': typeof AdminSaasClientsRoute
   '/saas/instances': typeof AdminSaasInstancesRoute
   '/saas/applications/$id': typeof AdminSaasApplicationsIdRoute
 }
@@ -102,6 +109,7 @@ export interface FileRoutesByTo {
   '/infrastructure/services': typeof AdminInfrastructureServicesRoute
   '/infrastructure/storage': typeof AdminInfrastructureStorageRoute
   '/saas/applications': typeof AdminSaasApplicationsRouteWithChildren
+  '/saas/clients': typeof AdminSaasClientsRoute
   '/saas/instances': typeof AdminSaasInstancesRoute
   '/saas/applications/$id': typeof AdminSaasApplicationsIdRoute
 }
@@ -116,6 +124,7 @@ export interface FileRoutesById {
   '/_admin/infrastructure/services': typeof AdminInfrastructureServicesRoute
   '/_admin/infrastructure/storage': typeof AdminInfrastructureStorageRoute
   '/_admin/saas/applications': typeof AdminSaasApplicationsRouteWithChildren
+  '/_admin/saas/clients': typeof AdminSaasClientsRoute
   '/_admin/saas/instances': typeof AdminSaasInstancesRoute
   '/_admin/saas/applications/$id': typeof AdminSaasApplicationsIdRoute
 }
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/infrastructure/services'
     | '/infrastructure/storage'
     | '/saas/applications'
+    | '/saas/clients'
     | '/saas/instances'
     | '/saas/applications/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -142,6 +152,7 @@ export interface FileRouteTypes {
     | '/infrastructure/services'
     | '/infrastructure/storage'
     | '/saas/applications'
+    | '/saas/clients'
     | '/saas/instances'
     | '/saas/applications/$id'
   id:
@@ -155,6 +166,7 @@ export interface FileRouteTypes {
     | '/_admin/infrastructure/services'
     | '/_admin/infrastructure/storage'
     | '/_admin/saas/applications'
+    | '/_admin/saas/clients'
     | '/_admin/saas/instances'
     | '/_admin/saas/applications/$id'
   fileRoutesById: FileRoutesById
@@ -229,6 +241,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSaasApplicationsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_admin/saas/clients': {
+      id: '/_admin/saas/clients'
+      path: '/saas/clients'
+      fullPath: '/saas/clients'
+      preLoaderRoute: typeof AdminSaasClientsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/_admin/saas/instances': {
       id: '/_admin/saas/instances'
       path: '/saas/instances'
@@ -267,6 +286,7 @@ interface AdminRouteChildren {
   AdminInfrastructureServicesRoute: typeof AdminInfrastructureServicesRoute
   AdminInfrastructureStorageRoute: typeof AdminInfrastructureStorageRoute
   AdminSaasApplicationsRoute: typeof AdminSaasApplicationsRouteWithChildren
+  AdminSaasClientsRoute: typeof AdminSaasClientsRoute
   AdminSaasInstancesRoute: typeof AdminSaasInstancesRoute
 }
 
@@ -278,6 +298,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminInfrastructureServicesRoute: AdminInfrastructureServicesRoute,
   AdminInfrastructureStorageRoute: AdminInfrastructureStorageRoute,
   AdminSaasApplicationsRoute: AdminSaasApplicationsRouteWithChildren,
+  AdminSaasClientsRoute: AdminSaasClientsRoute,
   AdminSaasInstancesRoute: AdminSaasInstancesRoute,
 }
 
