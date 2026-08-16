@@ -1,0 +1,129 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { q } from "@/api/queries";
+import { PageHeader, SectionTitle } from "@/components/common/page-header";
+import { ChartPanel, TimeSeriesChart } from "@/components/charts/chart-panel";
+import { TimeRangeSelect } from "@/components/common/time-range-select";
+import { MetricCard } from "@/components/common/metric-card";
+import { cn } from "@/lib/utils";
+import { formatCompact } from "@/utils/format";
+import type { TimeRange } from "@/types";
+
+export const Route = createFileRoute("/_admin/observability/metrics")({
+  head: () => ({
+    meta: [
+      { title: "Metrics — CB67 Labs Control Center" },
+      {
+        name: "description",
+        content:
+          "Curated platform metric series for requests, latency, errors, CPU, memory and network throughput.",
+      },
+      { property: "og:title", content: "Metrics — CB67 Labs Control Center" },
+      { property: "og:description", content: "Curated metric series with selectable time window." },
+    ],
+  }),
+  component: MetricsPage,
+});
+
+const METRICS = [
+  { key: "requests", label: "Requests", unit: "req", description: "Requests served per interval." },
+  { key: "latency", label: "Latency", unit: "ms", description: "Aggregated response time." },
+  { key: "errors", label: "Errors", unit: "err", description: "Failed responses per interval." },
+  { key: "cpu", label: "CPU", unit: "%", description: "Cluster CPU utilisation." },
+  { key: "memory", label: "Memory", unit: "%", description: "Cluster memory utilisation." },
+  { key: "network", label: "Network", unit: "Mb/s", description: "Aggregate throughput." },
+] as const;
+
+function MetricsPage() {
+  const [range, setRange] = useState<TimeRange>("24h");
+  const [selected, setSelected] = useState<string>(METRICS[0].key);
+  const metric = useQuery(q.metricSeries(selected, range));
+
+  const definition = METRICS.find((entry) => entry.key === selected) ?? METRICS[0];
+  const points = metric.data ?? [];
+  const values = points.map((point) => Number(point["value"] ?? 0));
+  const latest = values[values.length - 1] ?? 0;
+  const peak = values.length > 0 ? Math.max(...values) : 0;
+  const average = values.length > 0 ? values.reduce((sum, value) => sum + value, 0) / values.length : 0;
+
+  return (
+    <div className="space-y-6">
+      <PageHeader
+        title="Metrics"
+        description="A curated subset of the platform metric catalogue. Ad-hoc querying stays in the observability stack; this surface exposes only vetted series."
+        actions={<TimeRangeSelect value={range} onChange={setRange} />}
+      />
+
+      <div role="group" aria-label="Metric" className="flex flex-wrap gap-2">
+        {METRICS.map((entry) => (
+          <button
+            key={entry.key}
+            type="button"
+            aria-pressed={selected === entry.key}
+            onClick={() => setSelected(entry.key)}
+            className={cn(
+              "rounded-md border px-3 py-1.5 text-xs font-medium transition-colors",
+              selected === entry.key
+                ? "border-primary bg-accent text-accent-foreground"
+                : "border-border text-muted-foreground hover:bg-muted",
+            )}
+          >
+            {entry.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-3">
+        <MetricCard
+          label="Latest"
+          value={`${formatCompact(latest)} ${definition.unit}`}
+          isLoading={metric.isLoading}
+        />
+        <MetricCard
+          label="Window average"
+          value={`${formatCompact(average)} ${definition.unit}`}
+          isLoading={metric.isLoading}
+        />
+        <MetricCard
+          label="Window peak"
+          value={`${formatCompact(peak)} ${definition.unit}`}
+          isLoading={metric.isLoading}
+        />
+      </div>
+
+      <ChartPanel
+        title={definition.label}
+        description={definition.description}
+        isLoading={metric.isLoading}
+        error={metric.error ?? undefined}
+        isEmpty={points.length === 0}
+        height={320}
+      >
+        <TimeSeriesChart
+          data={points}
+          series={[{ key: "value", label: definition.label }]}
+          variant="line"
+          unit={definition.unit}
+        />
+      </ChartPanel>
+
+      <div className="space-y-3">
+        <SectionTitle
+          title="Series catalogue"
+          description="Metric identifiers are stable and match the keys published by the collector."
+        />
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {METRICS.map((entry) => (
+            <div key={entry.key} className="panel space-y-1 p-4">
+              <code className="mono-xs text-foreground">{entry.key}</code>
+              <p className="text-sm font-medium">{entry.label}</p>
+              <p className="text-xs text-muted-foreground">{entry.description}</p>
+              <p className="mono-xs text-muted-foreground">unit: {entry.unit}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

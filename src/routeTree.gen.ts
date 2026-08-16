@@ -13,15 +13,54 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/_admin'
 import { Route as AdminOverviewRouteImport } from './routes/_admin.overview'
 import { Route as AdminApisEndpointsRouteImport } from './routes/_admin.apis.endpoints'
+import { Route as AdminApisErrorsRouteImport } from './routes/_admin.apis.errors'
+import { Route as AdminApisLatencyRouteImport } from './routes/_admin.apis.latency'
+import { Route as AdminApisQuotasRouteImport } from './routes/_admin.apis.quotas'
+import { Route as AdminApisRateLimitsRouteImport } from './routes/_admin.apis.rate-limits'
 import { Route as AdminApisRequestsRouteImport } from './routes/_admin.apis.requests'
+import { Route as AdminIdentityAdministratorsRouteImport } from './routes/_admin.identity.administrators'
+import { Route as AdminIdentityMachineClientsRouteImport } from './routes/_admin.identity.machine-clients'
+import { Route as AdminIdentityPermissionsRouteImport } from './routes/_admin.identity.permissions'
+import { Route as AdminIdentityRolesRouteImport } from './routes/_admin.identity.roles'
+import { Route as AdminIdentityScopesRouteImport } from './routes/_admin.identity.scopes'
+import { Route as AdminIdentitySessionsRouteImport } from './routes/_admin.identity.sessions'
 import { Route as AdminInfrastructureComputeRouteImport } from './routes/_admin.infrastructure.compute'
 import { Route as AdminInfrastructureHostsRouteImport } from './routes/_admin.infrastructure.hosts'
 import { Route as AdminInfrastructureNetworkRouteImport } from './routes/_admin.infrastructure.network'
 import { Route as AdminInfrastructureServicesRouteImport } from './routes/_admin.infrastructure.services'
 import { Route as AdminInfrastructureStorageRouteImport } from './routes/_admin.infrastructure.storage'
-import { Route as AdminSaasApplicationsRouteImport } from './routes/_admin.saas.applications'
+import { Route as AdminLicensingIndexRouteImport } from './routes/_admin.licensing.index'
+import { Route as AdminLicensingCustomersRouteImport } from './routes/_admin.licensing.customers'
+import { Route as AdminLicensingFeaturesRouteImport } from './routes/_admin.licensing.features'
+import { Route as AdminLicensingInstallationsRouteImport } from './routes/_admin.licensing.installations'
+import { Route as AdminLicensingLeasesRouteImport } from './routes/_admin.licensing.leases'
+import { Route as AdminLicensingPlansRouteImport } from './routes/_admin.licensing.plans'
+import { Route as AdminLicensingProductsRouteImport } from './routes/_admin.licensing.products'
+import { Route as AdminLicensingRevocationsRouteImport } from './routes/_admin.licensing.revocations'
+import { Route as AdminObservabilityIndexRouteImport } from './routes/_admin.observability.index'
+import { Route as AdminObservabilityAlertsRouteImport } from './routes/_admin.observability.alerts'
+import { Route as AdminObservabilityGrafanaRouteImport } from './routes/_admin.observability.grafana'
+import { Route as AdminObservabilityLogsRouteImport } from './routes/_admin.observability.logs'
+import { Route as AdminObservabilityMetricsRouteImport } from './routes/_admin.observability.metrics'
+import { Route as AdminPkiExpirationRouteImport } from './routes/_admin.pki.expiration'
+import { Route as AdminPkiRevocationRouteImport } from './routes/_admin.pki.revocation'
+import { Route as AdminPkiRotationRouteImport } from './routes/_admin.pki.rotation'
+import { Route as AdminProvidersIndexRouteImport } from './routes/_admin.providers.index'
+import { Route as AdminProvidersProviderIdRouteImport } from './routes/_admin.providers.$providerId'
 import { Route as AdminSaasClientsRouteImport } from './routes/_admin.saas.clients'
 import { Route as AdminSaasInstancesRouteImport } from './routes/_admin.saas.instances'
+import { Route as AdminSecurityIndexRouteImport } from './routes/_admin.security.index'
+import { Route as AdminSecurityAuthenticationRouteImport } from './routes/_admin.security.authentication'
+import { Route as AdminSecurityAuthorizationRouteImport } from './routes/_admin.security.authorization'
+import { Route as AdminSecurityEventsRouteImport } from './routes/_admin.security.events'
+import { Route as AdminSecurityFailedAttemptsRouteImport } from './routes/_admin.security.failed-attempts'
+import { Route as AdminSecurityFirewallRouteImport } from './routes/_admin.security.firewall'
+import { Route as AdminSecuritySessionsRouteImport } from './routes/_admin.security.sessions'
+import { Route as AdminLicensingLicensesIndexRouteImport } from './routes/_admin.licensing.licenses.index'
+import { Route as AdminLicensingLicensesIdRouteImport } from './routes/_admin.licensing.licenses.$id'
+import { Route as AdminPkiCertificatesIndexRouteImport } from './routes/_admin.pki.certificates.index'
+import { Route as AdminPkiCertificatesIdRouteImport } from './routes/_admin.pki.certificates.$id'
+import { Route as AdminSaasApplicationsIndexRouteImport } from './routes/_admin.saas.applications.index'
 import { Route as AdminSaasApplicationsIdRouteImport } from './routes/_admin.saas.applications.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -43,9 +82,62 @@ const AdminApisEndpointsRoute = AdminApisEndpointsRouteImport.update({
   path: '/apis/endpoints',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminApisErrorsRoute = AdminApisErrorsRouteImport.update({
+  id: '/apis/errors',
+  path: '/apis/errors',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminApisLatencyRoute = AdminApisLatencyRouteImport.update({
+  id: '/apis/latency',
+  path: '/apis/latency',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminApisQuotasRoute = AdminApisQuotasRouteImport.update({
+  id: '/apis/quotas',
+  path: '/apis/quotas',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminApisRateLimitsRoute = AdminApisRateLimitsRouteImport.update({
+  id: '/apis/rate-limits',
+  path: '/apis/rate-limits',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminApisRequestsRoute = AdminApisRequestsRouteImport.update({
   id: '/apis/requests',
   path: '/apis/requests',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminIdentityAdministratorsRoute =
+  AdminIdentityAdministratorsRouteImport.update({
+    id: '/identity/administrators',
+    path: '/identity/administrators',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminIdentityMachineClientsRoute =
+  AdminIdentityMachineClientsRouteImport.update({
+    id: '/identity/machine-clients',
+    path: '/identity/machine-clients',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminIdentityPermissionsRoute =
+  AdminIdentityPermissionsRouteImport.update({
+    id: '/identity/permissions',
+    path: '/identity/permissions',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminIdentityRolesRoute = AdminIdentityRolesRouteImport.update({
+  id: '/identity/roles',
+  path: '/identity/roles',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminIdentityScopesRoute = AdminIdentityScopesRouteImport.update({
+  id: '/identity/scopes',
+  path: '/identity/scopes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminIdentitySessionsRoute = AdminIdentitySessionsRouteImport.update({
+  id: '/identity/sessions',
+  path: '/identity/sessions',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminInfrastructureComputeRoute =
@@ -78,11 +170,102 @@ const AdminInfrastructureStorageRoute =
     path: '/infrastructure/storage',
     getParentRoute: () => AdminRoute,
   } as any)
-const AdminSaasApplicationsRoute = AdminSaasApplicationsRouteImport.update({
-  id: '/saas/applications',
-  path: '/saas/applications',
+const AdminLicensingIndexRoute = AdminLicensingIndexRouteImport.update({
+  id: '/licensing/',
+  path: '/licensing/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminLicensingCustomersRoute = AdminLicensingCustomersRouteImport.update({
+  id: '/licensing/customers',
+  path: '/licensing/customers',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLicensingFeaturesRoute = AdminLicensingFeaturesRouteImport.update({
+  id: '/licensing/features',
+  path: '/licensing/features',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLicensingInstallationsRoute =
+  AdminLicensingInstallationsRouteImport.update({
+    id: '/licensing/installations',
+    path: '/licensing/installations',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminLicensingLeasesRoute = AdminLicensingLeasesRouteImport.update({
+  id: '/licensing/leases',
+  path: '/licensing/leases',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLicensingPlansRoute = AdminLicensingPlansRouteImport.update({
+  id: '/licensing/plans',
+  path: '/licensing/plans',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLicensingProductsRoute = AdminLicensingProductsRouteImport.update({
+  id: '/licensing/products',
+  path: '/licensing/products',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLicensingRevocationsRoute =
+  AdminLicensingRevocationsRouteImport.update({
+    id: '/licensing/revocations',
+    path: '/licensing/revocations',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminObservabilityIndexRoute = AdminObservabilityIndexRouteImport.update({
+  id: '/observability/',
+  path: '/observability/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminObservabilityAlertsRoute =
+  AdminObservabilityAlertsRouteImport.update({
+    id: '/observability/alerts',
+    path: '/observability/alerts',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminObservabilityGrafanaRoute =
+  AdminObservabilityGrafanaRouteImport.update({
+    id: '/observability/grafana',
+    path: '/observability/grafana',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminObservabilityLogsRoute = AdminObservabilityLogsRouteImport.update({
+  id: '/observability/logs',
+  path: '/observability/logs',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminObservabilityMetricsRoute =
+  AdminObservabilityMetricsRouteImport.update({
+    id: '/observability/metrics',
+    path: '/observability/metrics',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminPkiExpirationRoute = AdminPkiExpirationRouteImport.update({
+  id: '/pki/expiration',
+  path: '/pki/expiration',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPkiRevocationRoute = AdminPkiRevocationRouteImport.update({
+  id: '/pki/revocation',
+  path: '/pki/revocation',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPkiRotationRoute = AdminPkiRotationRouteImport.update({
+  id: '/pki/rotation',
+  path: '/pki/rotation',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProvidersIndexRoute = AdminProvidersIndexRouteImport.update({
+  id: '/providers/',
+  path: '/providers/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProvidersProviderIdRoute =
+  AdminProvidersProviderIdRouteImport.update({
+    id: '/providers/$providerId',
+    path: '/providers/$providerId',
+    getParentRoute: () => AdminRoute,
+  } as any)
 const AdminSaasClientsRoute = AdminSaasClientsRouteImport.update({
   id: '/saas/clients',
   path: '/saas/clients',
@@ -93,41 +276,186 @@ const AdminSaasInstancesRoute = AdminSaasInstancesRouteImport.update({
   path: '/saas/instances',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminSecurityIndexRoute = AdminSecurityIndexRouteImport.update({
+  id: '/security/',
+  path: '/security/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSecurityAuthenticationRoute =
+  AdminSecurityAuthenticationRouteImport.update({
+    id: '/security/authentication',
+    path: '/security/authentication',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminSecurityAuthorizationRoute =
+  AdminSecurityAuthorizationRouteImport.update({
+    id: '/security/authorization',
+    path: '/security/authorization',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminSecurityEventsRoute = AdminSecurityEventsRouteImport.update({
+  id: '/security/events',
+  path: '/security/events',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSecurityFailedAttemptsRoute =
+  AdminSecurityFailedAttemptsRouteImport.update({
+    id: '/security/failed-attempts',
+    path: '/security/failed-attempts',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminSecurityFirewallRoute = AdminSecurityFirewallRouteImport.update({
+  id: '/security/firewall',
+  path: '/security/firewall',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSecuritySessionsRoute = AdminSecuritySessionsRouteImport.update({
+  id: '/security/sessions',
+  path: '/security/sessions',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLicensingLicensesIndexRoute =
+  AdminLicensingLicensesIndexRouteImport.update({
+    id: '/licensing/licenses/',
+    path: '/licensing/licenses/',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminLicensingLicensesIdRoute =
+  AdminLicensingLicensesIdRouteImport.update({
+    id: '/licensing/licenses/$id',
+    path: '/licensing/licenses/$id',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminPkiCertificatesIndexRoute =
+  AdminPkiCertificatesIndexRouteImport.update({
+    id: '/pki/certificates/',
+    path: '/pki/certificates/',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminPkiCertificatesIdRoute = AdminPkiCertificatesIdRouteImport.update({
+  id: '/pki/certificates/$id',
+  path: '/pki/certificates/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSaasApplicationsIndexRoute =
+  AdminSaasApplicationsIndexRouteImport.update({
+    id: '/saas/applications/',
+    path: '/saas/applications/',
+    getParentRoute: () => AdminRoute,
+  } as any)
 const AdminSaasApplicationsIdRoute = AdminSaasApplicationsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminSaasApplicationsRoute,
+  id: '/saas/applications/$id',
+  path: '/saas/applications/$id',
+  getParentRoute: () => AdminRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/overview': typeof AdminOverviewRoute
   '/apis/endpoints': typeof AdminApisEndpointsRoute
+  '/apis/errors': typeof AdminApisErrorsRoute
+  '/apis/latency': typeof AdminApisLatencyRoute
+  '/apis/quotas': typeof AdminApisQuotasRoute
+  '/apis/rate-limits': typeof AdminApisRateLimitsRoute
   '/apis/requests': typeof AdminApisRequestsRoute
+  '/identity/administrators': typeof AdminIdentityAdministratorsRoute
+  '/identity/machine-clients': typeof AdminIdentityMachineClientsRoute
+  '/identity/permissions': typeof AdminIdentityPermissionsRoute
+  '/identity/roles': typeof AdminIdentityRolesRoute
+  '/identity/scopes': typeof AdminIdentityScopesRoute
+  '/identity/sessions': typeof AdminIdentitySessionsRoute
   '/infrastructure/compute': typeof AdminInfrastructureComputeRoute
   '/infrastructure/hosts': typeof AdminInfrastructureHostsRoute
   '/infrastructure/network': typeof AdminInfrastructureNetworkRoute
   '/infrastructure/services': typeof AdminInfrastructureServicesRoute
   '/infrastructure/storage': typeof AdminInfrastructureStorageRoute
-  '/saas/applications': typeof AdminSaasApplicationsRouteWithChildren
+  '/licensing/customers': typeof AdminLicensingCustomersRoute
+  '/licensing/features': typeof AdminLicensingFeaturesRoute
+  '/licensing/installations': typeof AdminLicensingInstallationsRoute
+  '/licensing/leases': typeof AdminLicensingLeasesRoute
+  '/licensing/plans': typeof AdminLicensingPlansRoute
+  '/licensing/products': typeof AdminLicensingProductsRoute
+  '/licensing/revocations': typeof AdminLicensingRevocationsRoute
+  '/observability/alerts': typeof AdminObservabilityAlertsRoute
+  '/observability/grafana': typeof AdminObservabilityGrafanaRoute
+  '/observability/logs': typeof AdminObservabilityLogsRoute
+  '/observability/metrics': typeof AdminObservabilityMetricsRoute
+  '/pki/expiration': typeof AdminPkiExpirationRoute
+  '/pki/revocation': typeof AdminPkiRevocationRoute
+  '/pki/rotation': typeof AdminPkiRotationRoute
+  '/providers/$providerId': typeof AdminProvidersProviderIdRoute
   '/saas/clients': typeof AdminSaasClientsRoute
   '/saas/instances': typeof AdminSaasInstancesRoute
+  '/security/authentication': typeof AdminSecurityAuthenticationRoute
+  '/security/authorization': typeof AdminSecurityAuthorizationRoute
+  '/security/events': typeof AdminSecurityEventsRoute
+  '/security/failed-attempts': typeof AdminSecurityFailedAttemptsRoute
+  '/security/firewall': typeof AdminSecurityFirewallRoute
+  '/security/sessions': typeof AdminSecuritySessionsRoute
+  '/licensing/': typeof AdminLicensingIndexRoute
+  '/observability/': typeof AdminObservabilityIndexRoute
+  '/providers/': typeof AdminProvidersIndexRoute
+  '/security/': typeof AdminSecurityIndexRoute
+  '/licensing/licenses/$id': typeof AdminLicensingLicensesIdRoute
+  '/pki/certificates/$id': typeof AdminPkiCertificatesIdRoute
   '/saas/applications/$id': typeof AdminSaasApplicationsIdRoute
+  '/licensing/licenses/': typeof AdminLicensingLicensesIndexRoute
+  '/pki/certificates/': typeof AdminPkiCertificatesIndexRoute
+  '/saas/applications/': typeof AdminSaasApplicationsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/overview': typeof AdminOverviewRoute
   '/apis/endpoints': typeof AdminApisEndpointsRoute
+  '/apis/errors': typeof AdminApisErrorsRoute
+  '/apis/latency': typeof AdminApisLatencyRoute
+  '/apis/quotas': typeof AdminApisQuotasRoute
+  '/apis/rate-limits': typeof AdminApisRateLimitsRoute
   '/apis/requests': typeof AdminApisRequestsRoute
+  '/identity/administrators': typeof AdminIdentityAdministratorsRoute
+  '/identity/machine-clients': typeof AdminIdentityMachineClientsRoute
+  '/identity/permissions': typeof AdminIdentityPermissionsRoute
+  '/identity/roles': typeof AdminIdentityRolesRoute
+  '/identity/scopes': typeof AdminIdentityScopesRoute
+  '/identity/sessions': typeof AdminIdentitySessionsRoute
   '/infrastructure/compute': typeof AdminInfrastructureComputeRoute
   '/infrastructure/hosts': typeof AdminInfrastructureHostsRoute
   '/infrastructure/network': typeof AdminInfrastructureNetworkRoute
   '/infrastructure/services': typeof AdminInfrastructureServicesRoute
   '/infrastructure/storage': typeof AdminInfrastructureStorageRoute
-  '/saas/applications': typeof AdminSaasApplicationsRouteWithChildren
+  '/licensing/customers': typeof AdminLicensingCustomersRoute
+  '/licensing/features': typeof AdminLicensingFeaturesRoute
+  '/licensing/installations': typeof AdminLicensingInstallationsRoute
+  '/licensing/leases': typeof AdminLicensingLeasesRoute
+  '/licensing/plans': typeof AdminLicensingPlansRoute
+  '/licensing/products': typeof AdminLicensingProductsRoute
+  '/licensing/revocations': typeof AdminLicensingRevocationsRoute
+  '/observability/alerts': typeof AdminObservabilityAlertsRoute
+  '/observability/grafana': typeof AdminObservabilityGrafanaRoute
+  '/observability/logs': typeof AdminObservabilityLogsRoute
+  '/observability/metrics': typeof AdminObservabilityMetricsRoute
+  '/pki/expiration': typeof AdminPkiExpirationRoute
+  '/pki/revocation': typeof AdminPkiRevocationRoute
+  '/pki/rotation': typeof AdminPkiRotationRoute
+  '/providers/$providerId': typeof AdminProvidersProviderIdRoute
   '/saas/clients': typeof AdminSaasClientsRoute
   '/saas/instances': typeof AdminSaasInstancesRoute
+  '/security/authentication': typeof AdminSecurityAuthenticationRoute
+  '/security/authorization': typeof AdminSecurityAuthorizationRoute
+  '/security/events': typeof AdminSecurityEventsRoute
+  '/security/failed-attempts': typeof AdminSecurityFailedAttemptsRoute
+  '/security/firewall': typeof AdminSecurityFirewallRoute
+  '/security/sessions': typeof AdminSecuritySessionsRoute
+  '/licensing': typeof AdminLicensingIndexRoute
+  '/observability': typeof AdminObservabilityIndexRoute
+  '/providers': typeof AdminProvidersIndexRoute
+  '/security': typeof AdminSecurityIndexRoute
+  '/licensing/licenses/$id': typeof AdminLicensingLicensesIdRoute
+  '/pki/certificates/$id': typeof AdminPkiCertificatesIdRoute
   '/saas/applications/$id': typeof AdminSaasApplicationsIdRoute
+  '/licensing/licenses': typeof AdminLicensingLicensesIndexRoute
+  '/pki/certificates': typeof AdminPkiCertificatesIndexRoute
+  '/saas/applications': typeof AdminSaasApplicationsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -135,16 +463,55 @@ export interface FileRoutesById {
   '/_admin': typeof AdminRouteWithChildren
   '/_admin/overview': typeof AdminOverviewRoute
   '/_admin/apis/endpoints': typeof AdminApisEndpointsRoute
+  '/_admin/apis/errors': typeof AdminApisErrorsRoute
+  '/_admin/apis/latency': typeof AdminApisLatencyRoute
+  '/_admin/apis/quotas': typeof AdminApisQuotasRoute
+  '/_admin/apis/rate-limits': typeof AdminApisRateLimitsRoute
   '/_admin/apis/requests': typeof AdminApisRequestsRoute
+  '/_admin/identity/administrators': typeof AdminIdentityAdministratorsRoute
+  '/_admin/identity/machine-clients': typeof AdminIdentityMachineClientsRoute
+  '/_admin/identity/permissions': typeof AdminIdentityPermissionsRoute
+  '/_admin/identity/roles': typeof AdminIdentityRolesRoute
+  '/_admin/identity/scopes': typeof AdminIdentityScopesRoute
+  '/_admin/identity/sessions': typeof AdminIdentitySessionsRoute
   '/_admin/infrastructure/compute': typeof AdminInfrastructureComputeRoute
   '/_admin/infrastructure/hosts': typeof AdminInfrastructureHostsRoute
   '/_admin/infrastructure/network': typeof AdminInfrastructureNetworkRoute
   '/_admin/infrastructure/services': typeof AdminInfrastructureServicesRoute
   '/_admin/infrastructure/storage': typeof AdminInfrastructureStorageRoute
-  '/_admin/saas/applications': typeof AdminSaasApplicationsRouteWithChildren
+  '/_admin/licensing/customers': typeof AdminLicensingCustomersRoute
+  '/_admin/licensing/features': typeof AdminLicensingFeaturesRoute
+  '/_admin/licensing/installations': typeof AdminLicensingInstallationsRoute
+  '/_admin/licensing/leases': typeof AdminLicensingLeasesRoute
+  '/_admin/licensing/plans': typeof AdminLicensingPlansRoute
+  '/_admin/licensing/products': typeof AdminLicensingProductsRoute
+  '/_admin/licensing/revocations': typeof AdminLicensingRevocationsRoute
+  '/_admin/observability/alerts': typeof AdminObservabilityAlertsRoute
+  '/_admin/observability/grafana': typeof AdminObservabilityGrafanaRoute
+  '/_admin/observability/logs': typeof AdminObservabilityLogsRoute
+  '/_admin/observability/metrics': typeof AdminObservabilityMetricsRoute
+  '/_admin/pki/expiration': typeof AdminPkiExpirationRoute
+  '/_admin/pki/revocation': typeof AdminPkiRevocationRoute
+  '/_admin/pki/rotation': typeof AdminPkiRotationRoute
+  '/_admin/providers/$providerId': typeof AdminProvidersProviderIdRoute
   '/_admin/saas/clients': typeof AdminSaasClientsRoute
   '/_admin/saas/instances': typeof AdminSaasInstancesRoute
+  '/_admin/security/authentication': typeof AdminSecurityAuthenticationRoute
+  '/_admin/security/authorization': typeof AdminSecurityAuthorizationRoute
+  '/_admin/security/events': typeof AdminSecurityEventsRoute
+  '/_admin/security/failed-attempts': typeof AdminSecurityFailedAttemptsRoute
+  '/_admin/security/firewall': typeof AdminSecurityFirewallRoute
+  '/_admin/security/sessions': typeof AdminSecuritySessionsRoute
+  '/_admin/licensing/': typeof AdminLicensingIndexRoute
+  '/_admin/observability/': typeof AdminObservabilityIndexRoute
+  '/_admin/providers/': typeof AdminProvidersIndexRoute
+  '/_admin/security/': typeof AdminSecurityIndexRoute
+  '/_admin/licensing/licenses/$id': typeof AdminLicensingLicensesIdRoute
+  '/_admin/pki/certificates/$id': typeof AdminPkiCertificatesIdRoute
   '/_admin/saas/applications/$id': typeof AdminSaasApplicationsIdRoute
+  '/_admin/licensing/licenses/': typeof AdminLicensingLicensesIndexRoute
+  '/_admin/pki/certificates/': typeof AdminPkiCertificatesIndexRoute
+  '/_admin/saas/applications/': typeof AdminSaasApplicationsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -152,47 +519,164 @@ export interface FileRouteTypes {
     | '/'
     | '/overview'
     | '/apis/endpoints'
+    | '/apis/errors'
+    | '/apis/latency'
+    | '/apis/quotas'
+    | '/apis/rate-limits'
     | '/apis/requests'
+    | '/identity/administrators'
+    | '/identity/machine-clients'
+    | '/identity/permissions'
+    | '/identity/roles'
+    | '/identity/scopes'
+    | '/identity/sessions'
     | '/infrastructure/compute'
     | '/infrastructure/hosts'
     | '/infrastructure/network'
     | '/infrastructure/services'
     | '/infrastructure/storage'
-    | '/saas/applications'
+    | '/licensing/customers'
+    | '/licensing/features'
+    | '/licensing/installations'
+    | '/licensing/leases'
+    | '/licensing/plans'
+    | '/licensing/products'
+    | '/licensing/revocations'
+    | '/observability/alerts'
+    | '/observability/grafana'
+    | '/observability/logs'
+    | '/observability/metrics'
+    | '/pki/expiration'
+    | '/pki/revocation'
+    | '/pki/rotation'
+    | '/providers/$providerId'
     | '/saas/clients'
     | '/saas/instances'
+    | '/security/authentication'
+    | '/security/authorization'
+    | '/security/events'
+    | '/security/failed-attempts'
+    | '/security/firewall'
+    | '/security/sessions'
+    | '/licensing/'
+    | '/observability/'
+    | '/providers/'
+    | '/security/'
+    | '/licensing/licenses/$id'
+    | '/pki/certificates/$id'
     | '/saas/applications/$id'
+    | '/licensing/licenses/'
+    | '/pki/certificates/'
+    | '/saas/applications/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/overview'
     | '/apis/endpoints'
+    | '/apis/errors'
+    | '/apis/latency'
+    | '/apis/quotas'
+    | '/apis/rate-limits'
     | '/apis/requests'
+    | '/identity/administrators'
+    | '/identity/machine-clients'
+    | '/identity/permissions'
+    | '/identity/roles'
+    | '/identity/scopes'
+    | '/identity/sessions'
     | '/infrastructure/compute'
     | '/infrastructure/hosts'
     | '/infrastructure/network'
     | '/infrastructure/services'
     | '/infrastructure/storage'
-    | '/saas/applications'
+    | '/licensing/customers'
+    | '/licensing/features'
+    | '/licensing/installations'
+    | '/licensing/leases'
+    | '/licensing/plans'
+    | '/licensing/products'
+    | '/licensing/revocations'
+    | '/observability/alerts'
+    | '/observability/grafana'
+    | '/observability/logs'
+    | '/observability/metrics'
+    | '/pki/expiration'
+    | '/pki/revocation'
+    | '/pki/rotation'
+    | '/providers/$providerId'
     | '/saas/clients'
     | '/saas/instances'
+    | '/security/authentication'
+    | '/security/authorization'
+    | '/security/events'
+    | '/security/failed-attempts'
+    | '/security/firewall'
+    | '/security/sessions'
+    | '/licensing'
+    | '/observability'
+    | '/providers'
+    | '/security'
+    | '/licensing/licenses/$id'
+    | '/pki/certificates/$id'
     | '/saas/applications/$id'
+    | '/licensing/licenses'
+    | '/pki/certificates'
+    | '/saas/applications'
   id:
     | '__root__'
     | '/'
     | '/_admin'
     | '/_admin/overview'
     | '/_admin/apis/endpoints'
+    | '/_admin/apis/errors'
+    | '/_admin/apis/latency'
+    | '/_admin/apis/quotas'
+    | '/_admin/apis/rate-limits'
     | '/_admin/apis/requests'
+    | '/_admin/identity/administrators'
+    | '/_admin/identity/machine-clients'
+    | '/_admin/identity/permissions'
+    | '/_admin/identity/roles'
+    | '/_admin/identity/scopes'
+    | '/_admin/identity/sessions'
     | '/_admin/infrastructure/compute'
     | '/_admin/infrastructure/hosts'
     | '/_admin/infrastructure/network'
     | '/_admin/infrastructure/services'
     | '/_admin/infrastructure/storage'
-    | '/_admin/saas/applications'
+    | '/_admin/licensing/customers'
+    | '/_admin/licensing/features'
+    | '/_admin/licensing/installations'
+    | '/_admin/licensing/leases'
+    | '/_admin/licensing/plans'
+    | '/_admin/licensing/products'
+    | '/_admin/licensing/revocations'
+    | '/_admin/observability/alerts'
+    | '/_admin/observability/grafana'
+    | '/_admin/observability/logs'
+    | '/_admin/observability/metrics'
+    | '/_admin/pki/expiration'
+    | '/_admin/pki/revocation'
+    | '/_admin/pki/rotation'
+    | '/_admin/providers/$providerId'
     | '/_admin/saas/clients'
     | '/_admin/saas/instances'
+    | '/_admin/security/authentication'
+    | '/_admin/security/authorization'
+    | '/_admin/security/events'
+    | '/_admin/security/failed-attempts'
+    | '/_admin/security/firewall'
+    | '/_admin/security/sessions'
+    | '/_admin/licensing/'
+    | '/_admin/observability/'
+    | '/_admin/providers/'
+    | '/_admin/security/'
+    | '/_admin/licensing/licenses/$id'
+    | '/_admin/pki/certificates/$id'
     | '/_admin/saas/applications/$id'
+    | '/_admin/licensing/licenses/'
+    | '/_admin/pki/certificates/'
+    | '/_admin/saas/applications/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -230,11 +714,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminApisEndpointsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_admin/apis/errors': {
+      id: '/_admin/apis/errors'
+      path: '/apis/errors'
+      fullPath: '/apis/errors'
+      preLoaderRoute: typeof AdminApisErrorsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/apis/latency': {
+      id: '/_admin/apis/latency'
+      path: '/apis/latency'
+      fullPath: '/apis/latency'
+      preLoaderRoute: typeof AdminApisLatencyRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/apis/quotas': {
+      id: '/_admin/apis/quotas'
+      path: '/apis/quotas'
+      fullPath: '/apis/quotas'
+      preLoaderRoute: typeof AdminApisQuotasRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/apis/rate-limits': {
+      id: '/_admin/apis/rate-limits'
+      path: '/apis/rate-limits'
+      fullPath: '/apis/rate-limits'
+      preLoaderRoute: typeof AdminApisRateLimitsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/_admin/apis/requests': {
       id: '/_admin/apis/requests'
       path: '/apis/requests'
       fullPath: '/apis/requests'
       preLoaderRoute: typeof AdminApisRequestsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/identity/administrators': {
+      id: '/_admin/identity/administrators'
+      path: '/identity/administrators'
+      fullPath: '/identity/administrators'
+      preLoaderRoute: typeof AdminIdentityAdministratorsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/identity/machine-clients': {
+      id: '/_admin/identity/machine-clients'
+      path: '/identity/machine-clients'
+      fullPath: '/identity/machine-clients'
+      preLoaderRoute: typeof AdminIdentityMachineClientsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/identity/permissions': {
+      id: '/_admin/identity/permissions'
+      path: '/identity/permissions'
+      fullPath: '/identity/permissions'
+      preLoaderRoute: typeof AdminIdentityPermissionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/identity/roles': {
+      id: '/_admin/identity/roles'
+      path: '/identity/roles'
+      fullPath: '/identity/roles'
+      preLoaderRoute: typeof AdminIdentityRolesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/identity/scopes': {
+      id: '/_admin/identity/scopes'
+      path: '/identity/scopes'
+      fullPath: '/identity/scopes'
+      preLoaderRoute: typeof AdminIdentityScopesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/identity/sessions': {
+      id: '/_admin/identity/sessions'
+      path: '/identity/sessions'
+      fullPath: '/identity/sessions'
+      preLoaderRoute: typeof AdminIdentitySessionsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/_admin/infrastructure/compute': {
@@ -272,11 +826,130 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminInfrastructureStorageRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/_admin/saas/applications': {
-      id: '/_admin/saas/applications'
-      path: '/saas/applications'
-      fullPath: '/saas/applications'
-      preLoaderRoute: typeof AdminSaasApplicationsRouteImport
+    '/_admin/licensing/': {
+      id: '/_admin/licensing/'
+      path: '/licensing'
+      fullPath: '/licensing/'
+      preLoaderRoute: typeof AdminLicensingIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/licensing/customers': {
+      id: '/_admin/licensing/customers'
+      path: '/licensing/customers'
+      fullPath: '/licensing/customers'
+      preLoaderRoute: typeof AdminLicensingCustomersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/licensing/features': {
+      id: '/_admin/licensing/features'
+      path: '/licensing/features'
+      fullPath: '/licensing/features'
+      preLoaderRoute: typeof AdminLicensingFeaturesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/licensing/installations': {
+      id: '/_admin/licensing/installations'
+      path: '/licensing/installations'
+      fullPath: '/licensing/installations'
+      preLoaderRoute: typeof AdminLicensingInstallationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/licensing/leases': {
+      id: '/_admin/licensing/leases'
+      path: '/licensing/leases'
+      fullPath: '/licensing/leases'
+      preLoaderRoute: typeof AdminLicensingLeasesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/licensing/plans': {
+      id: '/_admin/licensing/plans'
+      path: '/licensing/plans'
+      fullPath: '/licensing/plans'
+      preLoaderRoute: typeof AdminLicensingPlansRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/licensing/products': {
+      id: '/_admin/licensing/products'
+      path: '/licensing/products'
+      fullPath: '/licensing/products'
+      preLoaderRoute: typeof AdminLicensingProductsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/licensing/revocations': {
+      id: '/_admin/licensing/revocations'
+      path: '/licensing/revocations'
+      fullPath: '/licensing/revocations'
+      preLoaderRoute: typeof AdminLicensingRevocationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/observability/': {
+      id: '/_admin/observability/'
+      path: '/observability'
+      fullPath: '/observability/'
+      preLoaderRoute: typeof AdminObservabilityIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/observability/alerts': {
+      id: '/_admin/observability/alerts'
+      path: '/observability/alerts'
+      fullPath: '/observability/alerts'
+      preLoaderRoute: typeof AdminObservabilityAlertsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/observability/grafana': {
+      id: '/_admin/observability/grafana'
+      path: '/observability/grafana'
+      fullPath: '/observability/grafana'
+      preLoaderRoute: typeof AdminObservabilityGrafanaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/observability/logs': {
+      id: '/_admin/observability/logs'
+      path: '/observability/logs'
+      fullPath: '/observability/logs'
+      preLoaderRoute: typeof AdminObservabilityLogsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/observability/metrics': {
+      id: '/_admin/observability/metrics'
+      path: '/observability/metrics'
+      fullPath: '/observability/metrics'
+      preLoaderRoute: typeof AdminObservabilityMetricsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/pki/expiration': {
+      id: '/_admin/pki/expiration'
+      path: '/pki/expiration'
+      fullPath: '/pki/expiration'
+      preLoaderRoute: typeof AdminPkiExpirationRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/pki/revocation': {
+      id: '/_admin/pki/revocation'
+      path: '/pki/revocation'
+      fullPath: '/pki/revocation'
+      preLoaderRoute: typeof AdminPkiRevocationRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/pki/rotation': {
+      id: '/_admin/pki/rotation'
+      path: '/pki/rotation'
+      fullPath: '/pki/rotation'
+      preLoaderRoute: typeof AdminPkiRotationRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/providers/': {
+      id: '/_admin/providers/'
+      path: '/providers'
+      fullPath: '/providers/'
+      preLoaderRoute: typeof AdminProvidersIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/providers/$providerId': {
+      id: '/_admin/providers/$providerId'
+      path: '/providers/$providerId'
+      fullPath: '/providers/$providerId'
+      preLoaderRoute: typeof AdminProvidersProviderIdRouteImport
       parentRoute: typeof AdminRoute
     }
     '/_admin/saas/clients': {
@@ -293,55 +966,206 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSaasInstancesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_admin/security/': {
+      id: '/_admin/security/'
+      path: '/security'
+      fullPath: '/security/'
+      preLoaderRoute: typeof AdminSecurityIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/security/authentication': {
+      id: '/_admin/security/authentication'
+      path: '/security/authentication'
+      fullPath: '/security/authentication'
+      preLoaderRoute: typeof AdminSecurityAuthenticationRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/security/authorization': {
+      id: '/_admin/security/authorization'
+      path: '/security/authorization'
+      fullPath: '/security/authorization'
+      preLoaderRoute: typeof AdminSecurityAuthorizationRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/security/events': {
+      id: '/_admin/security/events'
+      path: '/security/events'
+      fullPath: '/security/events'
+      preLoaderRoute: typeof AdminSecurityEventsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/security/failed-attempts': {
+      id: '/_admin/security/failed-attempts'
+      path: '/security/failed-attempts'
+      fullPath: '/security/failed-attempts'
+      preLoaderRoute: typeof AdminSecurityFailedAttemptsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/security/firewall': {
+      id: '/_admin/security/firewall'
+      path: '/security/firewall'
+      fullPath: '/security/firewall'
+      preLoaderRoute: typeof AdminSecurityFirewallRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/security/sessions': {
+      id: '/_admin/security/sessions'
+      path: '/security/sessions'
+      fullPath: '/security/sessions'
+      preLoaderRoute: typeof AdminSecuritySessionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/licensing/licenses/': {
+      id: '/_admin/licensing/licenses/'
+      path: '/licensing/licenses'
+      fullPath: '/licensing/licenses/'
+      preLoaderRoute: typeof AdminLicensingLicensesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/licensing/licenses/$id': {
+      id: '/_admin/licensing/licenses/$id'
+      path: '/licensing/licenses/$id'
+      fullPath: '/licensing/licenses/$id'
+      preLoaderRoute: typeof AdminLicensingLicensesIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/pki/certificates/': {
+      id: '/_admin/pki/certificates/'
+      path: '/pki/certificates'
+      fullPath: '/pki/certificates/'
+      preLoaderRoute: typeof AdminPkiCertificatesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/pki/certificates/$id': {
+      id: '/_admin/pki/certificates/$id'
+      path: '/pki/certificates/$id'
+      fullPath: '/pki/certificates/$id'
+      preLoaderRoute: typeof AdminPkiCertificatesIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/saas/applications/': {
+      id: '/_admin/saas/applications/'
+      path: '/saas/applications'
+      fullPath: '/saas/applications/'
+      preLoaderRoute: typeof AdminSaasApplicationsIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/_admin/saas/applications/$id': {
       id: '/_admin/saas/applications/$id'
-      path: '/$id'
+      path: '/saas/applications/$id'
       fullPath: '/saas/applications/$id'
       preLoaderRoute: typeof AdminSaasApplicationsIdRouteImport
-      parentRoute: typeof AdminSaasApplicationsRoute
+      parentRoute: typeof AdminRoute
     }
   }
 }
 
-interface AdminSaasApplicationsRouteChildren {
-  AdminSaasApplicationsIdRoute: typeof AdminSaasApplicationsIdRoute
-}
-
-const AdminSaasApplicationsRouteChildren: AdminSaasApplicationsRouteChildren = {
-  AdminSaasApplicationsIdRoute: AdminSaasApplicationsIdRoute,
-}
-
-const AdminSaasApplicationsRouteWithChildren =
-  AdminSaasApplicationsRoute._addFileChildren(
-    AdminSaasApplicationsRouteChildren,
-  )
-
 interface AdminRouteChildren {
   AdminOverviewRoute: typeof AdminOverviewRoute
   AdminApisEndpointsRoute: typeof AdminApisEndpointsRoute
+  AdminApisErrorsRoute: typeof AdminApisErrorsRoute
+  AdminApisLatencyRoute: typeof AdminApisLatencyRoute
+  AdminApisQuotasRoute: typeof AdminApisQuotasRoute
+  AdminApisRateLimitsRoute: typeof AdminApisRateLimitsRoute
   AdminApisRequestsRoute: typeof AdminApisRequestsRoute
+  AdminIdentityAdministratorsRoute: typeof AdminIdentityAdministratorsRoute
+  AdminIdentityMachineClientsRoute: typeof AdminIdentityMachineClientsRoute
+  AdminIdentityPermissionsRoute: typeof AdminIdentityPermissionsRoute
+  AdminIdentityRolesRoute: typeof AdminIdentityRolesRoute
+  AdminIdentityScopesRoute: typeof AdminIdentityScopesRoute
+  AdminIdentitySessionsRoute: typeof AdminIdentitySessionsRoute
   AdminInfrastructureComputeRoute: typeof AdminInfrastructureComputeRoute
   AdminInfrastructureHostsRoute: typeof AdminInfrastructureHostsRoute
   AdminInfrastructureNetworkRoute: typeof AdminInfrastructureNetworkRoute
   AdminInfrastructureServicesRoute: typeof AdminInfrastructureServicesRoute
   AdminInfrastructureStorageRoute: typeof AdminInfrastructureStorageRoute
-  AdminSaasApplicationsRoute: typeof AdminSaasApplicationsRouteWithChildren
+  AdminLicensingCustomersRoute: typeof AdminLicensingCustomersRoute
+  AdminLicensingFeaturesRoute: typeof AdminLicensingFeaturesRoute
+  AdminLicensingInstallationsRoute: typeof AdminLicensingInstallationsRoute
+  AdminLicensingLeasesRoute: typeof AdminLicensingLeasesRoute
+  AdminLicensingPlansRoute: typeof AdminLicensingPlansRoute
+  AdminLicensingProductsRoute: typeof AdminLicensingProductsRoute
+  AdminLicensingRevocationsRoute: typeof AdminLicensingRevocationsRoute
+  AdminObservabilityAlertsRoute: typeof AdminObservabilityAlertsRoute
+  AdminObservabilityGrafanaRoute: typeof AdminObservabilityGrafanaRoute
+  AdminObservabilityLogsRoute: typeof AdminObservabilityLogsRoute
+  AdminObservabilityMetricsRoute: typeof AdminObservabilityMetricsRoute
+  AdminPkiExpirationRoute: typeof AdminPkiExpirationRoute
+  AdminPkiRevocationRoute: typeof AdminPkiRevocationRoute
+  AdminPkiRotationRoute: typeof AdminPkiRotationRoute
+  AdminProvidersProviderIdRoute: typeof AdminProvidersProviderIdRoute
   AdminSaasClientsRoute: typeof AdminSaasClientsRoute
   AdminSaasInstancesRoute: typeof AdminSaasInstancesRoute
+  AdminSecurityAuthenticationRoute: typeof AdminSecurityAuthenticationRoute
+  AdminSecurityAuthorizationRoute: typeof AdminSecurityAuthorizationRoute
+  AdminSecurityEventsRoute: typeof AdminSecurityEventsRoute
+  AdminSecurityFailedAttemptsRoute: typeof AdminSecurityFailedAttemptsRoute
+  AdminSecurityFirewallRoute: typeof AdminSecurityFirewallRoute
+  AdminSecuritySessionsRoute: typeof AdminSecuritySessionsRoute
+  AdminLicensingIndexRoute: typeof AdminLicensingIndexRoute
+  AdminObservabilityIndexRoute: typeof AdminObservabilityIndexRoute
+  AdminProvidersIndexRoute: typeof AdminProvidersIndexRoute
+  AdminSecurityIndexRoute: typeof AdminSecurityIndexRoute
+  AdminLicensingLicensesIdRoute: typeof AdminLicensingLicensesIdRoute
+  AdminPkiCertificatesIdRoute: typeof AdminPkiCertificatesIdRoute
+  AdminSaasApplicationsIdRoute: typeof AdminSaasApplicationsIdRoute
+  AdminLicensingLicensesIndexRoute: typeof AdminLicensingLicensesIndexRoute
+  AdminPkiCertificatesIndexRoute: typeof AdminPkiCertificatesIndexRoute
+  AdminSaasApplicationsIndexRoute: typeof AdminSaasApplicationsIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminOverviewRoute: AdminOverviewRoute,
   AdminApisEndpointsRoute: AdminApisEndpointsRoute,
+  AdminApisErrorsRoute: AdminApisErrorsRoute,
+  AdminApisLatencyRoute: AdminApisLatencyRoute,
+  AdminApisQuotasRoute: AdminApisQuotasRoute,
+  AdminApisRateLimitsRoute: AdminApisRateLimitsRoute,
   AdminApisRequestsRoute: AdminApisRequestsRoute,
+  AdminIdentityAdministratorsRoute: AdminIdentityAdministratorsRoute,
+  AdminIdentityMachineClientsRoute: AdminIdentityMachineClientsRoute,
+  AdminIdentityPermissionsRoute: AdminIdentityPermissionsRoute,
+  AdminIdentityRolesRoute: AdminIdentityRolesRoute,
+  AdminIdentityScopesRoute: AdminIdentityScopesRoute,
+  AdminIdentitySessionsRoute: AdminIdentitySessionsRoute,
   AdminInfrastructureComputeRoute: AdminInfrastructureComputeRoute,
   AdminInfrastructureHostsRoute: AdminInfrastructureHostsRoute,
   AdminInfrastructureNetworkRoute: AdminInfrastructureNetworkRoute,
   AdminInfrastructureServicesRoute: AdminInfrastructureServicesRoute,
   AdminInfrastructureStorageRoute: AdminInfrastructureStorageRoute,
-  AdminSaasApplicationsRoute: AdminSaasApplicationsRouteWithChildren,
+  AdminLicensingCustomersRoute: AdminLicensingCustomersRoute,
+  AdminLicensingFeaturesRoute: AdminLicensingFeaturesRoute,
+  AdminLicensingInstallationsRoute: AdminLicensingInstallationsRoute,
+  AdminLicensingLeasesRoute: AdminLicensingLeasesRoute,
+  AdminLicensingPlansRoute: AdminLicensingPlansRoute,
+  AdminLicensingProductsRoute: AdminLicensingProductsRoute,
+  AdminLicensingRevocationsRoute: AdminLicensingRevocationsRoute,
+  AdminObservabilityAlertsRoute: AdminObservabilityAlertsRoute,
+  AdminObservabilityGrafanaRoute: AdminObservabilityGrafanaRoute,
+  AdminObservabilityLogsRoute: AdminObservabilityLogsRoute,
+  AdminObservabilityMetricsRoute: AdminObservabilityMetricsRoute,
+  AdminPkiExpirationRoute: AdminPkiExpirationRoute,
+  AdminPkiRevocationRoute: AdminPkiRevocationRoute,
+  AdminPkiRotationRoute: AdminPkiRotationRoute,
+  AdminProvidersProviderIdRoute: AdminProvidersProviderIdRoute,
   AdminSaasClientsRoute: AdminSaasClientsRoute,
   AdminSaasInstancesRoute: AdminSaasInstancesRoute,
+  AdminSecurityAuthenticationRoute: AdminSecurityAuthenticationRoute,
+  AdminSecurityAuthorizationRoute: AdminSecurityAuthorizationRoute,
+  AdminSecurityEventsRoute: AdminSecurityEventsRoute,
+  AdminSecurityFailedAttemptsRoute: AdminSecurityFailedAttemptsRoute,
+  AdminSecurityFirewallRoute: AdminSecurityFirewallRoute,
+  AdminSecuritySessionsRoute: AdminSecuritySessionsRoute,
+  AdminLicensingIndexRoute: AdminLicensingIndexRoute,
+  AdminObservabilityIndexRoute: AdminObservabilityIndexRoute,
+  AdminProvidersIndexRoute: AdminProvidersIndexRoute,
+  AdminSecurityIndexRoute: AdminSecurityIndexRoute,
+  AdminLicensingLicensesIdRoute: AdminLicensingLicensesIdRoute,
+  AdminPkiCertificatesIdRoute: AdminPkiCertificatesIdRoute,
+  AdminSaasApplicationsIdRoute: AdminSaasApplicationsIdRoute,
+  AdminLicensingLicensesIndexRoute: AdminLicensingLicensesIndexRoute,
+  AdminPkiCertificatesIndexRoute: AdminPkiCertificatesIndexRoute,
+  AdminSaasApplicationsIndexRoute: AdminSaasApplicationsIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
