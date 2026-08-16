@@ -77,7 +77,7 @@ function ComputePage() {
           series={[
             { key: "cpu", label: "CPU" },
             { key: "memory", label: "Memory" },
-            { key: "disk", label: "Disk" },
+            { key: "storage", label: "Storage" },
           ]}
         />
       </ChartPanel>
