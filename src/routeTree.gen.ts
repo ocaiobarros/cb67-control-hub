@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/_admin'
 import { Route as AdminOverviewRouteImport } from './routes/_admin.overview'
+import { Route as AdminApisEndpointsRouteImport } from './routes/_admin.apis.endpoints'
 import { Route as AdminInfrastructureComputeRouteImport } from './routes/_admin.infrastructure.compute'
 import { Route as AdminInfrastructureHostsRouteImport } from './routes/_admin.infrastructure.hosts'
 import { Route as AdminInfrastructureNetworkRouteImport } from './routes/_admin.infrastructure.network'
@@ -34,6 +35,11 @@ const AdminRoute = AdminRouteImport.update({
 const AdminOverviewRoute = AdminOverviewRouteImport.update({
   id: '/overview',
   path: '/overview',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminApisEndpointsRoute = AdminApisEndpointsRouteImport.update({
+  id: '/apis/endpoints',
+  path: '/apis/endpoints',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminInfrastructureComputeRoute =
@@ -90,6 +96,7 @@ const AdminSaasApplicationsIdRoute = AdminSaasApplicationsIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/overview': typeof AdminOverviewRoute
+  '/apis/endpoints': typeof AdminApisEndpointsRoute
   '/infrastructure/compute': typeof AdminInfrastructureComputeRoute
   '/infrastructure/hosts': typeof AdminInfrastructureHostsRoute
   '/infrastructure/network': typeof AdminInfrastructureNetworkRoute
@@ -103,6 +110,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/overview': typeof AdminOverviewRoute
+  '/apis/endpoints': typeof AdminApisEndpointsRoute
   '/infrastructure/compute': typeof AdminInfrastructureComputeRoute
   '/infrastructure/hosts': typeof AdminInfrastructureHostsRoute
   '/infrastructure/network': typeof AdminInfrastructureNetworkRoute
@@ -118,6 +126,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_admin': typeof AdminRouteWithChildren
   '/_admin/overview': typeof AdminOverviewRoute
+  '/_admin/apis/endpoints': typeof AdminApisEndpointsRoute
   '/_admin/infrastructure/compute': typeof AdminInfrastructureComputeRoute
   '/_admin/infrastructure/hosts': typeof AdminInfrastructureHostsRoute
   '/_admin/infrastructure/network': typeof AdminInfrastructureNetworkRoute
@@ -133,6 +142,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/overview'
+    | '/apis/endpoints'
     | '/infrastructure/compute'
     | '/infrastructure/hosts'
     | '/infrastructure/network'
@@ -146,6 +156,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/overview'
+    | '/apis/endpoints'
     | '/infrastructure/compute'
     | '/infrastructure/hosts'
     | '/infrastructure/network'
@@ -160,6 +171,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_admin'
     | '/_admin/overview'
+    | '/_admin/apis/endpoints'
     | '/_admin/infrastructure/compute'
     | '/_admin/infrastructure/hosts'
     | '/_admin/infrastructure/network'
@@ -197,6 +209,13 @@ declare module '@tanstack/react-router' {
       path: '/overview'
       fullPath: '/overview'
       preLoaderRoute: typeof AdminOverviewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/apis/endpoints': {
+      id: '/_admin/apis/endpoints'
+      path: '/apis/endpoints'
+      fullPath: '/apis/endpoints'
+      preLoaderRoute: typeof AdminApisEndpointsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/_admin/infrastructure/compute': {
@@ -280,6 +299,7 @@ const AdminSaasApplicationsRouteWithChildren =
 
 interface AdminRouteChildren {
   AdminOverviewRoute: typeof AdminOverviewRoute
+  AdminApisEndpointsRoute: typeof AdminApisEndpointsRoute
   AdminInfrastructureComputeRoute: typeof AdminInfrastructureComputeRoute
   AdminInfrastructureHostsRoute: typeof AdminInfrastructureHostsRoute
   AdminInfrastructureNetworkRoute: typeof AdminInfrastructureNetworkRoute
@@ -292,6 +312,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminOverviewRoute: AdminOverviewRoute,
+  AdminApisEndpointsRoute: AdminApisEndpointsRoute,
   AdminInfrastructureComputeRoute: AdminInfrastructureComputeRoute,
   AdminInfrastructureHostsRoute: AdminInfrastructureHostsRoute,
   AdminInfrastructureNetworkRoute: AdminInfrastructureNetworkRoute,
