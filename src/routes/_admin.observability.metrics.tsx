@@ -13,26 +13,26 @@ import type { TimeRange } from "@/types";
 export const Route = createFileRoute("/_admin/observability/metrics")({
   head: () => ({
     meta: [
-      { title: "Metrics — CB67 Labs Control Center" },
+      { title: "Métricas — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Curated platform metric series for requests, latency, errors, CPU, memory and network throughput.",
+          "Séries de métricas selecionadas da plataforma para requisições, latência, erros, CPU, memória e throughput de rede.",
       },
-      { property: "og:title", content: "Metrics — CB67 Labs Control Center" },
-      { property: "og:description", content: "Curated metric series with selectable time window." },
+      { property: "og:title", content: "Métricas — CB67 Labs Control Center" },
+      { property: "og:description", content: "Séries de métricas selecionadas com janela de tempo configurável." },
     ],
   }),
   component: MetricsPage,
 });
 
 const METRICS = [
-  { key: "requests", label: "Requests", unit: "req", description: "Requests served per interval." },
-  { key: "latency", label: "Latency", unit: "ms", description: "Aggregated response time." },
-  { key: "errors", label: "Errors", unit: "err", description: "Failed responses per interval." },
-  { key: "cpu", label: "CPU", unit: "%", description: "Cluster CPU utilisation." },
-  { key: "memory", label: "Memory", unit: "%", description: "Cluster memory utilisation." },
-  { key: "network", label: "Network", unit: "Mb/s", description: "Aggregate throughput." },
+  { key: "requests", label: "Requisições", unit: "req", description: "Requisições atendidas por intervalo." },
+  { key: "latency", label: "Latência", unit: "ms", description: "Tempo de resposta agregado." },
+  { key: "errors", label: "Erros", unit: "err", description: "Respostas com falha por intervalo." },
+  { key: "cpu", label: "CPU", unit: "%", description: "Utilização de CPU do cluster." },
+  { key: "memory", label: "Memória", unit: "%", description: "Utilização de memória do cluster." },
+  { key: "network", label: "Rede", unit: "Mb/s", description: "Throughput agregado." },
 ] as const;
 
 function MetricsPage() {
@@ -50,8 +50,8 @@ function MetricsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Metrics"
-        description="A curated subset of the platform metric catalogue. Ad-hoc querying stays in the observability stack; this surface exposes only vetted series."
+        title="Métricas"
+        description="Um subconjunto selecionado do catálogo de métricas da plataforma. Consultas ad-hoc permanecem na stack de observabilidade; esta superfície expõe apenas séries validadas."
         actions={<TimeRangeSelect value={range} onChange={setRange} />}
       />
 
@@ -76,17 +76,17 @@ function MetricsPage() {
 
       <div className="grid gap-3 sm:grid-cols-3">
         <MetricCard
-          label="Latest"
+          label="Último valor"
           value={`${formatCompact(latest)} ${definition.unit}`}
           isLoading={metric.isLoading}
         />
         <MetricCard
-          label="Window average"
+          label="Média da janela"
           value={`${formatCompact(average)} ${definition.unit}`}
           isLoading={metric.isLoading}
         />
         <MetricCard
-          label="Window peak"
+          label="Pico da janela"
           value={`${formatCompact(peak)} ${definition.unit}`}
           isLoading={metric.isLoading}
         />
@@ -110,8 +110,8 @@ function MetricsPage() {
 
       <div className="space-y-3">
         <SectionTitle
-          title="Series catalogue"
-          description="Metric identifiers are stable and match the keys published by the collector."
+          title="Catálogo de séries"
+          description="Os identificadores de métrica são estáveis e correspondem às chaves publicadas pelo coletor."
         />
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {METRICS.map((entry) => (
@@ -119,7 +119,7 @@ function MetricsPage() {
               <code className="mono-xs text-foreground">{entry.key}</code>
               <p className="text-sm font-medium">{entry.label}</p>
               <p className="text-xs text-muted-foreground">{entry.description}</p>
-              <p className="mono-xs text-muted-foreground">unit: {entry.unit}</p>
+              <p className="mono-xs text-muted-foreground">unidade: {entry.unit}</p>
             </div>
           ))}
         </div>

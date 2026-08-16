@@ -12,25 +12,25 @@ import type { TimeRange } from "@/types";
 export const Route = createFileRoute("/_admin/database/connections")({
   head: () => ({
     meta: [
-      { title: "Database Connections — CB67 Labs Control Center" },
+      { title: "Conexões do Banco de Dados — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Connection pool utilisation for the platform PostgreSQL cluster, with headroom and pooler expectations per consumer.",
+          "Utilização do pool de conexões do cluster PostgreSQL da plataforma, com margem e expectativas de pooler por consumidor.",
       },
-      { property: "og:title", content: "Database Connections — CB67 Labs Control Center" },
-      { property: "og:description", content: "Pool utilisation, headroom and consumer expectations." },
+      { property: "og:title", content: "Conexões do Banco de Dados — CB67 Labs Control Center" },
+      { property: "og:description", content: "Utilização do pool, margem e expectativas de consumidores." },
     ],
   }),
   component: ConnectionsPage,
 });
 
 const CONSUMERS = [
-  { name: "api-gateway", pool: "transaction pooling", expected: "40% of pool" },
-  { name: "licensing-service", pool: "transaction pooling", expected: "25% of pool" },
-  { name: "identity-service", pool: "session pooling", expected: "15% of pool" },
-  { name: "audit-writer", pool: "transaction pooling", expected: "10% of pool" },
-  { name: "maintenance jobs", pool: "direct", expected: "10% of pool" },
+  { name: "api-gateway", pool: "pooling por transação", expected: "40% do pool" },
+  { name: "licensing-service", pool: "pooling por transação", expected: "25% do pool" },
+  { name: "identity-service", pool: "pooling por sessão", expected: "15% do pool" },
+  { name: "audit-writer", pool: "pooling por transação", expected: "10% do pool" },
+  { name: "maintenance jobs", pool: "direto", expected: "10% do pool" },
 ];
 
 function ConnectionsPage() {
@@ -47,17 +47,17 @@ function ConnectionsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Database Connections"
-        description="Connection exhaustion is the most common failure mode for the platform. Every service is expected to connect through the pooler with a bounded pool size."
+        title="Conexões do Banco de Dados"
+        description="O esgotamento de conexões é o modo de falha mais comum da plataforma. Espera-se que todo serviço se conecte pelo pooler com um tamanho de pool limitado."
         actions={<TimeRangeSelect value={range} onChange={setRange} />}
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Current" value={db ? formatNumber(db.connections) : "—"} isLoading={health.isLoading} />
-        <MetricCard label="Window average" value={formatNumber(Math.round(average))} isLoading={series.isLoading} />
-        <MetricCard label="Window peak" value={formatNumber(peak)} isLoading={series.isLoading} />
+        <MetricCard label="Atual" value={db ? formatNumber(db.connections) : "—"} isLoading={health.isLoading} />
+        <MetricCard label="Média da janela" value={formatNumber(Math.round(average))} isLoading={series.isLoading} />
+        <MetricCard label="Pico da janela" value={formatNumber(peak)} isLoading={series.isLoading} />
         <MetricCard
-          label="Headroom at peak"
+          label="Margem no pico"
           value={formatNumber(Math.max(0, headroom))}
           tone={headroom < 10 ? "crit" : headroom < 25 ? "warn" : "ok"}
           isLoading={series.isLoading || health.isLoading}
@@ -65,36 +65,36 @@ function ConnectionsPage() {
       </div>
 
       <UsageCard
-        label="Pool utilisation"
+        label="Utilização do pool"
         used={db?.connections ?? 0}
         total={db?.maxConnections ?? 0}
         formatValue={(value) => formatNumber(value)}
-        hint="max_connections is enforced by the cluster; the pooler must stay below it with room for maintenance sessions."
+        hint="max_connections é imposto pelo cluster; o pooler deve ficar abaixo dele com espaço para sessões de manutenção."
       />
 
       <ChartPanel
-        title="Active backends"
-        description="Connection count over the selected window."
+        title="Backends ativos"
+        description="Contagem de conexões na janela selecionada."
         isLoading={series.isLoading}
         error={series.error ?? undefined}
         isEmpty={(series.data?.length ?? 0) === 0}
         height={300}
       >
-        <TimeSeriesChart data={series.data ?? []} series={[{ key: "connections", label: "Connections" }]} />
+        <TimeSeriesChart data={series.data ?? []} series={[{ key: "connections", label: "Conexões" }]} />
       </ChartPanel>
 
       <div className="space-y-3">
         <SectionTitle
-          title="Expected consumers"
-          description="Provisional allocation contract for the backend team; actual per-consumer counters are not yet exposed."
+          title="Consumidores esperados"
+          description="Contrato de alocação provisório para a equipe de backend; contadores reais por consumidor ainda não estão expostos."
         />
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {CONSUMERS.map((consumer) => (
             <div key={consumer.name} className="panel p-4">
               <code className="mono-xs text-foreground">{consumer.name}</code>
               <dl className="mt-2">
-                <StatRow label="Mode" value={consumer.pool} />
-                <StatRow label="Budget" value={consumer.expected} />
+                <StatRow label="Modo" value={consumer.pool} />
+                <StatRow label="Orçamento" value={consumer.expected} />
               </dl>
             </div>
           ))}

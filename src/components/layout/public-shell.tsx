@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { platformMeta } from "@/config/env";
 
 const NAV = [
-  { label: "Platform", to: "/" },
+  { label: "Plataforma", to: "/" },
   { label: "Docs", to: "/docs" },
   { label: "Status", to: "/status" },
   { label: "Changelog", to: "/changelog" },
@@ -22,7 +22,7 @@ export function PublicShell({ children }: { children: ReactNode }) {
             </span>
             <span className="text-sm font-semibold tracking-tight">{platformMeta.name}</span>
           </AppLink>
-          <nav aria-label="Public navigation" className="flex items-center gap-1">
+          <nav aria-label="Navegação pública" className="flex items-center gap-1">
             {NAV.map((item) => (
               <AppLink
                 key={item.to}
@@ -45,7 +45,7 @@ export function PublicShell({ children }: { children: ReactNode }) {
       <footer className="border-t border-border">
         <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-6 text-xs text-muted-foreground">
           <p>
-            {platformMeta.name} — on-premises API platform. Operated from Debian 13 on Proxmox.
+            {platformMeta.name} — plataforma de API on-premises. Operada a partir de Debian 13 em Proxmox.
           </p>
           <p className="mono-xs">{platformMeta.publicDomain}</p>
         </div>

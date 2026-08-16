@@ -11,7 +11,7 @@ export interface TimelineItem {
 }
 
 export function ActivityTimeline({ items }: { items: TimelineItem[] }) {
-  if (items.length === 0) return <EmptyState message="No activity recorded for this object." />;
+  if (items.length === 0) return <EmptyState message="Nenhuma atividade registrada para este objeto." />;
   return (
     <ol className="relative space-y-4 border-l border-border pl-5">
       {items.map((item) => (

@@ -13,14 +13,14 @@ import type { MachineClient } from "@/types";
 export const Route = createFileRoute("/_admin/saas/clients")({
   head: () => ({
     meta: [
-      { title: "Machine Clients — CB67 Labs Control Center" },
+      { title: "Clientes de Máquina — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Machine-to-machine clients authorised on the CB67 Labs platform, with granted scopes and certificate state.",
+          "Clientes máquina a máquina autorizados na plataforma CB67 Labs, com escopos concedidos e estado de certificado.",
       },
-      { property: "og:title", content: "Machine Clients — CB67 Labs Control Center" },
-      { property: "og:description", content: "M2M clients, granted scopes and certificate state." },
+      { property: "og:title", content: "Clientes de Máquina — CB67 Labs Control Center" },
+      { property: "og:description", content: "Clientes M2M, escopos concedidos e estado de certificado." },
     ],
   }),
   component: ClientsPage,
@@ -34,19 +34,19 @@ function ClientsPage() {
   const columns: Column<MachineClient>[] = [
     {
       id: "clientId",
-      header: "Client ID",
+      header: "ID do cliente",
       cell: (row) => <IdentifierCell value={row.clientId} label="client id" />,
       sortValue: (row) => row.clientId,
     },
     {
       id: "applicationName",
-      header: "Application",
+      header: "Aplicação",
       cell: (row) => <span className="text-sm font-medium">{row.applicationName}</span>,
       sortValue: (row) => row.applicationName,
     },
     {
       id: "environment",
-      header: "Env",
+      header: "Amb.",
       cell: (row) => (
         <Badge variant="outline" className="mono-xs">
           {row.environment}
@@ -56,7 +56,7 @@ function ClientsPage() {
     },
     {
       id: "scopes",
-      header: "Scopes",
+      header: "Escopos",
       cell: (row) => (
         <div className="flex flex-wrap gap-1">
           {row.scopes.slice(0, 3).map((scope) => (
@@ -72,13 +72,13 @@ function ClientsPage() {
     },
     {
       id: "certificateStatus",
-      header: "Certificate",
+      header: "Certificado",
       cell: (row) => <StatusBadge status={row.certificateStatus} />,
       sortValue: (row) => row.certificateStatus,
     },
     {
       id: "lastSeen",
-      header: "Last used",
+      header: "Último uso",
       cell: (row) => <span className="text-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>,
       sortValue: (row) => row.lastSeen,
     },
@@ -99,20 +99,20 @@ function ClientsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Machine Clients"
-        description="Client-credential identities used by services. Each client is bound to one application and constrained by explicit scopes."
+        title="Clientes de Máquina"
+        description="Identidades client-credential usadas por serviços. Cada cliente está vinculado a uma aplicação e restrito por escopos explícitos."
       />
 
       <div className="grid gap-3 sm:grid-cols-3">
-        <MetricCard label="Clients" value={rows.length} isLoading={clients.isLoading} />
+        <MetricCard label="Clientes" value={rows.length} isLoading={clients.isLoading} />
         <MetricCard
-          label="Active"
+          label="Ativos"
           value={rows.filter((r) => r.status === "active").length}
           tone="ok"
           isLoading={clients.isLoading}
         />
         <MetricCard
-          label="Revoked or expiring"
+          label="Revogados ou a expirar"
           value={rows.filter((r) => r.certificateStatus !== "active").length}
           tone="warn"
           isLoading={clients.isLoading}
@@ -125,13 +125,13 @@ function ClientsPage() {
         rowKey={(row) => row.id}
         isLoading={clients.isLoading}
         error={clients.error ?? undefined}
-        searchPlaceholder="Search clients, applications…"
+        searchPlaceholder="Buscar clientes, aplicações…"
       />
 
       <section className="panel p-4">
-        <h2 className="text-sm font-semibold">Scope catalogue</h2>
+        <h2 className="text-sm font-semibold">Catálogo de escopos</h2>
         <p className="pb-3 text-xs text-muted-foreground">
-          Canonical scope names accepted by the platform authorisation layer.
+          Nomes canônicos de escopo aceitos pela camada de autorização da plataforma.
         </p>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {[...grouped.entries()].map(([group, definitions]) => (

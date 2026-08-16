@@ -13,23 +13,23 @@ import type { ApiEndpoint, LatencyBreakdown, TimeRange } from "@/types";
 export const Route = createFileRoute("/_admin/apis/latency")({
   head: () => ({
     meta: [
-      { title: "API Latency — CB67 Labs Control Center" },
+      { title: "Latência da API — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Latency percentiles for the CB67 Labs API split between internal processing and upstream provider time.",
+          "Percentis de latência da API CB67 Labs divididos entre processamento interno e tempo do provedor upstream.",
       },
-      { property: "og:title", content: "API Latency — CB67 Labs Control Center" },
-      { property: "og:description", content: "p50, p90, p95, p99 and maximum response times." },
+      { property: "og:title", content: "Latência da API — CB67 Labs Control Center" },
+      { property: "og:description", content: "p50, p90, p95, p99 e tempos máximos de resposta." },
     ],
   }),
   component: LatencyPage,
 });
 
 const SCOPE_LABEL: Record<LatencyBreakdown["scope"], string> = {
-  overall: "End to end",
-  internal: "Platform processing",
-  provider: "Upstream provider",
+  overall: "Ponta a ponta",
+  internal: "Processamento da plataforma",
+  provider: "Provedor upstream",
 };
 
 function LatencyPage() {
@@ -45,7 +45,7 @@ function LatencyPage() {
   const columns: Column<LatencyBreakdown>[] = [
     {
       id: "scope",
-      header: "Scope",
+      header: "Escopo",
       cell: (row) => <span className="font-medium">{SCOPE_LABEL[row.scope]}</span>,
       sortValue: (row) => row.scope,
     },
@@ -81,8 +81,8 @@ function LatencyPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="API Latency"
-        description="Percentiles are computed on completed requests only. Provider time is measured at the outbound call boundary so upstream slowness can be separated from platform overhead."
+        title="Latência da API"
+        description="Os percentis são calculados apenas com requisições concluídas. O tempo do provedor é medido na fronteira da chamada de saída, para que a lentidão upstream possa ser separada da sobrecarga da plataforma."
         actions={<TimeRangeSelect value={range} onChange={setRange} />}
       />
 
@@ -105,16 +105,16 @@ function LatencyPage() {
           isLoading={latency.isLoading}
         />
         <MetricCard
-          label="Maximum"
+          label="Máximo"
           value={overall ? formatMs(overall.max) : "—"}
-          hint="Single slowest completed request"
+          hint="Requisição concluída mais lenta"
           isLoading={latency.isLoading}
         />
       </div>
 
       <ChartPanel
-        title="Latency over time"
-        description="Aggregated response time across every published endpoint."
+        title="Latência ao longo do tempo"
+        description="Tempo de resposta agregado em todos os endpoints publicados."
         isLoading={latency.isLoading}
         error={latency.error ?? undefined}
         isEmpty={(latency.data?.series.length ?? 0) === 0}
@@ -122,7 +122,7 @@ function LatencyPage() {
       >
         <TimeSeriesChart
           data={latency.data?.series ?? []}
-          series={[{ key: "value", label: "Latency" }]}
+          series={[{ key: "value", label: "Latência" }]}
           variant="line"
           unit="ms"
         />
@@ -131,8 +131,8 @@ function LatencyPage() {
       <div className="grid gap-4 xl:grid-cols-3">
         <div className="space-y-3 xl:col-span-2">
           <SectionTitle
-            title="Percentile breakdown"
-            description="Internal versus upstream contribution to the total."
+            title="Detalhamento por percentil"
+            description="Contribuição interna versus upstream no total."
           />
           <DataTable
             data={latency.data?.breakdown}
@@ -144,27 +144,27 @@ function LatencyPage() {
           />
         </div>
         <section className="panel p-4">
-          <h3 className="text-sm font-semibold">Budget attribution</h3>
+          <h3 className="text-sm font-semibold">Atribuição de orçamento</h3>
           <dl className="mt-2">
             <StatRow
-              label="Platform share"
+              label="Parcela da plataforma"
               value={internal && overall ? `${((internal.p95 / overall.p95) * 100).toFixed(1)}%` : "—"}
             />
             <StatRow
-              label="Provider share"
+              label="Parcela do provedor"
               value={provider && overall ? `${((provider.p95 / overall.p95) * 100).toFixed(1)}%` : "—"}
             />
-            <StatRow label="Window" value={range} />
-            <StatRow label="Percentile source" value="Request records (provisional)" />
+            <StatRow label="Janela" value={range} />
+            <StatRow label="Origem do percentil" value="Registros de requisição (provisório)" />
           </dl>
           <p className="mt-3 text-xs text-muted-foreground">
-            Attribution is indicative until the backend exposes per-span timings.
+            A atribuição é indicativa até que o backend exponha tempos por span.
           </p>
         </section>
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Slowest endpoints" description="Ranked by p95 over the last 24 hours." />
+        <SectionTitle title="Endpoints mais lentos" description="Classificados por p95 nas últimas 24 horas." />
         <DataTable
           data={[...(endpoints.data ?? [])].sort((a, b) => b.p95Ms - a.p95Ms).slice(0, 10)}
           columns={slowest}

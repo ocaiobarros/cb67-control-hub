@@ -11,14 +11,14 @@ import type { Customer } from "@/types";
 export const Route = createFileRoute("/_admin/licensing/customers")({
   head: () => ({
     meta: [
-      { title: "Licence Customers — CB67 Labs Control Center" },
+      { title: "Clientes de Licenças — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Customers holding CB67 Labs licences, with contracted products, licence counts and active installations.",
+          "Clientes com licenças da CB67 Labs, com produtos contratados, contagem de licenças e instalações ativas.",
       },
-      { property: "og:title", content: "Licence Customers — CB67 Labs Control Center" },
-      { property: "og:description", content: "Contracted products, licences and installations." },
+      { property: "og:title", content: "Clientes de Licenças — CB67 Labs Control Center" },
+      { property: "og:description", content: "Produtos contratados, licenças e instalações." },
     ],
   }),
   component: CustomersPage,
@@ -31,13 +31,13 @@ function CustomersPage() {
   const columns: Column<Customer>[] = [
     {
       id: "name",
-      header: "Customer",
+      header: "Cliente",
       cell: (row) => <span className="text-sm font-medium">{row.name}</span>,
       sortValue: (row) => row.name,
     },
     {
       id: "products",
-      header: "Products",
+      header: "Produtos",
       cell: (row) => (
         <div className="flex flex-wrap gap-1">
           {row.products.map((product) => (
@@ -50,21 +50,21 @@ function CustomersPage() {
     },
     {
       id: "licenses",
-      header: "Licences",
+      header: "Licenças",
       cell: (row) => <span className="tabular">{formatNumber(row.licenses)}</span>,
       sortValue: (row) => row.licenses,
       align: "right",
     },
     {
       id: "installations",
-      header: "Installations",
+      header: "Instalações",
       cell: (row) => <span className="tabular">{formatNumber(row.installations)}</span>,
       sortValue: (row) => row.installations,
       align: "right",
     },
     {
       id: "created",
-      header: "Customer since",
+      header: "Cliente desde",
       cell: (row) => <span className="mono-xs text-muted-foreground">{formatDate(row.createdAt)}</span>,
       sortValue: (row) => row.createdAt,
       align: "right",
@@ -81,39 +81,39 @@ function CustomersPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Licence Customers"
-        description="Commercial counterparties of the licensing service. Customer records hold no payment data; billing lives outside the platform."
+        title="Clientes de Licenças"
+        description="Contrapartes comerciais do serviço de licenciamento. Os registros de clientes não armazenam dados de pagamento; a cobrança fica fora da plataforma."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Customers" value={rows.length} isLoading={customers.isLoading} />
+        <MetricCard label="Clientes" value={rows.length} isLoading={customers.isLoading} />
         <MetricCard
-          label="Active"
+          label="Ativos"
           value={rows.filter((row) => row.status === "active").length}
           tone="ok"
           isLoading={customers.isLoading}
         />
         <MetricCard
-          label="Licences held"
+          label="Licenças detidas"
           value={formatNumber(rows.reduce((sum, row) => sum + row.licenses, 0))}
           isLoading={customers.isLoading}
         />
         <MetricCard
-          label="Installations"
+          label="Instalações"
           value={formatNumber(rows.reduce((sum, row) => sum + row.installations, 0))}
           isLoading={customers.isLoading}
         />
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Customer registry" description="Sorted and filtered in the browser." />
+        <SectionTitle title="Registro de clientes" description="Ordenado e filtrado no navegador." />
         <DataTable
           data={customers.data}
           columns={columns}
           rowKey={(row) => row.id}
           isLoading={customers.isLoading}
           error={customers.error ?? undefined}
-          searchPlaceholder="Search customer or product…"
+          searchPlaceholder="Buscar cliente ou produto…"
           searchValue={(row) => `${row.name} ${row.products.join(" ")}`}
           pageSize={15}
         />

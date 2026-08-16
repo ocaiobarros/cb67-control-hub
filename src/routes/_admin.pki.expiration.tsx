@@ -13,25 +13,25 @@ import type { Certificate } from "@/types";
 export const Route = createFileRoute("/_admin/pki/expiration")({
   head: () => ({
     meta: [
-      { title: "Certificate Expiration — CB67 Labs Control Center" },
+      { title: "Expiração de Certificados — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Expiration horizon for the internal PKI: certificates grouped by remaining validity so renewals are scheduled before outage risk.",
+          "Horizonte de expiração da PKI interna: certificados agrupados por validade restante para agendar renovações antes do risco de interrupção.",
       },
-      { property: "og:title", content: "Certificate Expiration — CB67 Labs Control Center" },
-      { property: "og:description", content: "Renewal horizon grouped by remaining validity." },
+      { property: "og:title", content: "Expiração de Certificados — CB67 Labs Control Center" },
+      { property: "og:description", content: "Horizonte de renovação agrupado por validade restante." },
     ],
   }),
   component: ExpirationPage,
 });
 
 const BUCKETS = [
-  { label: "Expired", min: -Infinity, max: 0 },
-  { label: "0–7 days", min: 0, max: 7 },
-  { label: "8–30 days", min: 7, max: 30 },
-  { label: "31–90 days", min: 30, max: 90 },
-  { label: "90+ days", min: 90, max: Infinity },
+  { label: "Expirados", min: -Infinity, max: 0 },
+  { label: "0–7 dias", min: 0, max: 7 },
+  { label: "8–30 dias", min: 7, max: 30 },
+  { label: "31–90 dias", min: 30, max: 90 },
+  { label: "90+ dias", min: 90, max: Infinity },
 ];
 
 function bucketOf(cert: Certificate) {
@@ -55,7 +55,7 @@ function ExpirationPage() {
   const columns: Column<Certificate>[] = [
     {
       id: "subject",
-      header: "Subject",
+      header: "Sujeito",
       cell: (row) => (
         <AppLink to={`/pki/certificates/${row.id}`} className="text-sm font-medium hover:underline">
           {row.subject}
@@ -65,23 +65,23 @@ function ExpirationPage() {
     },
     {
       id: "type",
-      header: "Type",
+      header: "Tipo",
       cell: (row) => <span className="text-xs text-muted-foreground">{row.type}</span>,
       sortValue: (row) => row.type,
     },
     {
       id: "client",
-      header: "Bound client",
+      header: "Cliente vinculado",
       cell: (row) => <code className="mono-xs text-muted-foreground">{row.clientId}</code>,
     },
     {
       id: "remaining",
-      header: "Remaining",
+      header: "Restante",
       cell: (row) => {
         const days = daysUntil(row.expiresAt);
         return (
           <span className={days <= 0 ? "tabular text-crit" : days <= 30 ? "tabular text-warn" : "tabular"}>
-            {days <= 0 ? "expired" : `${days} days`}
+            {days <= 0 ? "expirado" : `${days} dias`}
           </span>
         );
       },
@@ -90,7 +90,7 @@ function ExpirationPage() {
     },
     {
       id: "expires",
-      header: "Expires",
+      header: "Expira",
       cell: (row) => <span className="mono-xs text-muted-foreground">{formatDate(row.expiresAt)}</span>,
       sortValue: (row) => row.expiresAt,
       align: "right",
@@ -110,31 +110,31 @@ function ExpirationPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Certificate Expiration"
-        description="An expired client certificate silently breaks mTLS authentication. Renewals should be scheduled at least thirty days ahead of the expiry date."
+        title="Expiração de Certificados"
+        description="Um certificado de cliente expirado quebra silenciosamente a autenticação mTLS. As renovações devem ser agendadas com pelo menos trinta dias de antecedência da data de expiração."
         meta={<StatusBadge status={expired.length > 0 ? "critical" : within7.length > 0 ? "warn" : "healthy"} />}
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
-          label="Expired"
+          label="Expirados"
           value={expired.length}
           tone={expired.length > 0 ? "crit" : "ok"}
           isLoading={certificates.isLoading}
         />
         <MetricCard
-          label="Next 7 days"
+          label="Próximos 7 dias"
           value={within7.length}
           tone={within7.length > 0 ? "warn" : "ok"}
           isLoading={certificates.isLoading}
         />
         <MetricCard
-          label="Next 30 days"
+          label="Próximos 30 dias"
           value={rows.filter((row) => daysUntil(row.expiresAt) > 7 && daysUntil(row.expiresAt) <= 30).length}
           isLoading={certificates.isLoading}
         />
         <MetricCard
-          label="Beyond 90 days"
+          label="Além de 90 dias"
           value={rows.filter((row) => daysUntil(row.expiresAt) > 90).length}
           tone="ok"
           isLoading={certificates.isLoading}
@@ -142,8 +142,8 @@ function ExpirationPage() {
       </div>
 
       <ChartPanel
-        title="Expiration horizon"
-        description="Certificates grouped by remaining validity."
+        title="Horizonte de expiração"
+        description="Certificados agrupados por validade restante."
         isLoading={certificates.isLoading}
         error={certificates.error ?? undefined}
         isEmpty={chart.every((entry) => entry.value === 0)}
@@ -152,14 +152,14 @@ function ExpirationPage() {
       </ChartPanel>
 
       <div className="space-y-3">
-        <SectionTitle title="Renewal queue" description="Ordered by remaining validity, revoked certificates excluded." />
+        <SectionTitle title="Fila de renovação" description="Ordenado por validade restante, certificados revogados excluídos." />
         <DataTable
           data={urgent}
           columns={columns}
           rowKey={(row) => row.id}
           isLoading={certificates.isLoading}
           error={certificates.error ?? undefined}
-          searchPlaceholder="Search subject or client…"
+          searchPlaceholder="Buscar sujeito ou cliente…"
           searchValue={(row) => `${row.subject} ${row.clientId}`}
           pageSize={15}
         />

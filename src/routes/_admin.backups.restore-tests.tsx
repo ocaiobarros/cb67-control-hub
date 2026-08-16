@@ -12,14 +12,14 @@ import type { RestoreTest } from "@/types";
 export const Route = createFileRoute("/_admin/backups/restore-tests")({
   head: () => ({
     meta: [
-      { title: "Restore Tests — CB67 Labs Control Center" },
+      { title: "Testes de Restauração — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Restore verification history for the CB67 Labs platform with measured RPO and RTO per exercise and pass or fail outcome.",
+          "Histórico de verificação de restauração da plataforma CB67 Labs com RPO e RTO medidos por exercício e desfecho de aprovação ou falha.",
       },
-      { property: "og:title", content: "Restore Tests — CB67 Labs Control Center" },
-      { property: "og:description", content: "Restore exercises with measured RPO and RTO." },
+      { property: "og:title", content: "Testes de Restauração — CB67 Labs Control Center" },
+      { property: "og:description", content: "Exercícios de restauração com RPO e RTO medidos." },
     ],
   }),
   component: RestoreTestsPage,
@@ -39,7 +39,7 @@ function RestoreTestsPage() {
   const columns: Column<RestoreTest>[] = [
     {
       id: "name",
-      header: "Exercise",
+      header: "Exercício",
       cell: (row) => (
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">{row.name}</p>
@@ -50,7 +50,7 @@ function RestoreTestsPage() {
     },
     {
       id: "started",
-      header: "Started",
+      header: "Iniciado",
       cell: (row) => (
         <div className="text-right">
           <span className="mono-xs">{formatDateTime(row.startedAt)}</span>
@@ -62,7 +62,7 @@ function RestoreTestsPage() {
     },
     {
       id: "duration",
-      header: "Duration",
+      header: "Duração",
       cell: (row) => <span className="tabular">{formatDuration(row.durationSec)}</span>,
       sortValue: (row) => row.durationSec,
       align: "right",
@@ -91,7 +91,7 @@ function RestoreTestsPage() {
     },
     {
       id: "result",
-      header: "Result",
+      header: "Resultado",
       cell: (row) => <StatusBadge status={row.result} />,
       sortValue: (row) => row.result,
       align: "right",
@@ -101,26 +101,26 @@ function RestoreTestsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Restore Tests"
-        description="A backup is only credible once it has been restored. Exercises run on an isolated target and never touch production data."
+        title="Testes de Restauração"
+        description="Um backup só é confiável depois de ser restaurado. Os exercícios são executados em um alvo isolado e nunca tocam em dados de produção."
         meta={latest ? <StatusBadge status={latest.result} /> : undefined}
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Exercises" value={rows.length} isLoading={tests.isLoading} />
+        <MetricCard label="Exercícios" value={rows.length} isLoading={tests.isLoading} />
         <MetricCard
-          label="Passed"
+          label="Aprovados"
           value={passed.length}
           tone={passed.length === rows.length ? "ok" : "warn"}
           isLoading={tests.isLoading}
         />
         <MetricCard
-          label="Best RTO"
+          label="Melhor RTO"
           value={rows.length > 0 ? `${Math.min(...rows.map((row) => row.rtoMinutes))} min` : "—"}
           isLoading={tests.isLoading}
         />
         <MetricCard
-          label="Worst RTO"
+          label="Pior RTO"
           value={rows.length > 0 ? `${Math.max(...rows.map((row) => row.rtoMinutes))} min` : "—"}
           tone={rows.some((row) => row.rtoMinutes > RTO_TARGET) ? "warn" : "ok"}
           isLoading={tests.isLoading}
@@ -129,8 +129,8 @@ function RestoreTestsPage() {
 
       <div className="grid gap-4 xl:grid-cols-[2fr_1fr]">
         <ChartPanel
-          title="Measured RTO per exercise"
-          description={`Target is ${RTO_TARGET} minutes for a full restore.`}
+          title="RTO medido por exercício"
+          description={`A meta é ${RTO_TARGET} minutos para uma restauração completa.`}
           isLoading={tests.isLoading}
           error={tests.error ?? undefined}
           isEmpty={rtoSeries.length === 0}
@@ -138,25 +138,25 @@ function RestoreTestsPage() {
           <CategoryBarChart data={rtoSeries} layout="horizontal" colorByIndex />
         </ChartPanel>
         <section className="panel p-4">
-          <h3 className="text-sm font-semibold">Objectives</h3>
+          <h3 className="text-sm font-semibold">Objetivos</h3>
           <dl className="mt-2">
-            <StatRow label="RPO target" value={`${RPO_TARGET} minutes`} />
-            <StatRow label="RTO target" value={`${RTO_TARGET} minutes`} />
-            <StatRow label="Cadence" value="Monthly, plus after any schema migration" />
-            <StatRow label="Target environment" value="Isolated restore host on Proxmox" />
+            <StatRow label="Meta de RPO" value={`${RPO_TARGET} minutos`} />
+            <StatRow label="Meta de RTO" value={`${RTO_TARGET} minutos`} />
+            <StatRow label="Frequência" value="Mensal, além de após qualquer migração de esquema" />
+            <StatRow label="Ambiente alvo" value="Host de restauração isolado no Proxmox" />
           </dl>
         </section>
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Exercise history" description="Search by exercise name or source artefact." />
+        <SectionTitle title="Histórico de exercícios" description="Buscar por nome do exercício ou artefato de origem." />
         <DataTable
           data={tests.data}
           columns={columns}
           rowKey={(row) => row.id}
           isLoading={tests.isLoading}
           error={tests.error ?? undefined}
-          searchPlaceholder="Search exercise or artefact…"
+          searchPlaceholder="Buscar exercício ou artefato…"
           searchValue={(row) => `${row.name} ${row.backup}`}
           pageSize={15}
         />

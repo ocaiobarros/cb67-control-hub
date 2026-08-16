@@ -13,10 +13,10 @@ export const Route = createFileRoute("/_admin/security/firewall")({
       {
         name: "description",
         content:
-          "Perimeter firewall posture: default policy, active rule count, last reload and recent blocked connections.",
+          "Postura do firewall de perímetro: política padrão, número de regras ativas, última recarga e conexões bloqueadas recentes.",
       },
       { property: "og:title", content: "Firewall — CB67 Labs Control Center" },
-      { property: "og:description", content: "Default-deny posture, rule count and recent blocks." },
+      { property: "og:description", content: "Postura de negação padrão, número de regras e bloqueios recentes." },
     ],
   }),
   component: FirewallPage,
@@ -24,34 +24,34 @@ export const Route = createFileRoute("/_admin/security/firewall")({
 
 const EXPOSED_SURFACES = [
   {
-    surface: "API gateway",
+    surface: "Gateway de API",
     port: "443/tcp",
     exposure: "Public",
-    control: "Mutual TLS required for every machine client",
+    control: "TLS mútuo exigido para todo cliente de máquina",
   },
   {
     surface: "Control Center",
     port: "443/tcp",
     exposure: "Restricted",
-    control: "Operator identity plus session binding",
+    control: "Identidade do operador mais vinculação de sessão",
   },
   {
-    surface: "Licensing service",
+    surface: "Serviço de licenciamento",
     port: "443/tcp",
     exposure: "Public",
-    control: "Signed lease exchange, no interactive access",
+    control: "Troca de lease assinada, sem acesso interativo",
   },
   {
-    surface: "Observability stack",
+    surface: "Stack de observabilidade",
     port: "internal",
     exposure: "Private",
-    control: "Reachable from the management network only",
+    control: "Acessível somente pela rede de gerenciamento",
   },
   {
     surface: "PostgreSQL",
     port: "5432/tcp",
     exposure: "Private",
-    control: "No route from outside the host network",
+    control: "Nenhuma rota fora da rede do host",
   },
 ];
 
@@ -63,57 +63,57 @@ function FirewallPage() {
     <div className="space-y-6">
       <PageHeader
         title="Firewall"
-        description="The perimeter runs a default-deny policy: only the surfaces listed below accept inbound traffic. Rule management stays on the host, outside this interface."
+        description="O perímetro executa uma política de negação padrão: somente as superfícies listadas abaixo aceitam tráfego de entrada. O gerenciamento de regras permanece no host, fora desta interface."
         meta={state ? <StatusBadge status={state.status} /> : undefined}
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
-          label="Posture"
+          label="Postura"
           value={state?.status ?? "—"}
           tone={state?.status === "healthy" ? "ok" : "warn"}
           isLoading={firewall.isLoading}
         />
-        <MetricCard label="Active rules" value={state?.rulesCount ?? "—"} isLoading={firewall.isLoading} />
+        <MetricCard label="Regras ativas" value={state?.rulesCount ?? "—"} isLoading={firewall.isLoading} />
         <MetricCard
-          label="Recent blocks"
+          label="Bloqueios recentes"
           value={state ? formatNumber(state.recentBlocks) : "—"}
           tone={state && state.recentBlocks > 0 ? "warn" : "ok"}
           isLoading={firewall.isLoading}
         />
         <MetricCard
-          label="Last reload"
+          label="Última recarga"
           value={state ? formatRelative(state.lastReloadAt) : "—"}
           isLoading={firewall.isLoading}
         />
       </div>
 
       <section className="panel p-4">
-        <h3 className="text-sm font-semibold">Policy</h3>
+        <h3 className="text-sm font-semibold">Política</h3>
         <dl className="mt-2">
-          <StatRow label="Default policy" value={state?.policy ?? "—"} />
-          <StatRow label="Rule set size" value={state?.rulesCount ?? "—"} />
+          <StatRow label="Política padrão" value={state?.policy ?? "—"} />
+          <StatRow label="Tamanho do conjunto de regras" value={state?.rulesCount ?? "—"} />
           <StatRow
-            label="Last reload"
+            label="Última recarga"
             value={state ? formatDateTime(state.lastReloadAt) : "—"}
           />
-          <StatRow label="Change process" value="Host configuration management; not editable from this interface" />
+          <StatRow label="Processo de mudança" value="Gerenciamento de configuração do host; não editável a partir desta interface" />
         </dl>
       </section>
 
       <div className="space-y-3">
         <SectionTitle
-          title="Exposed surfaces"
-          description="Documented intent for the on-premises deployment; the backend team owns the authoritative rule set."
+          title="Superfícies expostas"
+          description="Intenção documentada para a implantação on-premises; a equipe de backend possui o conjunto de regras autoritativo."
         />
         <div className="panel overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border text-left text-xs tracking-wide text-muted-foreground uppercase">
-                <th scope="col" className="px-4 py-2 font-medium">Surface</th>
-                <th scope="col" className="px-4 py-2 font-medium">Port</th>
-                <th scope="col" className="px-4 py-2 font-medium">Exposure</th>
-                <th scope="col" className="px-4 py-2 font-medium">Control</th>
+                <th scope="col" className="px-4 py-2 font-medium">Superfície</th>
+                <th scope="col" className="px-4 py-2 font-medium">Porta</th>
+                <th scope="col" className="px-4 py-2 font-medium">Exposição</th>
+                <th scope="col" className="px-4 py-2 font-medium">Controle</th>
               </tr>
             </thead>
             <tbody>

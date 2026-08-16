@@ -48,7 +48,7 @@ function AdminLayout() {
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <SheetContent side="left" className="w-72 rounded-r-3xl p-0">
             <SheetHeader className="sr-only">
-              <SheetTitle>Navigation</SheetTitle>
+              <SheetTitle>Navegação</SheetTitle>
             </SheetHeader>
             <BrandMark />
             <div className="h-[calc(100dvh-3.5rem)]">

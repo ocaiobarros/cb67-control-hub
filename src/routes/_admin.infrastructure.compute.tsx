@@ -12,13 +12,13 @@ import type { TimeRange } from "@/types";
 export const Route = createFileRoute("/_admin/infrastructure/compute")({
   head: () => ({
     meta: [
-      { title: "CPU & Memory — CB67 Labs Control Center" },
+      { title: "CPU e Memória — CB67 Labs Control Center" },
       {
         name: "description",
-        content: "CPU, memory and load average trends for the CB67 Labs on-premises cluster.",
+        content: "Tendências de CPU, memória e load average para o cluster on-premises da CB67 Labs.",
       },
-      { property: "og:title", content: "CPU & Memory — CB67 Labs Control Center" },
-      { property: "og:description", content: "Compute utilisation trends across the cluster." },
+      { property: "og:title", content: "CPU e Memória — CB67 Labs Control Center" },
+      { property: "og:description", content: "Tendências de uso de computação no cluster." },
     ],
   }),
   component: ComputePage,
@@ -38,33 +38,33 @@ function ComputePage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="CPU & Memory"
-        description="Compute pressure across cluster nodes. Sustained values above 85% indicate the need for capacity review."
+        title="CPU e Memória"
+        description="Pressão de computação nos nós do cluster. Valores sustentados acima de 85% indicam necessidade de revisão de capacidade."
         actions={<TimeRangeSelect value={range} onChange={setRange} />}
       />
 
       <div className="grid gap-3 sm:grid-cols-3">
         <MetricCard
-          label="Avg CPU"
+          label="CPU média"
           value={avg("cpu") === undefined ? "—" : formatPercent(avg("cpu")!, 1)}
           isLoading={hosts.isLoading}
         />
         <MetricCard
-          label="Avg memory"
+          label="Memória média"
           value={avg("memory") === undefined ? "—" : formatPercent(avg("memory")!, 1)}
           isLoading={hosts.isLoading}
         />
         <MetricCard
-          label="Nodes reporting"
+          label="Nós reportando"
           value={hosts.data?.length ?? "—"}
-          hint="Metrics collected by node exporter"
+          hint="Métricas coletadas pelo node exporter"
           isLoading={hosts.isLoading}
         />
       </div>
 
       <ChartPanel
-        title="Utilisation over time"
-        description="CPU, memory and disk pressure, cluster-wide average."
+        title="Uso ao longo do tempo"
+        description="Pressão de CPU, memória e disco, média geral do cluster."
         isLoading={series.isLoading}
         error={series.error ?? undefined}
         isEmpty={series.data?.length === 0}
@@ -76,8 +76,8 @@ function ComputePage() {
           unit="%"
           series={[
             { key: "cpu", label: "CPU" },
-            { key: "memory", label: "Memory" },
-            { key: "storage", label: "Storage" },
+            { key: "memory", label: "Memória" },
+            { key: "storage", label: "Armazenamento" },
           ]}
         />
       </ChartPanel>

@@ -17,14 +17,14 @@ import type { RateLimitRule } from "@/types";
 export const Route = createFileRoute("/_admin/apis/rate-limits")({
   head: () => ({
     meta: [
-      { title: "Rate Limits — CB67 Labs Control Center" },
+      { title: "Limites de Taxa — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Per-application rate limit policies with requests per second, per minute and daily ceilings, plus throttling headroom.",
+          "Políticas de limite de taxa por aplicação com tetos de requisições por segundo, por minuto e diários, além da margem de limitação.",
       },
-      { property: "og:title", content: "Rate Limits — CB67 Labs Control Center" },
-      { property: "og:description", content: "Throttling policy, current usage and headroom." },
+      { property: "og:title", content: "Limites de Taxa — CB67 Labs Control Center" },
+      { property: "og:description", content: "Política de limitação, uso atual e margem." },
     ],
   }),
   component: RateLimitsPage,
@@ -47,7 +47,7 @@ function RateLimitsPage() {
   const columns: Column<RateLimitRule>[] = [
     {
       id: "application",
-      header: "Application",
+      header: "Aplicação",
       cell: (row) => (
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">{row.applicationName}</p>
@@ -72,21 +72,21 @@ function RateLimitsPage() {
     },
     {
       id: "daily",
-      header: "Daily",
+      header: "Diário",
       cell: (row) => <span className="tabular">{formatCompact(row.daily)}</span>,
       sortValue: (row) => row.daily,
       align: "right",
     },
     {
       id: "usage",
-      header: "Peak usage",
+      header: "Pico de uso",
       cell: (row) => <span className="tabular">{formatPercent(row.currentUsage, 1)}</span>,
       sortValue: (row) => row.currentUsage,
       align: "right",
     },
     {
       id: "rateLimited",
-      header: "Throttled 24h",
+      header: "Limitado 24h",
       cell: (row) => (
         <span className={row.rateLimited > 0 ? "tabular text-warn" : "tabular"}>
           {formatNumber(row.rateLimited)}
@@ -97,7 +97,7 @@ function RateLimitsPage() {
     },
     {
       id: "headroom",
-      header: "Headroom",
+      header: "Margem",
       cell: (row) => (
         <span className={row.headroom < 20 ? "tabular text-crit" : "tabular text-ok"}>
           {formatPercent(row.headroom, 0)}
@@ -126,7 +126,7 @@ function RateLimitsPage() {
               setTarget(row);
             }}
           >
-            Reset counters
+            Reiniciar contadores
           </Button>
         </Permitted>
       ),
@@ -137,35 +137,35 @@ function RateLimitsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Rate Limits"
-        description="Policies are enforced at the gateway per application and API. This surface reflects the configured ceilings; changes are submitted as operations and applied by the backend."
+        title="Limites de Taxa"
+        description="As políticas são aplicadas no gateway por aplicação e API. Esta superfície reflete os tetos configurados; alterações são enviadas como operações e aplicadas pelo backend."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Policies" value={rows.length} isLoading={rateLimits.isLoading} />
+        <MetricCard label="Políticas" value={rows.length} isLoading={rateLimits.isLoading} />
         <MetricCard
-          label="Throttled requests 24h"
+          label="Requisições limitadas 24h"
           value={formatCompact(throttled)}
           tone={throttled > 0 ? "warn" : "ok"}
           isLoading={rateLimits.isLoading}
         />
         <MetricCard
-          label="Below 20% headroom"
+          label="Abaixo de 20% de margem"
           value={atRisk.length}
           tone={atRisk.length > 0 ? "crit" : "ok"}
-          hint="Candidates for a ceiling review"
+          hint="Candidatos a revisão de teto"
           isLoading={rateLimits.isLoading}
         />
         <MetricCard
-          label="Aggregate RPS ceiling"
+          label="Teto agregado de RPS"
           value={formatNumber(rows.reduce((sum, row) => sum + row.rps, 0))}
           isLoading={rateLimits.isLoading}
         />
       </div>
 
       <ChartPanel
-        title="Throttling by application"
-        description="Requests rejected with 429 in the last 24 hours."
+        title="Limitação por aplicação"
+        description="Requisições rejeitadas com 429 nas últimas 24 horas."
         isLoading={rateLimits.isLoading}
         error={rateLimits.error ?? undefined}
         isEmpty={chart.every((entry) => entry.value === 0)}
@@ -175,8 +175,8 @@ function RateLimitsPage() {
 
       <div className="space-y-3">
         <SectionTitle
-          title="Configured policies"
-          description="Ceilings apply per application and API pair."
+          title="Políticas configuradas"
+          description="Os tetos se aplicam por par de aplicação e API."
         />
         <DataTable
           data={rateLimits.data}
@@ -184,7 +184,7 @@ function RateLimitsPage() {
           rowKey={(row) => row.id}
           isLoading={rateLimits.isLoading}
           error={rateLimits.error ?? undefined}
-          searchPlaceholder="Search application or API…"
+          searchPlaceholder="Buscar aplicação ou API…"
           searchValue={(row) => `${row.applicationName} ${row.api}`}
           pageSize={15}
         />
@@ -195,19 +195,19 @@ function RateLimitsPage() {
         onOpenChange={(open) => {
           if (!open) setTarget(null);
         }}
-        title="Reset rate limit counters"
-        warning="The current window counters are cleared for this policy. In-flight throttling stops immediately and consumers regain full burst capacity."
+        title="Reiniciar contadores de limite de taxa"
+        warning="Os contadores da janela atual são zerados para esta política. A limitação em andamento para imediatamente e os consumidores recuperam total capacidade de rajada."
         details={
           target
             ? [
-                { label: "Application", value: target.applicationName },
+                { label: "Aplicação", value: target.applicationName },
                 { label: "API", value: target.api },
-                { label: "Throttled 24h", value: formatNumber(target.rateLimited) },
+                { label: "Limitado 24h", value: formatNumber(target.rateLimited) },
               ]
             : undefined
         }
-        confirmLabel="Reset counters"
-        environmentNotice="Operations are recorded in the audit trail and re-authorised server-side."
+        confirmLabel="Reiniciar contadores"
+        environmentNotice="As operações são registradas na trilha de auditoria e reautorizadas no servidor."
         onConfirm={async () => {
           if (!target) return;
           await action.mutateAsync({ action: "rate-limit.reset", resourceId: target.id });

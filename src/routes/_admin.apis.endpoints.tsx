@@ -12,14 +12,14 @@ import type { ApiEndpoint } from "@/types";
 export const Route = createFileRoute("/_admin/apis/endpoints")({
   head: () => ({
     meta: [
-      { title: "API Endpoints — CB67 Labs Control Center" },
+      { title: "Endpoints da API — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Catalogue of published CB67 Labs API endpoints with version, required scope, traffic, latency and error rate.",
+          "Catálogo de endpoints publicados da API CB67 Labs com versão, escopo exigido, tráfego, latência e taxa de erro.",
       },
-      { property: "og:title", content: "API Endpoints — CB67 Labs Control Center" },
-      { property: "og:description", content: "Version, required scope, traffic, latency, errors." },
+      { property: "og:title", content: "Endpoints da API — CB67 Labs Control Center" },
+      { property: "og:description", content: "Versão, escopo exigido, tráfego, latência, erros." },
     ],
   }),
   component: EndpointsPage,
@@ -41,11 +41,11 @@ function EndpointsPage() {
       ),
       sortValue: (row) => row.path,
     },
-    { id: "version", header: "Version", cell: (row) => <span className="mono-xs">{row.version}</span>, sortValue: (row) => row.version },
-    { id: "scope", header: "Required scope", cell: (row) => <code className="mono-xs text-muted-foreground">{row.scope}</code> },
+    { id: "version", header: "Versão", cell: (row) => <span className="mono-xs">{row.version}</span>, sortValue: (row) => row.version },
+    { id: "scope", header: "Escopo exigido", cell: (row) => <code className="mono-xs text-muted-foreground">{row.scope}</code> },
     {
       id: "requests24h",
-      header: "Requests 24h",
+      header: "Requisições 24h",
       cell: (row) => <span className="tabular">{formatCompact(row.requests24h)}</span>,
       sortValue: (row) => row.requests24h,
       align: "right",
@@ -59,7 +59,7 @@ function EndpointsPage() {
     },
     {
       id: "errorRate",
-      header: "Error rate",
+      header: "Taxa de erro",
       cell: (row) => (
         <span className={row.errorRate > 1 ? "tabular text-warn" : "tabular"}>
           {formatPercent(row.errorRate)}
@@ -82,25 +82,25 @@ function EndpointsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="API Endpoints"
-        description="Contract surface exposed to SaaS consumers. Every endpoint requires an explicit scope; deprecated versions remain listed until removal is announced in the changelog."
+        title="Endpoints da API"
+        description="Superfície de contrato exposta a consumidores SaaS. Todo endpoint exige um escopo explícito; versões descontinuadas permanecem listadas até que a remoção seja anunciada no changelog."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Published" value={rows.length} isLoading={endpoints.isLoading} />
+        <MetricCard label="Publicados" value={rows.length} isLoading={endpoints.isLoading} />
         <MetricCard
-          label="Degraded"
+          label="Degradados"
           value={rows.filter((r) => r.status !== "healthy").length}
           tone="warn"
           isLoading={endpoints.isLoading}
         />
         <MetricCard
-          label="Traffic 24h"
+          label="Tráfego 24h"
           value={formatCompact(rows.reduce((sum, row) => sum + row.requests24h, 0))}
           isLoading={endpoints.isLoading}
         />
         <MetricCard
-          label="Slowest p95"
+          label="p95 mais lento"
           value={slowest ? formatMs(slowest.p95Ms) : "—"}
           hint={slowest?.path}
           isLoading={endpoints.isLoading}
@@ -113,7 +113,7 @@ function EndpointsPage() {
         rowKey={(row) => row.id}
         isLoading={endpoints.isLoading}
         error={endpoints.error ?? undefined}
-        searchPlaceholder="Search paths, scopes…"
+        searchPlaceholder="Buscar caminhos, escopos…"
         pageSize={15}
       />
     </div>

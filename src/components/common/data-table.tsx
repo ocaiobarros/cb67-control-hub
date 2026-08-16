@@ -60,11 +60,11 @@ export function DataTable<T>({
   isLoading,
   error,
   searchable = true,
-  searchPlaceholder = "Search…",
+  searchPlaceholder = "Buscar…",
   searchValue,
   pageSize = 12,
   onRowClick,
-  emptyMessage = "No records found.",
+  emptyMessage = "Nenhum registro encontrado.",
   toolbar,
   dense,
 }: DataTableProps<T>) {
@@ -140,11 +140,11 @@ export function DataTable<T>({
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="gap-1.5">
                 <Columns3 className="size-4" aria-hidden />
-                Columns
+                Colunas
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Visible columns</DropdownMenuLabel>
+              <DropdownMenuLabel>Colunas visíveis</DropdownMenuLabel>
               {columns.map((column) => (
                 <DropdownMenuCheckboxItem
                   key={column.id}
@@ -267,8 +267,8 @@ export function DataTable<T>({
 
       <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
         <span className="tabular">
-          {sorted.length} record{sorted.length === 1 ? "" : "s"}
-          {sorted.length > pageSize ? ` · page ${current + 1} of ${pageCount}` : ""}
+          {sorted.length} registro{sorted.length === 1 ? "" : "s"}
+          {sorted.length > pageSize ? ` · página ${current + 1} de ${pageCount}` : ""}
         </span>
         {pageCount > 1 && (
           <div className="flex gap-2">
@@ -278,7 +278,7 @@ export function DataTable<T>({
               disabled={current === 0}
               onClick={() => setPage(current - 1)}
             >
-              Previous
+              Anterior
             </Button>
             <Button
               variant="outline"
@@ -286,7 +286,7 @@ export function DataTable<T>({
               disabled={current >= pageCount - 1}
               onClick={() => setPage(current + 1)}
             >
-              Next
+              Próxima
             </Button>
           </div>
         )}

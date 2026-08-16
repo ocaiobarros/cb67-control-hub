@@ -17,14 +17,14 @@ import type { Alert } from "@/types";
 export const Route = createFileRoute("/_admin/observability/alerts")({
   head: () => ({
     meta: [
-      { title: "Alerts — CB67 Labs Control Center" },
+      { title: "Alertas — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Alert inventory with severity, source rule, firing duration and acknowledgement controls for platform operators.",
+          "Inventário de alertas com severidade, regra de origem, duração do disparo e controles de reconhecimento para operadores da plataforma.",
       },
-      { property: "og:title", content: "Alerts — CB67 Labs Control Center" },
-      { property: "og:description", content: "Firing, acknowledged and resolved platform alerts." },
+      { property: "og:title", content: "Alertas — CB67 Labs Control Center" },
+      { property: "og:description", content: "Alertas da plataforma disparando, reconhecidos e resolvidos." },
     ],
   }),
   component: AlertsPage,
@@ -44,7 +44,7 @@ function AlertsPage() {
   const columns: Column<Alert>[] = [
     {
       id: "name",
-      header: "Alert",
+      header: "Alerta",
       cell: (row) => (
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">{row.name}</p>
@@ -55,13 +55,13 @@ function AlertsPage() {
     },
     {
       id: "severity",
-      header: "Severity",
+      header: "Severidade",
       cell: (row) => <StatusBadge status={row.severity} />,
       sortValue: (row) => row.severity,
     },
     {
       id: "started",
-      header: "Started",
+      header: "Início",
       cell: (row) => (
         <div className="text-right">
           <span className="mono-xs">{formatDateTime(row.startedAt)}</span>
@@ -73,13 +73,13 @@ function AlertsPage() {
     },
     {
       id: "duration",
-      header: "Duration",
+      header: "Duração",
       cell: (row) => <span className="tabular">{row.duration}</span>,
       align: "right",
     },
     {
       id: "state",
-      header: "State",
+      header: "Estado",
       cell: (row) => <StatusBadge status={row.state} />,
       sortValue: (row) => row.state,
       align: "right",
@@ -98,7 +98,7 @@ function AlertsPage() {
                 setTarget(row);
               }}
             >
-              Acknowledge
+              Reconhecer
             </Button>
           </Permitted>
         ) : null,
@@ -111,40 +111,40 @@ function AlertsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Alerts"
-        description="Alerts are evaluated by the observability stack. Acknowledging an alert silences notifications without resolving the underlying condition."
+        title="Alertas"
+        description="Os alertas são avaliados pela stack de observabilidade. Reconhecer um alerta silencia as notificações sem resolver a condição subjacente."
         meta={<StatusBadge status={firing.length > 0 ? "firing" : "healthy"} />}
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
-          label="Firing"
+          label="Disparando"
           value={firing.length}
           tone={firing.length > 0 ? "crit" : "ok"}
           isLoading={alerts.isLoading}
         />
         <MetricCard
-          label="Acknowledged"
+          label="Reconhecidos"
           value={rows.filter((row) => row.state === "acknowledged").length}
           tone="warn"
           isLoading={alerts.isLoading}
         />
         <MetricCard
-          label="Resolved"
+          label="Resolvidos"
           value={rows.filter((row) => row.state === "resolved").length}
           tone="ok"
           isLoading={alerts.isLoading}
         />
         <MetricCard
-          label="Distinct sources"
+          label="Fontes distintas"
           value={new Set(rows.map((row) => row.source)).size}
           isLoading={alerts.isLoading}
         />
       </div>
 
       <ChartPanel
-        title="Alerts by severity"
-        description="Composition of the current alert inventory."
+        title="Alertas por severidade"
+        description="Composição do inventário de alertas atual."
         isLoading={alerts.isLoading}
         error={alerts.error ?? undefined}
         isEmpty={bySeverity.every((entry) => entry.value === 0)}
@@ -153,14 +153,14 @@ function AlertsPage() {
       </ChartPanel>
 
       <div className="space-y-3">
-        <SectionTitle title="Alert inventory" description="Sorted by severity or start time." />
+        <SectionTitle title="Inventário de alertas" description="Ordenado por severidade ou horário de início." />
         <DataTable
           data={alerts.data}
           columns={columns}
           rowKey={(row) => row.id}
           isLoading={alerts.isLoading}
           error={alerts.error ?? undefined}
-          searchPlaceholder="Search alert or source…"
+          searchPlaceholder="Buscar alerta ou fonte…"
           searchValue={(row) => `${row.name} ${row.source}`}
           pageSize={15}
         />
@@ -171,20 +171,20 @@ function AlertsPage() {
         onOpenChange={(open) => {
           if (!open) setTarget(null);
         }}
-        title="Acknowledge alert"
-        warning="Notifications for this alert are silenced until it resolves and fires again. The underlying condition is unchanged."
+        title="Reconhecer alerta"
+        warning="As notificações deste alerta ficam silenciadas até que ele seja resolvido e dispare novamente. A condição subjacente permanece inalterada."
         details={
           target
             ? [
-                { label: "Alert", value: target.name },
-                { label: "Severity", value: target.severity },
-                { label: "Firing for", value: target.duration },
+                { label: "Alerta", value: target.name },
+                { label: "Severidade", value: target.severity },
+                { label: "Disparando há", value: target.duration },
               ]
             : undefined
         }
-        confirmLabel="Acknowledge"
+        confirmLabel="Reconhecer"
         destructive={false}
-        environmentNotice="Acknowledgement is recorded with the operator identity in the audit trail."
+        environmentNotice="O reconhecimento é registrado com a identidade do operador na trilha de auditoria."
         onConfirm={async () => {
           if (!target) return;
           await action.mutateAsync({ action: "alert.acknowledge", resourceId: target.id });

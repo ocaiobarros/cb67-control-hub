@@ -63,7 +63,7 @@ export function Topbar({
         variant="ghost"
         size="icon"
         className="lg:hidden"
-        aria-label="Open navigation"
+        aria-label="Abrir navegação"
         onClick={onOpenSidebar}
       >
         <Menu className="size-4" aria-hidden />
@@ -96,7 +96,7 @@ export function Topbar({
           <Badge
             variant="outline"
             className="mono-xs hidden border-warn/40 bg-warn/10 text-warn md:inline-flex"
-            title="No backend connected — data comes from the local mock adapter"
+            title="Nenhum backend conectado — os dados vêm do adaptador simulado local"
           >
             MOCK DATA
           </Badge>
@@ -109,14 +109,14 @@ export function Topbar({
           className="ml-1 gap-2 text-muted-foreground"
         >
           <Search className="size-3.5" aria-hidden />
-          <span className="hidden sm:inline">Search</span>
+          <span className="hidden sm:inline">Buscar</span>
           <kbd className="mono-xs ml-1 hidden rounded border border-border px-1 sm:inline">⌘K</kbd>
         </Button>
 
         <Button
           variant="ghost"
           size="icon"
-          aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+          aria-label={theme === "dark" ? "Alternar para tema claro" : "Alternar para tema escuro"}
           onClick={toggle}
         >
           {theme === "dark" ? (
@@ -128,19 +128,19 @@ export function Topbar({
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" aria-label="Account menu">
+            <Button variant="ghost" size="icon" aria-label="Menu da conta">
               <UserRound className="size-4" aria-hidden />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-60">
             <DropdownMenuLabel>
-              <p className="text-sm font-medium">{user?.name ?? "Operator"}</p>
+              <p className="text-sm font-medium">{user?.name ?? "Operador"}</p>
               <p className="mono-xs text-muted-foreground">{user?.email}</p>
-              <p className="mt-1 text-xs text-muted-foreground">Role: {user?.role}</p>
+              <p className="mt-1 text-xs text-muted-foreground">Função: {user?.role}</p>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <AppLink to="/settings">Settings</AppLink>
+              <AppLink to="/settings">Configurações</AppLink>
             </DropdownMenuItem>
             <DropdownMenuItem
               onSelect={async () => {
@@ -149,7 +149,7 @@ export function Topbar({
               }}
             >
               <LogOut className="size-4" aria-hidden />
-              Sign out
+              Sair
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

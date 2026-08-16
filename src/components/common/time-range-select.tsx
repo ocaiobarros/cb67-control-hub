@@ -13,7 +13,7 @@ export function TimeRangeSelect({
   return (
     <div
       role="group"
-      aria-label="Time range"
+      aria-label="Intervalo de tempo"
       className="inline-flex overflow-hidden rounded-md border border-border"
     >
       {RANGES.map((range) => (

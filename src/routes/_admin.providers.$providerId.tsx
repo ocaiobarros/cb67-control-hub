@@ -26,15 +26,15 @@ export const Route = createFileRoute("/_admin/providers/$providerId")({
       .join(" ");
     return {
       meta: [
-        { title: `${name} Integration — CB67 Labs Control Center` },
+        { title: `Integração ${name} — CB67 Labs Control Center` },
         {
           name: "description",
-          content: `Upstream health, projects, quota pressure and credential rotation state for the ${name} integration.`,
+          content: `Saúde upstream, projetos, pressão de cota e estado de rotação de credenciais da integração ${name}.`,
         },
-        { property: "og:title", content: `${name} Integration — CB67 Labs Control Center` },
+        { property: "og:title", content: `Integração ${name} — CB67 Labs Control Center` },
         {
           property: "og:description",
-          content: `Traffic, latency and credential posture for ${name}.`,
+          content: `Tráfego, latência e postura de credenciais para ${name}.`,
         },
       ],
     };
@@ -58,10 +58,10 @@ function ProviderDetail() {
   if (!providers.isLoading && !provider) {
     return (
       <div className="space-y-6">
-        <PageHeader title="Provider not found" description="No integration is registered for this identifier." />
+        <PageHeader title="Provedor não encontrado" description="Nenhuma integração está registrada para este identificador." />
         <EmptyState
-          message="Unknown provider"
-          hint="Supported integrations are OpenAI, Gemini and Google Maps."
+          message="Provedor desconhecido"
+          hint="As integrações suportadas são OpenAI, Gemini e Google Maps."
         />
       </div>
     );
@@ -70,7 +70,7 @@ function ProviderDetail() {
   const projectColumns: Column<ProviderProject>[] = [
     {
       id: "project",
-      header: "Project",
+      header: "Projeto",
       cell: (row) => (
         <div className="min-w-0">
           <code className="mono-xs text-foreground">{row.project}</code>
@@ -81,25 +81,25 @@ function ProviderDetail() {
     },
     {
       id: "environment",
-      header: "Environment",
+      header: "Ambiente",
       cell: (row) => <StatusBadge status={row.environment} tone="info" />,
       sortValue: (row) => row.environment,
     },
     {
       id: "credential",
-      header: "Credential",
+      header: "Credencial",
       cell: (row) => <code className="mono-xs text-muted-foreground">{row.credentialAlias}</code>,
     },
     {
       id: "requests",
-      header: "Requests 24h",
+      header: "Requisições 24h",
       cell: (row) => <span className="tabular">{formatCompact(row.requests24h)}</span>,
       sortValue: (row) => row.requests24h,
       align: "right",
     },
     {
       id: "throttled",
-      header: "Rate limited",
+      header: "Limitado por taxa",
       cell: (row) => (
         <span className={row.rateLimited24h > 0 ? "tabular text-warn" : "tabular"}>
           {formatNumber(row.rateLimited24h)}
@@ -110,7 +110,7 @@ function ProviderDetail() {
     },
     {
       id: "quota",
-      header: "Quota usage",
+      header: "Uso de cota",
       cell: (row) => (
         <span className={row.quotaUsage > 85 ? "tabular text-crit" : "tabular"}>
           {formatPercent(row.quotaUsage, 1)}
@@ -135,23 +135,23 @@ function ProviderDetail() {
       cell: (row) => <code className="mono-xs text-foreground">{row.alias}</code>,
       sortValue: (row) => row.alias,
     },
-    { id: "secret", header: "Secret", cell: () => <MaskedSecret /> },
+    { id: "secret", header: "Segredo", cell: () => <MaskedSecret /> },
     {
       id: "application",
-      header: "Application",
+      header: "Aplicação",
       cell: (row) => <span className="text-sm">{row.applicationName}</span>,
       sortValue: (row) => row.applicationName,
     },
     {
       id: "rotated",
-      header: "Last rotated",
+      header: "Última rotação",
       cell: (row) => <span className="mono-xs">{formatRelative(row.lastRotatedAt)}</span>,
       sortValue: (row) => row.lastRotatedAt,
       align: "right",
     },
     {
       id: "used",
-      header: "Last used",
+      header: "Último uso",
       cell: (row) => (
         <span className="mono-xs text-muted-foreground">{formatRelative(row.lastUsedAt)}</span>
       ),
@@ -178,7 +178,7 @@ function ProviderDetail() {
               setRotating(row);
             }}
           >
-            Rotate
+            Rotacionar
           </Button>
         </Permitted>
       ),
@@ -189,39 +189,39 @@ function ProviderDetail() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title={provider?.name ?? "Provider"}
-        description="All calls to this provider are brokered by the platform. Credentials are stored server-side and only their metadata is exposed here."
+        title={provider?.name ?? "Provedor"}
+        description="Todas as chamadas a este provedor são intermediadas pela plataforma. As credenciais são armazenadas no servidor e apenas seus metadados são expostos aqui."
         meta={provider ? <StatusBadge status={provider.status} /> : undefined}
         actions={<TimeRangeSelect value={range} onChange={setRange} />}
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
-          label="Requests 24h"
+          label="Requisições 24h"
           value={provider ? formatCompact(provider.requests24h) : "—"}
           isLoading={providers.isLoading}
         />
         <MetricCard
-          label="Errors 24h"
+          label="Erros 24h"
           value={provider ? formatNumber(provider.errors24h) : "—"}
           tone={provider && provider.errors24h > 0 ? "warn" : "ok"}
           isLoading={providers.isLoading}
         />
         <MetricCard
-          label="Upstream p95"
+          label="p95 upstream"
           value={provider ? formatMs(provider.p95Ms) : "—"}
           isLoading={providers.isLoading}
         />
         <MetricCard
-          label="Last success"
+          label="Último sucesso"
           value={provider ? formatRelative(provider.lastSuccessAt) : "—"}
           isLoading={providers.isLoading}
         />
       </div>
 
       <ChartPanel
-        title="Upstream latency"
-        description="Measured at the outbound call boundary, excluding platform processing."
+        title="Latência upstream"
+        description="Medida na fronteira da chamada de saída, excluindo o processamento da plataforma."
         isLoading={series.isLoading}
         error={series.error ?? undefined}
         isEmpty={(series.data?.length ?? 0) === 0}
@@ -229,7 +229,7 @@ function ProviderDetail() {
       >
         <TimeSeriesChart
           data={series.data ?? []}
-          series={[{ key: "value", label: "Provider latency" }]}
+          series={[{ key: "value", label: "Latência do provedor" }]}
           variant="line"
           unit="ms"
         />
@@ -237,15 +237,15 @@ function ProviderDetail() {
 
       <Tabs defaultValue="projects">
         <TabsList>
-          <TabsTrigger value="projects">Projects</TabsTrigger>
-          <TabsTrigger value="credentials">Credentials</TabsTrigger>
-          <TabsTrigger value="policy">Policy</TabsTrigger>
+          <TabsTrigger value="projects">Projetos</TabsTrigger>
+          <TabsTrigger value="credentials">Credenciais</TabsTrigger>
+          <TabsTrigger value="policy">Política</TabsTrigger>
         </TabsList>
 
         <TabsContent value="projects" className="mt-4 space-y-3">
           <SectionTitle
-            title="Provider projects"
-            description="Each SaaS environment maps to an isolated upstream project."
+            title="Projetos do provedor"
+            description="Cada ambiente SaaS mapeia para um projeto upstream isolado."
           />
           <DataTable
             data={projects.data}
@@ -253,7 +253,7 @@ function ProviderDetail() {
             rowKey={(row) => row.id}
             isLoading={projects.isLoading}
             error={projects.error ?? undefined}
-            searchPlaceholder="Search project or application…"
+            searchPlaceholder="Buscar projeto ou aplicação…"
             searchValue={(row) => `${row.project} ${row.applicationName}`}
             pageSize={10}
           />
@@ -261,8 +261,8 @@ function ProviderDetail() {
 
         <TabsContent value="credentials" className="mt-4 space-y-3">
           <SectionTitle
-            title="Credential metadata"
-            description="Rotation is submitted as an operation; the backend performs the exchange and invalidates the previous secret."
+            title="Metadados de credenciais"
+            description="A rotação é enviada como operação; o backend realiza a troca e invalida o segredo anterior."
           />
           <DataTable
             data={credentials.data}
@@ -276,13 +276,13 @@ function ProviderDetail() {
 
         <TabsContent value="policy" className="mt-4">
           <section className="panel p-4">
-            <h3 className="text-sm font-semibold">Integration policy</h3>
+            <h3 className="text-sm font-semibold">Política de integração</h3>
             <dl className="mt-2">
-              <StatRow label="Credential ownership" value="Platform only — never exposed to consumers" />
-              <StatRow label="Failure isolation" value="Provider errors excluded from platform SLO" />
-              <StatRow label="Retry strategy" value="Backend controlled (provisional)" />
-              <StatRow label="Projects" value={provider?.projects ?? "—"} />
-              <StatRow label="Credentials" value={provider?.credentials ?? "—"} />
+              <StatRow label="Posse da credencial" value="Somente plataforma — nunca exposta aos consumidores" />
+              <StatRow label="Isolamento de falhas" value="Erros de provedor excluídos do SLO da plataforma" />
+              <StatRow label="Estratégia de repetição" value="Controlada pelo backend (provisório)" />
+              <StatRow label="Projetos" value={provider?.projects ?? "—"} />
+              <StatRow label="Credenciais" value={provider?.credentials ?? "—"} />
             </dl>
           </section>
         </TabsContent>
@@ -293,20 +293,20 @@ function ProviderDetail() {
         onOpenChange={(open) => {
           if (!open) setRotating(null);
         }}
-        title="Rotate provider credential"
-        warning="A new secret is issued and the previous one is invalidated. Consumers do not need changes because the platform brokers every call, but in-flight upstream sessions may fail once."
+        title="Rotacionar credencial do provedor"
+        warning="Um novo segredo é emitido e o anterior é invalidado. Os consumidores não precisam de alterações porque a plataforma intermedia todas as chamadas, mas sessões upstream em andamento podem falhar uma vez."
         details={
           rotating
             ? [
                 { label: "Alias", value: rotating.alias },
-                { label: "Application", value: rotating.applicationName },
-                { label: "Environment", value: rotating.environment },
+                { label: "Aplicação", value: rotating.applicationName },
+                { label: "Ambiente", value: rotating.environment },
               ]
             : undefined
         }
-        confirmLabel="Rotate credential"
+        confirmLabel="Rotacionar credencial"
         requireTypedValue={rotating?.alias}
-        environmentNotice="The operation is authorised and audited server-side."
+        environmentNotice="A operação é autorizada e auditada no servidor."
         onConfirm={async () => {
           if (!rotating) return;
           await action.mutateAsync({ action: "provider-credential.rotate", resourceId: rotating.id });

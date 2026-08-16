@@ -11,14 +11,14 @@ import type { License } from "@/types";
 export const Route = createFileRoute("/_admin/licensing/licenses/")({
   head: () => ({
     meta: [
-      { title: "Licences — CB67 Labs Control Center" },
+      { title: "Licenças — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Issued CB67 Labs licences with plan, validity window, installation consumption and last validation timestamp.",
+          "Licenças emitidas pela CB67 Labs com plano, janela de validade, consumo de instalações e carimbo de data/hora da última validação.",
       },
-      { property: "og:title", content: "Licences — CB67 Labs Control Center" },
-      { property: "og:description", content: "Validity, installations and validation activity." },
+      { property: "og:title", content: "Licenças — CB67 Labs Control Center" },
+      { property: "og:description", content: "Validade, instalações e atividade de validação." },
     ],
   }),
   component: LicensesPage,
@@ -32,7 +32,7 @@ function LicensesPage() {
   const columns: Column<License>[] = [
     {
       id: "key",
-      header: "Licence key",
+      header: "Chave de licença",
       cell: (row) => (
         <div className="min-w-0">
           <code className="mono-xs text-foreground">{row.key}</code>
@@ -43,7 +43,7 @@ function LicensesPage() {
     },
     {
       id: "product",
-      header: "Product",
+      header: "Produto",
       cell: (row) => (
         <div className="min-w-0">
           <p className="truncate text-sm">{row.productName}</p>
@@ -54,7 +54,7 @@ function LicensesPage() {
     },
     {
       id: "validity",
-      header: "Validity",
+      header: "Validade",
       cell: (row) => (
         <div className="text-right">
           <span className="mono-xs">{formatDate(row.startsAt)} → {formatDate(row.expiresAt)}</span>
@@ -68,8 +68,8 @@ function LicensesPage() {
             }
           >
             {daysUntil(row.expiresAt) <= 0
-              ? "expired"
-              : `${daysUntil(row.expiresAt)} days remaining`}
+              ? "expirada"
+              : `${daysUntil(row.expiresAt)} dias restantes`}
           </p>
         </div>
       ),
@@ -78,7 +78,7 @@ function LicensesPage() {
     },
     {
       id: "installations",
-      header: "Installations",
+      header: "Instalações",
       cell: (row) => (
         <span
           className={
@@ -93,7 +93,7 @@ function LicensesPage() {
     },
     {
       id: "validation",
-      header: "Last validation",
+      header: "Última validação",
       cell: (row) => (
         <span className="mono-xs text-muted-foreground">{formatRelative(row.lastValidationAt)}</span>
       ),
@@ -116,40 +116,40 @@ function LicensesPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Licences"
-        description="A licence binds a customer and product to a plan and installation ceiling. Select a row to inspect installations, leases and revocation history."
+        title="Licenças"
+        description="Uma licença vincula um cliente e um produto a um plano e um teto de instalações. Selecione uma linha para inspecionar instalações, concessões e histórico de revogações."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Licences" value={rows.length} isLoading={licenses.isLoading} />
+        <MetricCard label="Licenças" value={rows.length} isLoading={licenses.isLoading} />
         <MetricCard
-          label="Active"
+          label="Ativas"
           value={rows.filter((row) => row.status === "active").length}
           tone="ok"
           isLoading={licenses.isLoading}
         />
         <MetricCard
-          label="Expiring 30d"
+          label="Expirando em 30d"
           value={expiring.length}
           tone={expiring.length > 0 ? "warn" : "ok"}
           isLoading={licenses.isLoading}
         />
         <MetricCard
-          label="Installations bound"
+          label="Instalações vinculadas"
           value={formatNumber(rows.reduce((sum, row) => sum + row.installations, 0))}
           isLoading={licenses.isLoading}
         />
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Issued licences" description="Click a licence to open its record." />
+        <SectionTitle title="Licenças emitidas" description="Clique em uma licença para abrir o registro." />
         <DataTable
           data={licenses.data}
           columns={columns}
           rowKey={(row) => row.id}
           isLoading={licenses.isLoading}
           error={licenses.error ?? undefined}
-          searchPlaceholder="Search key, customer or product…"
+          searchPlaceholder="Buscar chave, cliente ou produto…"
           searchValue={(row) => `${row.key} ${row.customerName} ${row.productName} ${row.plan}`}
           pageSize={15}
           onRowClick={(row) => {

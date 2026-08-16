@@ -11,14 +11,14 @@ import { isMockMode } from "@/api/client";
 export const Route = createFileRoute("/_admin/settings")({
   head: () => ({
     meta: [
-      { title: "Settings — CB67 Labs Control Center" },
+      { title: "Configurações — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Control Center preferences, runtime configuration and the current operator identity, with the data-source mode in effect.",
+          "Preferências do Control Center, configuração de tempo de execução e a identidade do operador atual, com o modo de fonte de dados em vigor.",
       },
-      { property: "og:title", content: "Settings — CB67 Labs Control Center" },
-      { property: "og:description", content: "Interface preferences, runtime configuration and identity." },
+      { property: "og:title", content: "Configurações — CB67 Labs Control Center" },
+      { property: "og:description", content: "Preferências da interface, configuração de tempo de execução e identidade." },
     ],
   }),
   component: SettingsPage,
@@ -31,18 +31,18 @@ function SettingsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Settings"
-        description="Interface preferences are stored locally in the browser. Platform configuration is owned by the backend and shown here read-only."
+        title="Configurações"
+        description="As preferências da interface são armazenadas localmente no navegador. A configuração da plataforma é de responsabilidade do backend e é exibida aqui apenas para leitura."
         meta={<StatusBadge status={isMockMode ? "maintenance" : "healthy"} />}
       />
 
       <div className="space-y-3">
-        <SectionTitle title="Appearance" description="Applies to this browser only." />
+        <SectionTitle title="Aparência" description="Aplica-se somente a este navegador." />
         <section className="panel flex flex-wrap items-center justify-between gap-3 p-4">
           <div>
-            <p className="text-sm font-medium">Theme</p>
+            <p className="text-sm font-medium">Tema</p>
             <p className="text-xs text-muted-foreground">
-              Currently <code className="mono-xs">{theme}</code>
+              Atualmente <code className="mono-xs">{theme}</code>
             </p>
           </div>
           <div className="flex gap-2">
@@ -53,7 +53,7 @@ function SettingsPage() {
                 if (theme !== "dark") toggle();
               }}
             >
-              Dark
+              Escuro
             </Button>
             <Button
               variant={theme === "light" ? "default" : "outline"}
@@ -62,7 +62,7 @@ function SettingsPage() {
                 if (theme !== "light") toggle();
               }}
             >
-              Light
+              Claro
             </Button>
           </div>
         </section>
@@ -70,45 +70,45 @@ function SettingsPage() {
 
       <div className="space-y-3">
         <SectionTitle
-          title="Runtime configuration"
-          description="Injected at build time through environment variables; never hardcoded in the interface."
+          title="Configuração de tempo de execução"
+          description="Injetada em tempo de build por meio de variáveis de ambiente; nunca fixada na interface."
         />
         <section className="panel p-4">
           <dl>
-            <StatRow label="Environment" value={<code className="mono-xs">{env.environment}</code>} />
-            <StatRow label="Data source" value={isMockMode ? "Mock adapter" : "HTTP adapter"} />
+            <StatRow label="Ambiente" value={<code className="mono-xs">{env.environment}</code>} />
+            <StatRow label="Fonte de dados" value={isMockMode ? "Adaptador simulado" : "Adaptador HTTP"} />
             <StatRow
-              label="API base URL"
-              value={env.apiBaseUrl ? <code className="mono-xs">{env.apiBaseUrl}</code> : "Not configured"}
+              label="URL base da API"
+              value={env.apiBaseUrl ? <code className="mono-xs">{env.apiBaseUrl}</code> : "Não configurado"}
             />
             <StatRow
-              label="Licensing base URL"
+              label="URL base de licenciamento"
               value={
-                env.licenseBaseUrl ? <code className="mono-xs">{env.licenseBaseUrl}</code> : "Not configured"
+                env.licenseBaseUrl ? <code className="mono-xs">{env.licenseBaseUrl}</code> : "Não configurado"
               }
             />
             <StatRow
-              label="Status base URL"
-              value={env.statusBaseUrl ? <code className="mono-xs">{env.statusBaseUrl}</code> : "Not configured"}
+              label="URL base de status"
+              value={env.statusBaseUrl ? <code className="mono-xs">{env.statusBaseUrl}</code> : "Não configurado"}
             />
             <StatRow
-              label="Grafana URL"
-              value={env.grafanaUrl ? <code className="mono-xs">{env.grafanaUrl}</code> : "Not configured"}
+              label="URL do Grafana"
+              value={env.grafanaUrl ? <code className="mono-xs">{env.grafanaUrl}</code> : "Não configurado"}
             />
-            <StatRow label="Telemetry" value={env.telemetryEnabled ? "Enabled" : "Disabled"} />
+            <StatRow label="Telemetria" value={env.telemetryEnabled ? "Ativada" : "Desativada"} />
           </dl>
         </section>
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Identity" description="Provided by the platform after authentication." />
+        <SectionTitle title="Identidade" description="Fornecida pela plataforma após a autenticação." />
         <section className="panel p-4">
           <dl>
-            <StatRow label="Operator" value={user?.name ?? "—"} />
-            <StatRow label="Email" value={user?.email ?? "—"} />
-            <StatRow label="Role" value={user?.role ?? "—"} />
+            <StatRow label="Operador" value={user?.name ?? "—"} />
+            <StatRow label="E-mail" value={user?.email ?? "—"} />
+            <StatRow label="Função" value={user?.role ?? "—"} />
             <StatRow
-              label="Granted permissions"
+              label="Permissões concedidas"
               value={
                 user ? (
                   <span className="mono-xs break-words">{user.permissions.join(", ")}</span>
@@ -120,20 +120,20 @@ function SettingsPage() {
           </dl>
           <div className="mt-4 flex justify-end">
             <Button variant="outline" size="sm" onClick={() => void logout()}>
-              Sign out
+              Sair
             </Button>
           </div>
         </section>
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Deployment" description="Target environment for this frontend." />
+        <SectionTitle title="Implantação" description="Ambiente alvo deste frontend." />
         <section className="panel p-4">
           <dl>
-            <StatRow label="Product" value={platformMeta.productName} />
-            <StatRow label="Management host" value={<code className="mono-xs">{platformMeta.adminDomain}</code>} />
-            <StatRow label="Public host" value={<code className="mono-xs">{platformMeta.publicDomain}</code>} />
-            <StatRow label="Host platform" value="Debian 13 on Proxmox, on-premises" />
+            <StatRow label="Produto" value={platformMeta.productName} />
+            <StatRow label="Host de gerenciamento" value={<code className="mono-xs">{platformMeta.adminDomain}</code>} />
+            <StatRow label="Host público" value={<code className="mono-xs">{platformMeta.publicDomain}</code>} />
+            <StatRow label="Plataforma do host" value="Debian 13 no Proxmox, on-premises" />
           </dl>
         </section>
       </div>

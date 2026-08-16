@@ -10,14 +10,14 @@ import type { ScopeDefinition } from "@/types";
 export const Route = createFileRoute("/_admin/identity/scopes")({
   head: () => ({
     meta: [
-      { title: "OAuth Scopes — CB67 Labs Control Center" },
+      { title: "Escopos OAuth — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Catalogue of API scopes, the capability each one authorises and how many machine clients hold it.",
+          "Catálogo de escopos de API, a capacidade que cada um autoriza e quantos clientes de máquina o possuem.",
       },
-      { property: "og:title", content: "OAuth Scopes — CB67 Labs Control Center" },
-      { property: "og:description", content: "Scope definitions grouped by API domain." },
+      { property: "og:title", content: "Escopos OAuth — CB67 Labs Control Center" },
+      { property: "og:description", content: "Definições de escopos agrupadas por domínio de API." },
     ],
   }),
   component: ScopesPage,
@@ -38,18 +38,18 @@ function ScopesPage() {
   const columns: Column<ScopeDefinition>[] = [
     {
       id: "scope",
-      header: "Scope",
+      header: "Escopo",
       cell: (row) => <code className="mono-xs text-foreground">{row.scope}</code>,
       sortValue: (row) => row.scope,
     },
     {
       id: "description",
-      header: "Authorises",
+      header: "Autoriza",
       cell: (row) => <p className="max-w-lg text-xs text-muted-foreground">{row.description}</p>,
     },
     {
       id: "clients",
-      header: "Clients holding",
+      header: "Clientes que possuem",
       cell: (row) => <span className="tabular">{usage[row.scope] ?? 0}</span>,
       sortValue: (row) => usage[row.scope] ?? 0,
       align: "right",
@@ -59,23 +59,23 @@ function ScopesPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="OAuth Scopes"
-        description="Scopes are the least-privilege contract between a machine client and the API. A request without the required scope is rejected before reaching business logic."
+        title="Escopos OAuth"
+        description="Escopos são o contrato de menor privilégio entre um cliente de máquina e a API. Uma requisição sem o escopo exigido é rejeitada antes de alcançar a lógica de negócio."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Scopes" value={rows.length} isLoading={scopes.isLoading} />
-        <MetricCard label="Domains" value={groups.length} isLoading={scopes.isLoading} />
+        <MetricCard label="Escopos" value={rows.length} isLoading={scopes.isLoading} />
+        <MetricCard label="Domínios" value={groups.length} isLoading={scopes.isLoading} />
         <MetricCard
-          label="Granted at least once"
+          label="Concedido ao menos uma vez"
           value={rows.filter((row) => (usage[row.scope] ?? 0) > 0).length}
           isLoading={clients.isLoading}
         />
         <MetricCard
-          label="Unused"
+          label="Não utilizado"
           value={rows.filter((row) => (usage[row.scope] ?? 0) === 0).length}
           tone="warn"
-          hint="Candidates for deprecation"
+          hint="Candidatos à descontinuação"
           isLoading={clients.isLoading}
         />
       </div>
@@ -91,9 +91,9 @@ function ScopesPage() {
       )}
 
       <div className="space-y-3">
-        <SectionTitle title="Scope catalogue" description="Names are stable API contract identifiers." />
+        <SectionTitle title="Catálogo de escopos" description="Os nomes são identificadores estáveis do contrato de API." />
         {!scopes.isLoading && rows.length === 0 ? (
-          <EmptyState message="No scopes registered" hint="The scope catalogue is published by the backend." />
+          <EmptyState message="Nenhum escopo registrado" hint="O catálogo de escopos é publicado pelo backend." />
         ) : (
           <DataTable
             data={scopes.data}
@@ -101,7 +101,7 @@ function ScopesPage() {
             rowKey={(row) => row.scope}
             isLoading={scopes.isLoading}
             error={scopes.error ?? undefined}
-            searchPlaceholder="Search scope…"
+            searchPlaceholder="Buscar escopo…"
             searchValue={(row) => `${row.scope} ${row.description}`}
             pageSize={20}
             dense

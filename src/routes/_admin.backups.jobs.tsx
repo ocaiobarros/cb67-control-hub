@@ -16,14 +16,14 @@ import type { BackupJob } from "@/types";
 export const Route = createFileRoute("/_admin/backups/jobs")({
   head: () => ({
     meta: [
-      { title: "Backup Jobs — CB67 Labs Control Center" },
+      { title: "Rotinas de Backup — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Inventory of scheduled backup jobs for the CB67 Labs platform with schedule, target, duration and manual run controls.",
+          "Inventário de rotinas de backup agendadas da plataforma CB67 Labs, com agenda, alvo, duração e controles de execução manual.",
       },
-      { property: "og:title", content: "Backup Jobs — CB67 Labs Control Center" },
-      { property: "og:description", content: "Scheduled backup jobs, targets and manual run controls." },
+      { property: "og:title", content: "Rotinas de Backup — CB67 Labs Control Center" },
+      { property: "og:description", content: "Rotinas de backup agendadas, alvos e controles de execução manual." },
     ],
   }),
   component: BackupJobsPage,
@@ -38,7 +38,7 @@ function BackupJobsPage() {
   const columns: Column<BackupJob>[] = [
     {
       id: "name",
-      header: "Job",
+      header: "Rotina",
       cell: (row) => (
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">{row.name}</p>
@@ -49,24 +49,24 @@ function BackupJobsPage() {
     },
     {
       id: "type",
-      header: "Type",
+      header: "Tipo",
       cell: (row) => <StatusBadge status={row.type} />,
       sortValue: (row) => row.type,
     },
     {
       id: "target",
-      header: "Target",
+      header: "Alvo",
       cell: (row) => <code className="mono-xs text-muted-foreground">{row.target}</code>,
       sortValue: (row) => row.target,
     },
     {
       id: "schedule",
-      header: "Schedule",
+      header: "Agenda",
       cell: (row) => <code className="mono-xs">{row.schedule}</code>,
     },
     {
       id: "last",
-      header: "Last run",
+      header: "Última execução",
       cell: (row) => (
         <div className="text-right">
           <span className="mono-xs">{formatDateTime(row.lastRunAt)}</span>
@@ -78,7 +78,7 @@ function BackupJobsPage() {
     },
     {
       id: "duration",
-      header: "Duration",
+      header: "Duração",
       cell: (row) => <span className="tabular">{formatDuration(row.durationSec)}</span>,
       sortValue: (row) => row.durationSec,
       align: "right",
@@ -103,7 +103,7 @@ function BackupJobsPage() {
               setTarget(row);
             }}
           >
-            Run now
+            Executar agora
           </Button>
         </Permitted>
       ),
@@ -114,14 +114,14 @@ function BackupJobsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Backup Jobs"
-        description="Job definitions live in the platform scheduler. Operators can request an out-of-band run; the backend decides whether to accept it."
+        title="Rotinas de Backup"
+        description="As definições de rotina vivem no agendador da plataforma. Operadores podem solicitar uma execução fora da programação; o backend decide se aceita."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Jobs" value={rows.length} isLoading={jobs.isLoading} />
+        <MetricCard label="Rotinas" value={rows.length} isLoading={jobs.isLoading} />
         <MetricCard
-          label="Full"
+          label="Completo"
           value={rows.filter((row) => row.type === "full").length}
           isLoading={jobs.isLoading}
         />
@@ -131,7 +131,7 @@ function BackupJobsPage() {
           isLoading={jobs.isLoading}
         />
         <MetricCard
-          label="Degraded or failing"
+          label="Degradado ou falhando"
           value={rows.filter((row) => row.status !== "healthy").length}
           tone={rows.some((row) => row.status === "unavailable") ? "crit" : "warn"}
           isLoading={jobs.isLoading}
@@ -139,14 +139,14 @@ function BackupJobsPage() {
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Job inventory" description="Search by name or target volume." />
+        <SectionTitle title="Inventário de rotinas" description="Busque por nome ou volume de destino." />
         <DataTable
           data={jobs.data}
           columns={columns}
           rowKey={(row) => row.id}
           isLoading={jobs.isLoading}
           error={jobs.error ?? undefined}
-          searchPlaceholder="Search job or target…"
+          searchPlaceholder="Buscar rotina ou alvo…"
           searchValue={(row) => `${row.name} ${row.target} ${row.type}`}
           pageSize={15}
         />
@@ -157,20 +157,20 @@ function BackupJobsPage() {
         onOpenChange={(open) => {
           if (!open) setTarget(null);
         }}
-        title="Run backup job now"
-        warning="An out-of-band run consumes disk and I/O on the target host and may overlap with the scheduled window."
+        title="Executar rotina de backup agora"
+        warning="Uma execução fora da programação consome disco e I/O no host de destino e pode sobrepor a janela agendada."
         details={
           target
             ? [
-                { label: "Job", value: target.name },
-                { label: "Type", value: target.type },
-                { label: "Target", value: target.target },
-                { label: "Typical duration", value: formatDuration(target.durationSec) },
+                { label: "Rotina", value: target.name },
+                { label: "Tipo", value: target.type },
+                { label: "Alvo", value: target.target },
+                { label: "Duração típica", value: formatDuration(target.durationSec) },
               ]
             : undefined
         }
-        confirmLabel="Run job"
-        environmentNotice="The request is queued with the operator identity and appears in the audit trail."
+        confirmLabel="Executar rotina"
+        environmentNotice="A solicitação é enfileirada com a identidade do operador e aparece na trilha de auditoria."
         onConfirm={async () => {
           if (!target) return;
           await action.mutateAsync({ action: "backup.run", resourceId: target.id });

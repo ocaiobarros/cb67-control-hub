@@ -11,14 +11,14 @@ import type { LicensePlan } from "@/types";
 export const Route = createFileRoute("/_admin/licensing/plans")({
   head: () => ({
     meta: [
-      { title: "Licence Plans — CB67 Labs Control Center" },
+      { title: "Planos de Licença — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Commercial plans with installation ceilings, bundled feature flags and the number of licences sold on each tier.",
+          "Planos comerciais com tetos de instalação, recursos incluídos e o número de licenças vendidas em cada camada.",
       },
-      { property: "og:title", content: "Licence Plans — CB67 Labs Control Center" },
-      { property: "og:description", content: "Ceilings, bundled features and adoption per plan." },
+      { property: "og:title", content: "Planos de Licença — CB67 Labs Control Center" },
+      { property: "og:description", content: "Tetos, recursos incluídos e adoção por plano." },
     ],
   }),
   component: PlansPage,
@@ -31,7 +31,7 @@ function PlansPage() {
   const columns: Column<LicensePlan>[] = [
     {
       id: "name",
-      header: "Plan",
+      header: "Plano",
       cell: (row) => (
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">{row.name}</p>
@@ -42,14 +42,14 @@ function PlansPage() {
     },
     {
       id: "max",
-      header: "Installation ceiling",
+      header: "Teto de instalação",
       cell: (row) => <span className="tabular">{formatNumber(row.maxInstallations)}</span>,
       sortValue: (row) => row.maxInstallations,
       align: "right",
     },
     {
       id: "features",
-      header: "Bundled features",
+      header: "Recursos incluídos",
       cell: (row) => (
         <div className="flex flex-wrap gap-1">
           {row.features.map((feature) => (
@@ -62,7 +62,7 @@ function PlansPage() {
     },
     {
       id: "active",
-      header: "Active licences",
+      header: "Licenças ativas",
       cell: (row) => <span className="tabular">{formatNumber(row.activeLicenses)}</span>,
       sortValue: (row) => row.activeLicenses,
       align: "right",
@@ -79,39 +79,39 @@ function PlansPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Licence Plans"
-        description="Plans express what a customer may run: how many installations and which feature flags are granted. Pricing is intentionally out of scope for this interface."
+        title="Planos de Licença"
+        description="Os planos expressam o que um cliente pode executar: quantas instalações e quais recursos são concedidos. Preços estão propositalmente fora do escopo desta interface."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Plans" value={rows.length} isLoading={plans.isLoading} />
+        <MetricCard label="Planos" value={rows.length} isLoading={plans.isLoading} />
         <MetricCard
-          label="Active"
+          label="Ativos"
           value={rows.filter((row) => row.status === "active").length}
           tone="ok"
           isLoading={plans.isLoading}
         />
         <MetricCard
-          label="Licences on plan"
+          label="Licenças no plano"
           value={formatNumber(rows.reduce((sum, row) => sum + row.activeLicenses, 0))}
           isLoading={plans.isLoading}
         />
         <MetricCard
-          label="Distinct features"
+          label="Recursos distintos"
           value={new Set(rows.flatMap((row) => row.features)).size}
           isLoading={plans.isLoading}
         />
       </div>
 
       <div className="space-y-3">
-        <SectionTitle title="Plan catalogue" description="Feature bundles are resolved at lease issuance." />
+        <SectionTitle title="Catálogo de planos" description="Os pacotes de recursos são resolvidos na emissão da concessão." />
         <DataTable
           data={plans.data}
           columns={columns}
           rowKey={(row) => row.id}
           isLoading={plans.isLoading}
           error={plans.error ?? undefined}
-          searchPlaceholder="Search plan or code…"
+          searchPlaceholder="Buscar plano ou código…"
           searchValue={(row) => `${row.name} ${row.code}`}
           pageSize={15}
         />

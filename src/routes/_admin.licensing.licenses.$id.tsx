@@ -20,14 +20,14 @@ import type { Installation, Lease } from "@/types";
 export const Route = createFileRoute("/_admin/licensing/licenses/$id")({
   head: () => ({
     meta: [
-      { title: "Licence Record — CB67 Labs Control Center" },
+      { title: "Registro de Licença — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Licence record with plan entitlements, bound installations, issued leases and revocation controls.",
+          "Registro de licença com direitos do plano, instalações vinculadas, concessões emitidas e controles de revogação.",
       },
-      { property: "og:title", content: "Licence Record — CB67 Labs Control Center" },
-      { property: "og:description", content: "Entitlements, installations, leases and audit trail." },
+      { property: "og:title", content: "Registro de Licença — CB67 Labs Control Center" },
+      { property: "og:description", content: "Direitos, instalações, concessões e trilha de auditoria." },
     ],
   }),
   component: LicenseDetail,
@@ -60,8 +60,8 @@ function LicenseDetail() {
   if (license.isError) {
     return (
       <div className="space-y-6">
-        <PageHeader title="Licence unavailable" description="The licence record could not be loaded." />
-        <EmptyState message="Licence not found" hint="Verify the identifier and try again." />
+        <PageHeader title="Licença indisponível" description="O registro de licença não pôde ser carregado." />
+        <EmptyState message="Licença não encontrada" hint="Verifique o identificador e tente novamente." />
       </div>
     );
   }
@@ -69,26 +69,26 @@ function LicenseDetail() {
   const installationColumns: Column<Installation>[] = [
     {
       id: "installation",
-      header: "Installation",
+      header: "Instalação",
       cell: (row) => <IdentifierCell value={row.installationId} label="installation id" />,
       sortValue: (row) => row.installationId,
     },
     {
       id: "version",
-      header: "Version",
+      header: "Versão",
       cell: (row) => <code className="mono-xs">{row.version}</code>,
       sortValue: (row) => row.version,
     },
     {
       id: "lastSeen",
-      header: "Last seen",
+      header: "Visto por último",
       cell: (row) => <span className="mono-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>,
       sortValue: (row) => row.lastSeen,
       align: "right",
     },
     {
       id: "grace",
-      header: "Grace until",
+      header: "Carência até",
       cell: (row) => (
         <span className="mono-xs">{row.graceUntil ? formatDateTime(row.graceUntil) : "—"}</span>
       ),
@@ -106,32 +106,32 @@ function LicenseDetail() {
   const leaseColumns: Column<Lease>[] = [
     {
       id: "lease",
-      header: "Lease",
+      header: "Concessão",
       cell: (row) => <IdentifierCell value={row.leaseId} label="lease id" />,
       sortValue: (row) => row.leaseId,
     },
     {
       id: "installation",
-      header: "Installation",
+      header: "Instalação",
       cell: (row) => <code className="mono-xs text-muted-foreground">{row.installationId}</code>,
     },
     {
       id: "issued",
-      header: "Issued",
+      header: "Emitida",
       cell: (row) => <span className="mono-xs">{formatDateTime(row.issuedAt)}</span>,
       sortValue: (row) => row.issuedAt,
       align: "right",
     },
     {
       id: "expires",
-      header: "Expires",
+      header: "Expira",
       cell: (row) => <span className="mono-xs">{formatDateTime(row.expiresAt)}</span>,
       sortValue: (row) => row.expiresAt,
       align: "right",
     },
     {
       id: "keyId",
-      header: "Signing key",
+      header: "Chave de assinatura",
       cell: (row) => <code className="mono-xs text-muted-foreground">{row.keyId}</code>,
     },
     {
@@ -146,17 +146,17 @@ function LicenseDetail() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title={record?.key ?? "Licence"}
-        description="Leases are short-lived and signed; suspending or revoking a licence takes effect when the installation next renews or immediately if it is online."
+        title={record?.key ?? "Licença"}
+        description="As concessões são de curta duração e assinadas; suspender ou revogar uma licença tem efeito na próxima renovação da instalação, ou imediatamente se ela estiver on-line."
         meta={record ? <StatusBadge status={record.status} /> : undefined}
         actions={
           <Permitted permission="licensing:write">
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={() => setPending("suspend")}>
-                Suspend
+                Suspender
               </Button>
               <Button variant="destructive" size="sm" onClick={() => setPending("revoke")}>
-                Revoke
+                Revogar
               </Button>
             </div>
           </Permitted>
@@ -165,24 +165,24 @@ function LicenseDetail() {
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
-          label="Installations"
+          label="Instalações"
           value={record ? `${record.installations} / ${record.maxInstallations}` : "—"}
           tone={record && record.installations >= record.maxInstallations ? "warn" : "neutral"}
           isLoading={license.isLoading}
         />
         <MetricCard
-          label="Remaining validity"
-          value={record ? `${Math.max(0, daysUntil(record.expiresAt))} days` : "—"}
+          label="Validade restante"
+          value={record ? `${Math.max(0, daysUntil(record.expiresAt))} dias` : "—"}
           tone={record && daysUntil(record.expiresAt) <= 30 ? "warn" : "ok"}
           isLoading={license.isLoading}
         />
         <MetricCard
-          label="Active leases"
+          label="Concessões ativas"
           value={issued.filter((row) => row.status === "valid").length}
           isLoading={leases.isLoading}
         />
         <MetricCard
-          label="Last validation"
+          label="Última validação"
           value={record ? formatRelative(record.lastValidationAt) : "—"}
           isLoading={license.isLoading}
         />
@@ -190,32 +190,32 @@ function LicenseDetail() {
 
       <div className="grid gap-4 xl:grid-cols-3">
         <section className="panel p-4 xl:col-span-2">
-          <h3 className="text-sm font-semibold">Licence record</h3>
+          <h3 className="text-sm font-semibold">Registro da licença</h3>
           <dl className="mt-2">
-            <StatRow label="Customer" value={record?.customerName ?? "—"} />
-            <StatRow label="Product" value={record?.productName ?? "—"} />
-            <StatRow label="Plan" value={record?.plan ?? "—"} />
+            <StatRow label="Cliente" value={record?.customerName ?? "—"} />
+            <StatRow label="Produto" value={record?.productName ?? "—"} />
+            <StatRow label="Plano" value={record?.plan ?? "—"} />
             <StatRow
-              label="Validity"
+              label="Validade"
               value={record ? `${formatDate(record.startsAt)} → ${formatDate(record.expiresAt)}` : "—"}
             />
             <StatRow
-              label="Licence key"
+              label="Chave de licença"
               value={record ? <IdentifierCell value={record.key} label="licence key" /> : "—"}
             />
           </dl>
         </section>
         <section className="panel p-4">
-          <h3 className="text-sm font-semibold">Entitled features</h3>
+          <h3 className="text-sm font-semibold">Recursos habilitados</h3>
           <ul className="mt-2 space-y-1">
             {(record?.features ?? []).map((feature) => (
               <li key={feature} className="flex items-center justify-between gap-2 text-sm">
                 <code className="mono-xs">{feature}</code>
-                <StatusBadge status="active" label="granted" />
+                <StatusBadge status="active" label="concedido" />
               </li>
             ))}
             {(record?.features.length ?? 0) === 0 && !license.isLoading && (
-              <li className="text-xs text-muted-foreground">No feature flags attached to this plan.</li>
+              <li className="text-xs text-muted-foreground">Nenhum recurso associado a este plano.</li>
             )}
           </ul>
         </section>
@@ -223,12 +223,12 @@ function LicenseDetail() {
 
       <Tabs defaultValue="installations">
         <TabsList>
-          <TabsTrigger value="installations">Installations</TabsTrigger>
-          <TabsTrigger value="leases">Leases</TabsTrigger>
-          <TabsTrigger value="activity">Activity</TabsTrigger>
+          <TabsTrigger value="installations">Instalações</TabsTrigger>
+          <TabsTrigger value="leases">Concessões</TabsTrigger>
+          <TabsTrigger value="activity">Atividade</TabsTrigger>
         </TabsList>
         <TabsContent value="installations" className="mt-4 space-y-3">
-          <SectionTitle title="Bound installations" description="Each installation consumes one seat." />
+          <SectionTitle title="Instalações vinculadas" description="Cada instalação consome um assento." />
           <DataTable
             data={bound}
             columns={installationColumns}
@@ -239,7 +239,7 @@ function LicenseDetail() {
           />
         </TabsContent>
         <TabsContent value="leases" className="mt-4 space-y-3">
-          <SectionTitle title="Issued leases" description="Signed, short-lived authorisations to run." />
+          <SectionTitle title="Concessões emitidas" description="Autorizações assinadas e de curta duração para execução." />
           <DataTable
             data={issued}
             columns={leaseColumns}
@@ -259,24 +259,24 @@ function LicenseDetail() {
         onOpenChange={(open) => {
           if (!open) setPending(null);
         }}
-        title={pending === "revoke" ? "Revoke licence" : "Suspend licence"}
+        title={pending === "revoke" ? "Revogar licença" : "Suspender licença"}
         warning={
           pending === "revoke"
-            ? "Revocation is permanent. Every bound installation stops receiving leases and the licence key can never be reactivated."
-            : "Suspension blocks new lease issuance. Installations keep running until their current lease expires."
+            ? "A revogação é permanente. Toda instalação vinculada deixa de receber concessões e a chave de licença nunca poderá ser reativada."
+            : "A suspensão bloqueia a emissão de novas concessões. As instalações continuam funcionando até que a concessão atual expire."
         }
         details={
           record
             ? [
-                { label: "Licence", value: record.key },
-                { label: "Customer", value: record.customerName },
-                { label: "Installations", value: `${record.installations}` },
+                { label: "Licença", value: record.key },
+                { label: "Cliente", value: record.customerName },
+                { label: "Instalações", value: `${record.installations}` },
               ]
             : undefined
         }
-        confirmLabel={pending === "revoke" ? "Revoke licence" : "Suspend licence"}
+        confirmLabel={pending === "revoke" ? "Revogar licença" : "Suspender licença"}
         requireTypedValue={pending === "revoke" ? record?.key : undefined}
-        environmentNotice="The backend re-verifies authorisation and records the operation in the audit trail."
+        environmentNotice="O backend reverifica a autorização e registra a operação na trilha de auditoria."
         onConfirm={async () => {
           if (!record || !pending) return;
           await action.mutateAsync({

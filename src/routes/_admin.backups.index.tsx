@@ -13,14 +13,14 @@ import type { BackupJob } from "@/types";
 export const Route = createFileRoute("/_admin/backups/")({
   head: () => ({
     meta: [
-      { title: "Backups Overview — CB67 Labs Control Center" },
+      { title: "Visão Geral de Backups — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Backup posture for the CB67 Labs platform: scheduled jobs, recent runs, checksum verification and restore confidence.",
+          "Postura de backup da plataforma CB67 Labs: rotinas agendadas, execuções recentes, verificação de checksum e confiança na restauração.",
       },
-      { property: "og:title", content: "Backups Overview — CB67 Labs Control Center" },
-      { property: "og:description", content: "Scheduled jobs, recent runs and restore confidence." },
+      { property: "og:title", content: "Visão Geral de Backups — CB67 Labs Control Center" },
+      { property: "og:description", content: "Rotinas agendadas, execuções recentes e confiança na restauração." },
     ],
   }),
   component: BackupsOverview,
@@ -47,7 +47,7 @@ function BackupsOverview() {
   const columns: Column<BackupJob>[] = [
     {
       id: "name",
-      header: "Job",
+      header: "Rotina",
       cell: (row) => (
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">{row.name}</p>
@@ -58,18 +58,18 @@ function BackupsOverview() {
     },
     {
       id: "type",
-      header: "Type",
+      header: "Tipo",
       cell: (row) => <StatusBadge status={row.type} />,
       sortValue: (row) => row.type,
     },
     {
       id: "schedule",
-      header: "Schedule",
+      header: "Agenda",
       cell: (row) => <code className="mono-xs text-muted-foreground">{row.schedule}</code>,
     },
     {
       id: "last",
-      header: "Last run",
+      header: "Última execução",
       cell: (row) => (
         <div className="text-right">
           <span className="mono-xs">{formatDateTime(row.lastRunAt)}</span>
@@ -81,7 +81,7 @@ function BackupsOverview() {
     },
     {
       id: "duration",
-      header: "Duration",
+      header: "Duração",
       cell: (row) => <span className="tabular">{formatDuration(row.durationSec)}</span>,
       sortValue: (row) => row.durationSec,
       align: "right",
@@ -98,21 +98,21 @@ function BackupsOverview() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Backups Overview"
-        description="Backups are produced and verified by the platform on the Proxmox host. This surface reports the outcome; scheduling and retention are owned by the backend."
+        title="Visão Geral de Backups"
+        description="Os backups são produzidos e verificados pela plataforma no host Proxmox. Esta superfície relata o resultado; agendamento e retenção são de responsabilidade do backend."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Scheduled jobs" value={jobRows.length} isLoading={jobs.isLoading} />
+        <MetricCard label="Rotinas agendadas" value={jobRows.length} isLoading={jobs.isLoading} />
         <MetricCard
-          label="Failed runs"
+          label="Execuções falhas"
           value={failedRuns.length}
           tone={failedRuns.length > 0 ? "crit" : "ok"}
           isLoading={runs.isLoading}
         />
-        <MetricCard label="Stored volume" value={formatBytes(totalSize)} isLoading={runs.isLoading} />
+        <MetricCard label="Volume armazenado" value={formatBytes(totalSize)} isLoading={runs.isLoading} />
         <MetricCard
-          label="Last restore test"
+          label="Último teste de restauração"
           value={lastTest ? lastTest.result : "—"}
           tone={lastTest?.result === "passed" ? "ok" : lastTest ? "crit" : "neutral"}
           hint={lastTest ? formatRelative(lastTest.startedAt) : undefined}
@@ -122,8 +122,8 @@ function BackupsOverview() {
 
       <div className="grid gap-4 xl:grid-cols-[2fr_1fr]">
         <ChartPanel
-          title="Runs by type"
-          description="Composition of recent backup runs."
+          title="Execuções por tipo"
+          description="Composição das execuções recentes de backup."
           isLoading={runs.isLoading}
           error={runs.error ?? undefined}
           isEmpty={runRows.length === 0}
@@ -131,16 +131,16 @@ function BackupsOverview() {
           <CategoryBarChart data={byType} colorByIndex />
         </ChartPanel>
         <section className="panel p-4">
-          <h3 className="text-sm font-semibold">Recovery objectives</h3>
+          <h3 className="text-sm font-semibold">Objetivos de recuperação</h3>
           <dl className="mt-2">
-            <StatRow label="RPO target" value="15 minutes (WAL shipping)" />
-            <StatRow label="RTO target" value="60 minutes (full restore)" />
+            <StatRow label="Meta de RPO" value="15 minutos (envio de WAL)" />
+            <StatRow label="Meta de RTO" value="60 minutos (restauração completa)" />
             <StatRow
-              label="Last measured RPO"
+              label="Último RPO medido"
               value={lastTest ? `${lastTest.rpoMinutes} min` : "—"}
             />
             <StatRow
-              label="Last measured RTO"
+              label="Último RTO medido"
               value={lastTest ? `${lastTest.rtoMinutes} min` : "—"}
             />
           </dl>
@@ -149,11 +149,11 @@ function BackupsOverview() {
 
       <div className="space-y-3">
         <SectionTitle
-          title="Backup jobs"
-          description="Full, incremental and WAL pipelines currently provisioned."
+          title="Rotinas de backup"
+          description="Pipelines completos, incrementais e de WAL atualmente provisionados."
           actions={
             <AppLink to="/backups/history" className="text-xs text-primary hover:underline">
-              Run history
+              Histórico de execuções
             </AppLink>
           }
         />

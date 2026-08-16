@@ -13,14 +13,14 @@ import type { MachineClient } from "@/types";
 export const Route = createFileRoute("/_admin/identity/machine-clients")({
   head: () => ({
     meta: [
-      { title: "Machine Clients — CB67 Labs Control Center" },
+      { title: "Clientes de Máquina — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Non-human API identities: client credentials, granted scopes, mTLS binding and last authentication.",
+          "Identidades de API não humanas: credenciais de cliente, escopos concedidos, vinculação mTLS e última autenticação.",
       },
-      { property: "og:title", content: "Machine Clients — CB67 Labs Control Center" },
-      { property: "og:description", content: "Client credentials, scopes and mTLS posture." },
+      { property: "og:title", content: "Clientes de Máquina — CB67 Labs Control Center" },
+      { property: "og:description", content: "Credenciais de cliente, escopos e postura mTLS." },
     ],
   }),
   component: MachineClientsPage,
@@ -33,7 +33,7 @@ function MachineClientsPage() {
   const columns: Column<MachineClient>[] = [
     {
       id: "client",
-      header: "Client",
+      header: "Cliente",
       cell: (row) => (
         <div className="min-w-0 space-y-0.5">
           <p className="truncate text-sm font-medium">{row.applicationName}</p>
@@ -42,16 +42,16 @@ function MachineClientsPage() {
       ),
       sortValue: (row) => row.applicationName,
     },
-    { id: "secret", header: "Secret", cell: () => <MaskedSecret /> },
+    { id: "secret", header: "Segredo", cell: () => <MaskedSecret /> },
     {
       id: "environment",
-      header: "Environment",
+      header: "Ambiente",
       cell: (row) => <StatusBadge status={row.environment} tone="info" />,
       sortValue: (row) => row.environment,
     },
     {
       id: "scopes",
-      header: "Granted scopes",
+      header: "Escopos concedidos",
       cell: (row) => (
         <div className="flex flex-wrap gap-1">
           {row.scopes.map((scope) => (
@@ -64,7 +64,7 @@ function MachineClientsPage() {
     },
     {
       id: "lastAuth",
-      header: "Last seen",
+      header: "Visto por último",
       cell: (row) => (
         <span className="mono-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>
       ),
@@ -83,31 +83,31 @@ function MachineClientsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Machine Clients"
-        description="Machine identities authenticate with client credentials over mutual TLS. Secrets are write-only: they are never returned to this interface after issuance."
+        title="Clientes de Máquina"
+        description="Identidades de máquina se autenticam com credenciais de cliente por meio de TLS mútuo. Os segredos são somente-escrita: nunca são retornados a esta interface após a emissão."
         actions={
           <AppLink to="/identity/scopes" className="text-xs text-primary hover:underline">
-            Scope catalogue
+            Catálogo de escopos
           </AppLink>
         }
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Clients" value={rows.length} isLoading={clients.isLoading} />
+        <MetricCard label="Clientes" value={rows.length} isLoading={clients.isLoading} />
         <MetricCard
-          label="Active"
+          label="Ativos"
           value={rows.filter((row) => row.status === "active").length}
           tone="ok"
           isLoading={clients.isLoading}
         />
         <MetricCard
-          label="Suspended or revoked"
+          label="Suspensos ou revogados"
           value={rows.filter((row) => row.status !== "active").length}
           tone="warn"
           isLoading={clients.isLoading}
         />
         <MetricCard
-          label="Scopes in use"
+          label="Escopos em uso"
           value={new Set(rows.flatMap((row) => row.scopes)).size}
           isLoading={clients.isLoading}
         />
@@ -115,8 +115,8 @@ function MachineClientsPage() {
 
       <div className="space-y-3">
         <SectionTitle
-          title="Client registry"
-          description="Credential rotation is performed from the owning application record."
+          title="Registro de clientes"
+          description="A rotação de credenciais é realizada a partir do registro do aplicativo proprietário."
         />
         <DataTable
           data={clients.data}
@@ -124,7 +124,7 @@ function MachineClientsPage() {
           rowKey={(row) => row.id}
           isLoading={clients.isLoading}
           error={clients.error ?? undefined}
-          searchPlaceholder="Search client or application…"
+          searchPlaceholder="Buscar cliente ou aplicativo…"
           searchValue={(row) => `${row.clientId} ${row.applicationName} ${row.scopes.join(" ")}`}
           pageSize={15}
         />

@@ -14,14 +14,14 @@ import type { SecurityEvent, TimeRange } from "@/types";
 export const Route = createFileRoute("/_admin/security/authorization")({
   head: () => ({
     meta: [
-      { title: "Authorization — CB67 Labs Control Center" },
+      { title: "Autorização — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Authorisation denials by scope and role: forbidden responses, missing scopes and the clients most often denied.",
+          "Negações de autorização por escopo e função: respostas proibidas, escopos ausentes e os clientes mais frequentemente negados.",
       },
-      { property: "og:title", content: "Authorization — CB67 Labs Control Center" },
-      { property: "og:description", content: "Scope and role denials across the API surface." },
+      { property: "og:title", content: "Autorização — CB67 Labs Control Center" },
+      { property: "og:description", content: "Negações de escopo e função em toda a superfície da API." },
     ],
   }),
   component: AuthorizationPage,
@@ -48,13 +48,13 @@ function AuthorizationPage() {
   const columns: Column<SecurityEvent>[] = [
     {
       id: "timestamp",
-      header: "When",
+      header: "Quando",
       cell: (row) => <span className="mono-xs">{formatDateTime(row.timestamp)}</span>,
       sortValue: (row) => row.timestamp,
     },
     {
       id: "event",
-      header: "Denied operation",
+      header: "Operação negada",
       cell: (row) => (
         <div className="min-w-0">
           <p className="truncate text-sm">{row.event}</p>
@@ -65,18 +65,18 @@ function AuthorizationPage() {
     },
     {
       id: "client",
-      header: "Client",
+      header: "Cliente",
       cell: (row) => <code className="mono-xs text-muted-foreground">{row.clientId}</code>,
       sortValue: (row) => row.clientId,
     },
     {
       id: "requestId",
-      header: "Request",
+      header: "Requisição",
       cell: (row) => <code className="mono-xs text-muted-foreground">{row.requestId}</code>,
     },
     {
       id: "severity",
-      header: "Severity",
+      header: "Severidade",
       cell: (row) => <StatusBadge status={row.severity} />,
       sortValue: (row) => row.severity,
       align: "right",
@@ -86,31 +86,31 @@ function AuthorizationPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Authorization"
-        description="Authorisation is evaluated per request against the scopes granted to the calling client. Denials are enforced server-side; the interface only reports them."
+        title="Autorização"
+        description="A autorização é avaliada por requisição contra os escopos concedidos ao cliente solicitante. As negações são aplicadas no servidor; a interface apenas as reporta."
         actions={<TimeRangeSelect value={range} onChange={setRange} />}
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
-          label="Forbidden (403)"
+          label="Proibido (403)"
           value={data ? formatNumber(data.forbidden) : "—"}
           tone={data && data.forbidden > 0 ? "warn" : "ok"}
           isLoading={overview.isLoading}
         />
         <MetricCard
-          label="Unauthorised (401)"
+          label="Não autorizado (401)"
           value={data ? formatNumber(data.unauthorized) : "—"}
           isLoading={overview.isLoading}
         />
         <MetricCard
-          label="Denied events"
+          label="Eventos negados"
           value={denied.length}
           isLoading={events.isLoading}
-          hint="From the security event stream"
+          hint="Do fluxo de eventos de segurança"
         />
         <MetricCard
-          label="Clients denied"
+          label="Clientes negados"
           value={new Set(denied.map((event) => event.clientId)).size}
           isLoading={events.isLoading}
         />
@@ -118,8 +118,8 @@ function AuthorizationPage() {
 
       <div className="grid gap-4 xl:grid-cols-2">
         <ChartPanel
-          title="Denials by category"
-          description="Which authorisation checks reject most often."
+          title="Negações por categoria"
+          description="Quais verificações de autorização rejeitam com mais frequência."
           isLoading={overview.isLoading}
           error={overview.error ?? undefined}
           isEmpty={(data?.authorizationChart.length ?? 0) === 0}
@@ -127,8 +127,8 @@ function AuthorizationPage() {
           <CategoryBarChart data={data?.authorizationChart ?? []} colorByIndex />
         </ChartPanel>
         <ChartPanel
-          title="Most denied clients"
-          description="Repeated denials usually mean a scope was never granted."
+          title="Clientes mais negados"
+          description="Negações repetidas geralmente significam que um escopo nunca foi concedido."
           isLoading={events.isLoading}
           error={events.error ?? undefined}
           isEmpty={byClient.length === 0}
@@ -138,25 +138,25 @@ function AuthorizationPage() {
       </div>
 
       <section className="panel p-4">
-        <h3 className="text-sm font-semibold">Authorisation model</h3>
+        <h3 className="text-sm font-semibold">Modelo de autorização</h3>
         <dl className="mt-2">
-          <StatRow label="Machine clients" value="Scope-based, least privilege per endpoint" />
-          <StatRow label="Operators" value="Role-based, permissions evaluated per operation" />
-          <StatRow label="Enforcement point" value="API gateway and service layer, never the browser" />
-          <StatRow label="Interface behaviour" value="Actions are hidden, not merely disabled" />
+          <StatRow label="Clientes de máquina" value="Baseado em escopo, menor privilégio por endpoint" />
+          <StatRow label="Operadores" value="Baseado em função, permissões avaliadas por operação" />
+          <StatRow label="Ponto de aplicação" value="Gateway de API e camada de serviço, nunca o navegador" />
+          <StatRow label="Comportamento da interface" value="Ações são ocultadas, não meramente desabilitadas" />
         </dl>
       </section>
 
       <div className="space-y-3">
-        <SectionTitle title="Denied requests" description="Correlate with the request explorer using the request identifier." />
+        <SectionTitle title="Requisições negadas" description="Correlacione com o explorador de requisições usando o identificador da requisição." />
         <DataTable
           data={denied}
           columns={columns}
           rowKey={(row) => row.id}
           isLoading={events.isLoading}
           error={events.error ?? undefined}
-          emptyMessage="No authorisation denials in the current dataset."
-          searchPlaceholder="Search client, event or request…"
+          emptyMessage="Nenhuma negação de autorização no conjunto de dados atual."
+          searchPlaceholder="Buscar cliente, evento ou requisição…"
           searchValue={(row) => `${row.clientId} ${row.event} ${row.requestId}`}
           pageSize={15}
         />

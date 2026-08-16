@@ -13,14 +13,14 @@ import type { Instance } from "@/types";
 export const Route = createFileRoute("/_admin/saas/instances")({
   head: () => ({
     meta: [
-      { title: "SaaS Instances — CB67 Labs Control Center" },
+      { title: "Instâncias SaaS — CB67 Labs Control Center" },
       {
         name: "description",
         content:
-          "Every deployed instance reporting to the CB67 Labs platform, with installation identity, version drift and certificate posture.",
+          "Todas as instâncias implantadas reportando à plataforma CB67 Labs, com identidade de instalação, desvio de versão e postura de certificado.",
       },
-      { property: "og:title", content: "SaaS Instances — CB67 Labs Control Center" },
-      { property: "og:description", content: "Installation identity, version drift and heartbeat." },
+      { property: "og:title", content: "Instâncias SaaS — CB67 Labs Control Center" },
+      { property: "og:description", content: "Identidade de instalação, desvio de versão e heartbeat." },
     ],
   }),
   component: InstancesPage,
@@ -34,14 +34,14 @@ function InstancesPage() {
   const columns: Column<Instance>[] = [
     {
       id: "installationId",
-      header: "Installation",
+      header: "Instalação",
       cell: (row) => <IdentifierCell value={row.installationId} label="installation id" />,
       sortValue: (row) => row.installationId,
     },
     { id: "hostLabel", header: "Host", cell: (row) => <span className="text-sm">{row.hostLabel}</span>, sortValue: (row) => row.hostLabel },
     {
       id: "environment",
-      header: "Env",
+      header: "Amb.",
       cell: (row) => (
         <Badge variant="outline" className="mono-xs">
           {row.environment}
@@ -49,16 +49,16 @@ function InstancesPage() {
       ),
       sortValue: (row) => row.environment,
     },
-    { id: "version", header: "Version", cell: (row) => <span className="mono-xs">{row.version}</span>, sortValue: (row) => row.version },
+    { id: "version", header: "Versão", cell: (row) => <span className="mono-xs">{row.version}</span>, sortValue: (row) => row.version },
     {
       id: "licenseId",
-      header: "License",
+      header: "Licença",
       cell: (row) => <span className="mono-xs text-muted-foreground">{row.licenseId}</span>,
       hideByDefault: true,
     },
     {
       id: "certificateStatus",
-      header: "Certificate",
+      header: "Certificado",
       cell: (row) => <StatusBadge status={row.certificateStatus} />,
       sortValue: (row) => row.certificateStatus,
     },
@@ -80,27 +80,27 @@ function InstancesPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="SaaS Instances"
-        description="Instances are identified by installation ID and authenticate with mTLS. Missing heartbeats or version drift usually precede licensing incidents."
+        title="Instâncias SaaS"
+        description="As instâncias são identificadas pelo ID de instalação e autenticam via mTLS. Heartbeats ausentes ou desvio de versão geralmente precedem incidentes de licenciamento."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Reporting" value={rows.length} isLoading={instances.isLoading} />
+        <MetricCard label="Reportando" value={rows.length} isLoading={instances.isLoading} />
         <MetricCard
-          label="Active"
+          label="Ativas"
           value={rows.filter((r) => r.status === "active").length}
           tone="ok"
           isLoading={instances.isLoading}
         />
         <MetricCard
-          label="Distinct versions"
+          label="Versões distintas"
           value={versions.size}
           tone={versions.size > 3 ? "warn" : "neutral"}
-          hint="Version drift across the fleet"
+          hint="Desvio de versão na frota"
           isLoading={instances.isLoading}
         />
         <MetricCard
-          label="Cert attention"
+          label="Atenção de certificado"
           value={rows.filter((r) => r.certificateStatus !== "active").length}
           tone="warn"
           isLoading={instances.isLoading}
@@ -113,7 +113,7 @@ function InstancesPage() {
         rowKey={(row) => row.id}
         isLoading={instances.isLoading}
         error={instances.error ?? undefined}
-        searchPlaceholder="Search installations, hosts…"
+        searchPlaceholder="Buscar instalações, hosts…"
         pageSize={15}
       />
     </div>

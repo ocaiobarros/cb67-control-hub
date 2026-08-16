@@ -12,7 +12,7 @@ export function CopyButton({ value, label }: { value: string; label?: string | u
       variant="ghost"
       size="icon"
       className="size-6 shrink-0"
-      aria-label={label ? `Copy ${label}` : "Copy value"}
+      aria-label={label ? `Copiar ${label}` : "Copiar valor"}
       onClick={async (event) => {
         event.stopPropagation();
         try {
@@ -53,7 +53,7 @@ export function IdentifierCell({
 /** Secrets are never retrievable in this UI; only a masked placeholder is shown. */
 export function MaskedSecret() {
   return (
-    <span className="mono-xs text-muted-foreground" title="Secret values are not retrievable">
+    <span className="mono-xs text-muted-foreground" title="Valores de segredo não podem ser recuperados">
       ••••••••••••••••
     </span>
   );

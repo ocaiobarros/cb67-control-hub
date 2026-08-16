@@ -6,16 +6,16 @@ import { platformMeta } from "@/config/env";
 export const Route = createFileRoute("/docs")({
   head: () => ({
     meta: [
-      { title: "Documentation — CB67 Labs API Platform" },
+      { title: "Documentação — CB67 Labs API Platform" },
       {
         name: "description",
         content:
-          "How to integrate with the CB67 Labs API platform: authentication, scopes, versioning, rate limits, quotas and licensing leases.",
+          "Como integrar com a plataforma de API da CB67 Labs: autenticação, escopos, versionamento, limites de taxa, cotas e leases de licenciamento.",
       },
-      { property: "og:title", content: "Documentation — CB67 Labs API Platform" },
+      { property: "og:title", content: "Documentação — CB67 Labs API Platform" },
       {
         property: "og:description",
-        content: "Authentication, scopes, versioning, rate limits, quotas and licensing integration.",
+        content: "Autenticação, escopos, versionamento, limites de taxa, cotas e integração de licenciamento.",
       },
     ],
   }),
@@ -25,62 +25,62 @@ export const Route = createFileRoute("/docs")({
 const SECTIONS = [
   {
     id: "authentication",
-    title: "Authentication",
-    body: "Clients authenticate with the OAuth 2.0 client-credentials grant and receive a short-lived bearer token. Service-to-service traffic inside the platform additionally presents a client certificate issued by the internal PKI. Credentials are issued per application and per environment; they are never shared across environments.",
+    title: "Autenticação",
+    body: "Os clientes se autenticam com o grant de client-credentials do OAuth 2.0 e recebem um bearer token de curta duração. O tráfego serviço a serviço dentro da plataforma também apresenta um certificado de cliente emitido pela PKI interna. As credenciais são emitidas por aplicação e por ambiente; nunca são compartilhadas entre ambientes.",
     points: [
-      "POST /oauth/token with client_id and client_secret returns an access token.",
-      "Tokens are short-lived; clients must refresh before expiry rather than on failure.",
-      "mTLS is required for internal callers and optional for external integrations.",
+      "POST /oauth/token com client_id e client_secret retorna um access token.",
+      "Os tokens são de curta duração; os clientes devem renová-los antes da expiração, e não somente em caso de falha.",
+      "mTLS é obrigatório para chamadores internos e opcional para integrações externas.",
     ],
   },
   {
     id: "scopes",
-    title: "Scopes and authorization",
-    body: "Every endpoint declares the scope it requires. Scopes are granted to a client explicitly; there is no implicit inheritance. Authorization is enforced server-side on every request, independently of any client-side check.",
+    title: "Escopos e autorização",
+    body: "Cada endpoint declara o escopo que exige. Os escopos são concedidos a um cliente explicitamente; não há herança implícita. A autorização é aplicada no servidor a cada requisição, independentemente de qualquer verificação no cliente.",
     points: [
-      "Scopes follow the domain:action shape, for example licensing:read.",
-      "A missing scope returns 403 with a stable error code, never a redirect.",
-      "Scope grants are audited with the operator identity that issued them.",
+      "Os escopos seguem o formato domínio:ação, por exemplo licensing:read.",
+      "Um escopo ausente retorna 403 com um código de erro estável, nunca um redirecionamento.",
+      "As concessões de escopo são auditadas com a identidade do operador que as emitiu.",
     ],
   },
   {
     id: "versioning",
-    title: "Versioning",
-    body: "APIs are versioned in the path. A breaking change ships as a new version; additive changes are made in place. Deprecated versions remain available for the announced window and emit a deprecation header.",
+    title: "Versionamento",
+    body: "As APIs são versionadas no caminho. Uma mudança incompatível é lançada como uma nova versão; mudanças aditivas são feitas na versão existente. Versões descontinuadas permanecem disponíveis pela janela anunciada e emitem um header de descontinuação.",
     points: [
-      "Path form: /v1/resource.",
-      "Deprecation is announced in the changelog before the header appears.",
-      "Clients should treat unknown response fields as forward-compatible.",
+      "Formato do caminho: /v1/recurso.",
+      "A descontinuação é anunciada no changelog antes de o header aparecer.",
+      "Os clientes devem tratar campos de resposta desconhecidos como compatíveis com versões futuras.",
     ],
   },
   {
     id: "limits",
-    title: "Rate limits and quotas",
-    body: "Rate limits protect the platform per unit of time; quotas govern monthly consumption per client. Both are enforced at the gateway and reported back through response headers.",
+    title: "Limites de taxa e cotas",
+    body: "Os limites de taxa protegem a plataforma por unidade de tempo; as cotas regem o consumo mensal por cliente. Ambos são aplicados no gateway e reportados por meio dos headers de resposta.",
     points: [
-      "429 responses include Retry-After and the applicable limit window.",
-      "Quota consumption is reported monthly and resets on the billing boundary.",
-      "Limits are policy, not configuration: changes are made by platform operators.",
+      "Respostas 429 incluem Retry-After e a janela de limite aplicável.",
+      "O consumo de cota é reportado mensalmente e reinicia no marco de faturamento.",
+      "Limites são política, não configuração: mudanças são feitas por operadores da plataforma.",
     ],
   },
   {
     id: "licensing",
-    title: "Licensing and leases",
-    body: "Licensed software validates entitlement by requesting a signed lease. Leases are short-lived and cached locally so an installation keeps working during a network outage until the grace period expires.",
+    title: "Licenciamento e leases",
+    body: "O software licenciado valida o direito de uso solicitando um lease assinado. Os leases são de curta duração e armazenados localmente, para que uma instalação continue funcionando durante uma queda de rede até o fim do período de carência.",
     points: [
-      "A lease is signed by the platform signing key and verified offline by the client.",
-      "Revocation invalidates future leases; existing leases expire naturally.",
-      "Installations report a heartbeat so operators can see fleet state.",
+      "Um lease é assinado pela chave de assinatura da plataforma e verificado offline pelo cliente.",
+      "A revogação invalida leases futuros; leases existentes expiram naturalmente.",
+      "As instalações reportam um heartbeat para que operadores vejam o estado da frota.",
     ],
   },
   {
     id: "errors",
-    title: "Errors",
-    body: "Errors use conventional HTTP status codes with a stable machine-readable code and a human-readable message. Error payloads never include internal identifiers, stack traces or infrastructure details.",
+    title: "Erros",
+    body: "Os erros usam códigos de status HTTP convencionais, com um código estável legível por máquina e uma mensagem legível por humanos. Os payloads de erro nunca incluem identificadores internos, stack traces ou detalhes de infraestrutura.",
     points: [
-      "4xx indicates a client problem; the request should not be retried unchanged.",
-      "5xx indicates a platform problem and may be retried with backoff.",
-      "Every response carries a request identifier for correlation with support.",
+      "4xx indica um problema do cliente; a requisição não deve ser repetida sem alterações.",
+      "5xx indica um problema da plataforma e pode ser repetido com backoff.",
+      "Toda resposta carrega um identificador de requisição para correlação com o suporte.",
     ],
   },
 ];
@@ -90,16 +90,16 @@ function DocsPage() {
     <PublicShell>
       <div className="space-y-10">
         <header className="space-y-3 border-b border-border pb-6">
-          <h1 className="text-2xl font-semibold tracking-tight">Documentation</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">Documentação</h1>
           <p className="max-w-2xl text-sm text-muted-foreground">
-            Integration reference for the CB67 Labs API platform, published on{" "}
-            <code className="mono-xs">{platformMeta.docsDomain}</code>. Endpoint-level reference is generated
-            from the platform specification and is not duplicated here.
+            Referência de integração para a plataforma de API da CB67 Labs, publicada em{" "}
+            <code className="mono-xs">{platformMeta.docsDomain}</code>. A referência em nível de endpoint é gerada
+            a partir da especificação da plataforma e não é duplicada aqui.
           </p>
         </header>
 
         <div className="grid gap-8 lg:grid-cols-[220px_1fr]">
-          <nav aria-label="Documentation sections" className="lg:sticky lg:top-6 lg:self-start">
+          <nav aria-label="Seções da documentação" className="lg:sticky lg:top-6 lg:self-start">
             <ul className="space-y-1">
               {SECTIONS.map((section) => (
                 <li key={section.id}>
@@ -133,12 +133,12 @@ function DocsPage() {
             ))}
 
             <section className="panel space-y-2 p-5">
-              <h2 className="text-sm font-semibold">Operating the platform</h2>
+              <h2 className="text-sm font-semibold">Operando a plataforma</h2>
               <p className="text-sm text-muted-foreground">
-                Operators manage applications, clients, licensing and certificates from the Control Center.
+                Operadores gerenciam aplicações, clientes, licenciamento e certificados a partir do Control Center.
               </p>
               <AppLink to="/login" className="text-sm text-primary hover:underline">
-                Open the Control Center
+                Abrir o Control Center
               </AppLink>
             </section>
           </div>

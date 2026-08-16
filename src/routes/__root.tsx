@@ -84,13 +84,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "CB67 Labs API Platform: on-premises API, licensing and observability services with an operator control center.",
+          "CB67 Labs API Platform: serviços de API, licenciamento e observabilidade on-premises, com um control center para operadores.",
       },
       { name: "author", content: "CB67 Labs" },
       { property: "og:title", content: "CB67 Labs API Platform" },
       {
         property: "og:description",
-        content: "On-premises API, licensing and observability platform by CB67 Labs.",
+        content: "Plataforma de API, licenciamento e observabilidade on-premises da CB67 Labs.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -117,7 +117,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <head>
         <HeadContent />
       </head>
