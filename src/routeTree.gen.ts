@@ -14,6 +14,7 @@ import { Route as AdminRouteImport } from './routes/_admin'
 import { Route as AdminOverviewRouteImport } from './routes/_admin.overview'
 import { Route as AdminInfrastructureComputeRouteImport } from './routes/_admin.infrastructure.compute'
 import { Route as AdminInfrastructureHostsRouteImport } from './routes/_admin.infrastructure.hosts'
+import { Route as AdminInfrastructureStorageRouteImport } from './routes/_admin.infrastructure.storage'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -41,18 +42,26 @@ const AdminInfrastructureHostsRoute =
     path: '/infrastructure/hosts',
     getParentRoute: () => AdminRoute,
   } as any)
+const AdminInfrastructureStorageRoute =
+  AdminInfrastructureStorageRouteImport.update({
+    id: '/infrastructure/storage',
+    path: '/infrastructure/storage',
+    getParentRoute: () => AdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/overview': typeof AdminOverviewRoute
   '/infrastructure/compute': typeof AdminInfrastructureComputeRoute
   '/infrastructure/hosts': typeof AdminInfrastructureHostsRoute
+  '/infrastructure/storage': typeof AdminInfrastructureStorageRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/overview': typeof AdminOverviewRoute
   '/infrastructure/compute': typeof AdminInfrastructureComputeRoute
   '/infrastructure/hosts': typeof AdminInfrastructureHostsRoute
+  '/infrastructure/storage': typeof AdminInfrastructureStorageRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -61,13 +70,23 @@ export interface FileRoutesById {
   '/_admin/overview': typeof AdminOverviewRoute
   '/_admin/infrastructure/compute': typeof AdminInfrastructureComputeRoute
   '/_admin/infrastructure/hosts': typeof AdminInfrastructureHostsRoute
+  '/_admin/infrastructure/storage': typeof AdminInfrastructureStorageRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/overview' | '/infrastructure/compute' | '/infrastructure/hosts'
+    | '/'
+    | '/overview'
+    | '/infrastructure/compute'
+    | '/infrastructure/hosts'
+    | '/infrastructure/storage'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/overview' | '/infrastructure/compute' | '/infrastructure/hosts'
+  to:
+    | '/'
+    | '/overview'
+    | '/infrastructure/compute'
+    | '/infrastructure/hosts'
+    | '/infrastructure/storage'
   id:
     | '__root__'
     | '/'
@@ -75,6 +94,7 @@ export interface FileRouteTypes {
     | '/_admin/overview'
     | '/_admin/infrastructure/compute'
     | '/_admin/infrastructure/hosts'
+    | '/_admin/infrastructure/storage'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,6 +139,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminInfrastructureHostsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_admin/infrastructure/storage': {
+      id: '/_admin/infrastructure/storage'
+      path: '/infrastructure/storage'
+      fullPath: '/infrastructure/storage'
+      preLoaderRoute: typeof AdminInfrastructureStorageRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
@@ -126,12 +153,14 @@ interface AdminRouteChildren {
   AdminOverviewRoute: typeof AdminOverviewRoute
   AdminInfrastructureComputeRoute: typeof AdminInfrastructureComputeRoute
   AdminInfrastructureHostsRoute: typeof AdminInfrastructureHostsRoute
+  AdminInfrastructureStorageRoute: typeof AdminInfrastructureStorageRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminOverviewRoute: AdminOverviewRoute,
   AdminInfrastructureComputeRoute: AdminInfrastructureComputeRoute,
   AdminInfrastructureHostsRoute: AdminInfrastructureHostsRoute,
+  AdminInfrastructureStorageRoute: AdminInfrastructureStorageRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
