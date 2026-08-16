@@ -89,23 +89,20 @@ function OverviewPage() {
         <div className="lg:col-span-2">
           <ChartPanel
             title="Request volume"
-            description="Successful versus failed requests across the selected window."
+            description="Total requests handled by the API gateway in the selected window."
             isLoading={overview.isLoading}
             isEmpty={data?.charts.requests.length === 0}
             height={260}
           >
             <TimeSeriesChart
               data={data?.charts.requests ?? []}
-              series={[
-                { key: "value", label: "Requests" },
-                { key: "errors", label: "Errors", color: "var(--crit)" },
-              ]}
+              series={[{ key: "requests", label: "Requests" }]}
             />
           </ChartPanel>
         </div>
         <ChartPanel
-          title="Response codes"
-          description="Distribution by status class."
+          title="Rejections & errors"
+          description="Responses by status code, excluding successful traffic."
           isLoading={overview.isLoading}
           isEmpty={data?.statusCounts.length === 0}
           height={260}
