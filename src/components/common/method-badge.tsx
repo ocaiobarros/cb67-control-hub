@@ -22,3 +22,22 @@ export function MethodBadge({ method, className }: { method: string; className?:
     </span>
   );
 }
+
+export function StatusCodeBadge({ code }: { code: number }) {
+  const tone =
+    code >= 500
+      ? "border-crit/40 text-crit"
+      : code >= 400
+        ? "border-warn/40 text-warn"
+        : "border-ok/40 text-ok";
+  return (
+    <span
+      className={cn(
+        "mono-xs inline-flex items-center justify-center rounded border px-1.5 py-0.5 font-medium",
+        tone,
+      )}
+    >
+      {code}
+    </span>
+  );
+}

@@ -3,9 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { q } from "@/api/queries";
 import { PageHeader } from "@/components/common/page-header";
 import { DataTable, type Column } from "@/components/common/data-table";
-import { MethodBadge } from "@/components/common/method-badge";
+import { MethodBadge, StatusCodeBadge } from "@/components/common/method-badge";
 import { IdentifierCell } from "@/components/common/copy-button";
-import { StatusCodeBadge } from "@/components/common/status-badge";
 import { formatDateTime, formatMs } from "@/utils/format";
 import type { ApiRequestRecord } from "@/types";
 
