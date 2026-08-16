@@ -15,10 +15,10 @@ export function MetricCard({
 }: {
   label: string;
   value: ReactNode;
-  hint?: string;
-  tone?: StatusTone;
-  isLoading?: boolean;
-  footer?: ReactNode;
+  hint?: string | undefined;
+  tone?: StatusTone | undefined;
+  isLoading?: boolean | undefined;
+  footer?: ReactNode | undefined;
 }) {
   return (
     <div className="panel flex min-w-0 flex-col gap-1 p-4">
@@ -56,8 +56,8 @@ export function UsageCard({
   label: string;
   used: number;
   total: number;
-  formatValue?: (value: number) => string;
-  hint?: string;
+  formatValue?: (value: number) => string | undefined;
+  hint?: string | undefined;
 }) {
   const pct = total > 0 ? Math.min(100, (used / total) * 100) : 0;
   const fmt = formatValue ?? ((v: number) => String(v));

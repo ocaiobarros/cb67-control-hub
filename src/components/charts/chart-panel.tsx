@@ -25,7 +25,7 @@ import type { MetricPoint } from "@/types";
 export interface SeriesConfig {
   key: string;
   label: string;
-  color?: string;
+  color?: string | undefined;
 }
 
 const PALETTE = [
@@ -69,12 +69,12 @@ export function ChartPanel({
   children,
 }: {
   title: string;
-  description?: string;
-  isLoading?: boolean;
-  error?: unknown;
-  isEmpty?: boolean;
-  actions?: ReactNode;
-  height?: number;
+  description?: string | undefined;
+  isLoading?: boolean | undefined;
+  error?: unknown | undefined;
+  isEmpty?: boolean | undefined;
+  actions?: ReactNode | undefined;
+  height?: number | undefined;
   children: ReactNode;
 }) {
   return (
@@ -111,8 +111,8 @@ export function TimeSeriesChart({
 }: {
   data: MetricPoint[];
   series: SeriesConfig[];
-  variant?: "area" | "line";
-  unit?: string;
+  variant?: "area" | "line" | undefined;
+  unit?: string | undefined;
 }) {
   const Chart = variant === "area" ? AreaChart : LineChart;
   return (
@@ -171,9 +171,9 @@ export function CategoryBarChart({
   colorByIndex,
 }: {
   data: MetricPoint[];
-  dataKey?: string;
-  layout?: "vertical" | "horizontal";
-  colorByIndex?: boolean;
+  dataKey?: string | undefined;
+  layout?: "vertical" | "horizontal" | undefined;
+  colorByIndex?: boolean | undefined;
 }) {
   const horizontal = layout === "horizontal";
   return (

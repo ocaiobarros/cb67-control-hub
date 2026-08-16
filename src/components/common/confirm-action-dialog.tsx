@@ -38,7 +38,7 @@ export function ConfirmActionDialog({
   details?: { label: string; value: ReactNode }[] | undefined;
   confirmLabel: string;
   requireTypedValue?: string | undefined;
-  destructive?: boolean;
+  destructive?: boolean | undefined;
   environmentNotice?: string | undefined;
   onConfirm: () => Promise<void> | void;
 }) {

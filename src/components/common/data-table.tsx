@@ -26,26 +26,26 @@ export interface Column<T> {
   id: string;
   header: string;
   cell: (row: T) => ReactNode;
-  sortValue?: (row: T) => string | number;
-  align?: "left" | "right";
-  className?: string;
-  hideByDefault?: boolean;
+  sortValue?: (row: T) => string | number | undefined;
+  align?: "left" | "right" | undefined;
+  className?: string | undefined;
+  hideByDefault?: boolean | undefined;
 }
 
 interface DataTableProps<T> {
   data: T[] | undefined;
   columns: Column<T>[];
   rowKey: (row: T) => string;
-  isLoading?: boolean;
-  error?: unknown;
-  searchable?: boolean;
-  searchPlaceholder?: string;
-  searchValue?: (row: T) => string;
-  pageSize?: number;
-  onRowClick?: (row: T) => void;
-  emptyMessage?: string;
-  toolbar?: ReactNode;
-  dense?: boolean;
+  isLoading?: boolean | undefined;
+  error?: unknown | undefined;
+  searchable?: boolean | undefined;
+  searchPlaceholder?: string | undefined;
+  searchValue?: (row: T) => string | undefined;
+  pageSize?: number | undefined;
+  onRowClick?: (row: T) => void | undefined;
+  emptyMessage?: string | undefined;
+  toolbar?: ReactNode | undefined;
+  dense?: boolean | undefined;
 }
 
 /**

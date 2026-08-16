@@ -7,9 +7,9 @@ export function PageHeader({
   meta,
 }: {
   title: string;
-  description?: string;
-  actions?: ReactNode;
-  meta?: ReactNode;
+  description?: string | undefined;
+  actions?: ReactNode | undefined;
+  meta?: ReactNode | undefined;
 }) {
   return (
     <header className="flex flex-wrap items-start justify-between gap-3 border-b border-border pb-4">
@@ -33,8 +33,8 @@ export function SectionTitle({
   actions,
 }: {
   title: string;
-  description?: string;
-  actions?: ReactNode;
+  description?: string | undefined;
+  actions?: ReactNode | undefined;
 }) {
   return (
     <div className="flex flex-wrap items-end justify-between gap-2">

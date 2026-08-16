@@ -7,8 +7,8 @@ export function EmptyState({
   action,
 }: {
   message: string;
-  hint?: string;
-  action?: ReactNode;
+  hint?: string | undefined;
+  action?: ReactNode | undefined;
 }) {
   return (
     <div className="flex flex-col items-center gap-2 py-6 text-center">

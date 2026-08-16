@@ -71,9 +71,9 @@ export function StatusBadge({
   tone,
 }: {
   status: string;
-  label?: string;
-  className?: string;
-  tone?: StatusTone;
+  label?: string | undefined;
+  className?: string | undefined;
+  tone?: StatusTone | undefined;
 }) {
   const resolved = tone ?? statusTone(status);
   return (

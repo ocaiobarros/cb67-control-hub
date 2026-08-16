@@ -6,8 +6,8 @@ export interface TimelineItem {
   id: string;
   at: string;
   title: string;
-  detail?: string;
-  status?: string;
+  detail?: string | undefined;
+  status?: string | undefined;
 }
 
 export function ActivityTimeline({ items }: { items: TimelineItem[] }) {
