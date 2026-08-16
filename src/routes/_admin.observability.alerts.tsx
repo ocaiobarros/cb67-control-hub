@@ -5,6 +5,7 @@ import { q } from "@/api/queries";
 import { PageHeader, SectionTitle } from "@/components/common/page-header";
 import { MetricCard } from "@/components/common/metric-card";
 import { DataTable, type Column } from "@/components/common/data-table";
+import { statusLabel } from "@/i18n/status";
 import { StatusBadge } from "@/components/common/status-badge";
 import { ChartPanel, CategoryBarChart } from "@/components/charts/chart-panel";
 import { ConfirmActionDialog } from "@/components/common/confirm-action-dialog";
@@ -160,7 +161,7 @@ function AlertsPage() {
           rowKey={(row) => row.id}
           isLoading={alerts.isLoading}
           error={alerts.error ?? undefined}
-          searchPlaceholder="Buscar alerta ou fonte…"
+          searchPlaceholder="Pesquisar alerta ou fonte…"
           searchValue={(row) => `${row.name} ${row.source}`}
           pageSize={15}
         />
@@ -177,7 +178,7 @@ function AlertsPage() {
           target
             ? [
                 { label: "Alerta", value: target.name },
-                { label: "Severidade", value: target.severity },
+                { label: "Severidade", value: statusLabel(target.severity ?? "") },
                 { label: "Disparando há", value: target.duration },
               ]
             : undefined

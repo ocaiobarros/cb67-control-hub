@@ -149,7 +149,7 @@ function LicensesPage() {
           rowKey={(row) => row.id}
           isLoading={licenses.isLoading}
           error={licenses.error ?? undefined}
-          searchPlaceholder="Buscar chave, cliente ou produto…"
+          searchPlaceholder="Pesquisar chave, cliente ou produto…"
           searchValue={(row) => `${row.key} ${row.customerName} ${row.productName} ${row.plan}`}
           pageSize={15}
           onRowClick={(row) => {

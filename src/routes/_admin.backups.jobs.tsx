@@ -146,7 +146,7 @@ function BackupJobsPage() {
           rowKey={(row) => row.id}
           isLoading={jobs.isLoading}
           error={jobs.error ?? undefined}
-          searchPlaceholder="Buscar rotina ou alvo…"
+          searchPlaceholder="Pesquisar rotina ou alvo…"
           searchValue={(row) => `${row.name} ${row.target} ${row.type}`}
           pageSize={15}
         />

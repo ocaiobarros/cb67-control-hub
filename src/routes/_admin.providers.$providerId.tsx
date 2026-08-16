@@ -253,7 +253,7 @@ function ProviderDetail() {
             rowKey={(row) => row.id}
             isLoading={projects.isLoading}
             error={projects.error ?? undefined}
-            searchPlaceholder="Buscar projeto ou aplicação…"
+            searchPlaceholder="Pesquisar projeto ou aplicação…"
             searchValue={(row) => `${row.project} ${row.applicationName}`}
             pageSize={10}
           />

@@ -99,7 +99,7 @@ function StoragePage() {
         rowKey={(row) => row.id}
         isLoading={hosts.isLoading}
         error={hosts.error ?? undefined}
-        searchPlaceholder="Buscar hosts…"
+        searchPlaceholder="Pesquisar hosts…"
       />
     </div>
   );

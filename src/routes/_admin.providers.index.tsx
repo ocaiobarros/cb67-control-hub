@@ -213,7 +213,7 @@ function ProvidersOverview() {
           rowKey={(row) => row.id}
           isLoading={credentials.isLoading}
           error={credentials.error ?? undefined}
-          searchPlaceholder="Buscar alias ou aplicação…"
+          searchPlaceholder="Pesquisar alias ou aplicação…"
           searchValue={(row) => `${row.alias} ${row.applicationName}`}
           pageSize={10}
         />

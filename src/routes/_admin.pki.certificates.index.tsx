@@ -153,7 +153,7 @@ function CertificatesPage() {
           rowKey={(row) => row.id}
           isLoading={certificates.isLoading}
           error={certificates.error ?? undefined}
-          searchPlaceholder="Buscar sujeito, número de série ou cliente…"
+          searchPlaceholder="Pesquisar sujeito, número de série ou cliente…"
           searchValue={(row) => `${row.subject} ${row.serial} ${row.clientId}`}
           pageSize={15}
           onRowClick={(row) => {

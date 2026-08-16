@@ -113,7 +113,7 @@ export function ChartPanel({
           <Skeleton className="size-full" />
         ) : isEmpty ? (
           <div className="flex h-full items-center justify-center">
-            <EmptyState message="No data in this period." />
+            <EmptyState message="Sem dados neste período." />
           </div>
         ) : (
           children

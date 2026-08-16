@@ -96,7 +96,7 @@ function HostsPage() {
         rowKey={(row) => row.id}
         isLoading={hosts.isLoading}
         error={hosts.error ?? undefined}
-        searchPlaceholder="Buscar hosts, funções…"
+        searchPlaceholder="Pesquisar hosts, funções…"
       />
     </div>
   );

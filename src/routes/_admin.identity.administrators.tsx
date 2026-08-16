@@ -134,7 +134,7 @@ function AdministratorsPage() {
           rowKey={(row) => row.id}
           isLoading={administrators.isLoading}
           error={administrators.error ?? undefined}
-          searchPlaceholder="Buscar administrador ou função…"
+          searchPlaceholder="Pesquisar administrador ou função…"
           searchValue={(row) => `${row.name} ${row.role}`}
           pageSize={15}
         />

@@ -111,7 +111,7 @@ function ProductsPage() {
           rowKey={(row) => row.id}
           isLoading={products.isLoading}
           error={products.error ?? undefined}
-          searchPlaceholder="Buscar produto ou código…"
+          searchPlaceholder="Pesquisar produto ou código…"
           searchValue={(row) => `${row.name} ${row.code}`}
           pageSize={15}
         />

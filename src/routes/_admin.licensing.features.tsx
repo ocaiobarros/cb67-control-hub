@@ -108,7 +108,7 @@ function FeaturesPage() {
           rowKey={(row) => row.id}
           isLoading={features.isLoading}
           error={features.error ?? undefined}
-          searchPlaceholder="Buscar recurso ou código…"
+          searchPlaceholder="Pesquisar recurso ou código…"
           searchValue={(row) => `${row.name} ${row.code} ${row.description}`}
           pageSize={15}
         />

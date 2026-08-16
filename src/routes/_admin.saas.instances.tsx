@@ -113,7 +113,7 @@ function InstancesPage() {
         rowKey={(row) => row.id}
         isLoading={instances.isLoading}
         error={instances.error ?? undefined}
-        searchPlaceholder="Buscar instalações, hosts…"
+        searchPlaceholder="Pesquisar instalações, hosts…"
         pageSize={15}
       />
     </div>

@@ -191,7 +191,7 @@ function FailedAttemptsPage() {
           isLoading={events.isLoading}
           error={events.error ?? undefined}
           emptyMessage="Nenhuma tentativa falha registrada."
-          searchPlaceholder="Buscar cliente ou origem…"
+          searchPlaceholder="Pesquisar cliente ou origem…"
           searchValue={(row) => `${row.clientId} ${row.source}`}
           pageSize={10}
         />

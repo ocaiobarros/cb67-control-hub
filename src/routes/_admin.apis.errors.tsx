@@ -211,7 +211,7 @@ function ApiErrorsPage() {
           rowKey={(row) => row.id}
           isLoading={errors.isLoading}
           error={errors.error ?? undefined}
-          searchPlaceholder="Buscar status ou endpoint…"
+          searchPlaceholder="Pesquisar status ou endpoint…"
           searchValue={(row) => `${row.status} ${row.affectedEndpoints.join(" ")}`}
           pageSize={15}
         />

@@ -141,7 +141,7 @@ function ApplicationsPage() {
         rowKey={(row) => row.id}
         isLoading={applications.isLoading}
         error={applications.error ?? undefined}
-        searchPlaceholder="Buscar aplicações, códigos…"
+        searchPlaceholder="Pesquisar aplicações, códigos…"
         onRowClick={(row) => {
           void navigate({ to: `/saas/applications/${row.id}` as never });
         }}

@@ -165,7 +165,7 @@ function RotationPage() {
           isLoading={certificates.isLoading}
           error={certificates.error ?? undefined}
           emptyMessage="Nenhum certificado está dentro da janela de rotação."
-          searchPlaceholder="Buscar sujeito ou cliente…"
+          searchPlaceholder="Pesquisar sujeito ou cliente…"
           searchValue={(row) => `${row.subject} ${row.clientId}`}
           pageSize={15}
         />

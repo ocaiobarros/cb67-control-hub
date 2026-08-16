@@ -177,7 +177,7 @@ function QuotasPage() {
           rowKey={(row) => row.id}
           isLoading={quotas.isLoading}
           error={quotas.error ?? undefined}
-          searchPlaceholder="Buscar aplicação ou API…"
+          searchPlaceholder="Pesquisar aplicação ou API…"
           searchValue={(row) => `${row.applicationName} ${row.api}`}
           pageSize={15}
         />

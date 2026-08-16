@@ -156,7 +156,7 @@ function AuthorizationPage() {
           isLoading={events.isLoading}
           error={events.error ?? undefined}
           emptyMessage="Nenhuma negação de autorização no conjunto de dados atual."
-          searchPlaceholder="Buscar cliente, evento ou requisição…"
+          searchPlaceholder="Pesquisar cliente, evento ou requisição…"
           searchValue={(row) => `${row.clientId} ${row.event} ${row.requestId}`}
           pageSize={15}
         />

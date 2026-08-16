@@ -218,7 +218,7 @@ function RevocationPage() {
           rowKey={(row) => row.id}
           isLoading={certificates.isLoading}
           error={certificates.error ?? undefined}
-          searchPlaceholder="Buscar sujeito ou número de série…"
+          searchPlaceholder="Pesquisar sujeito ou número de série…"
           searchValue={(row) => `${row.subject} ${row.serial} ${row.clientId}`}
           pageSize={10}
         />

@@ -145,7 +145,7 @@ function SecuritySessionsPage() {
           rowKey={(row) => row.id}
           isLoading={sessions.isLoading}
           error={sessions.error ?? undefined}
-          searchPlaceholder="Buscar operador, dispositivo ou origem…"
+          searchPlaceholder="Pesquisar operador, dispositivo ou origem…"
           searchValue={(row) => `${row.administrator} ${row.device} ${row.source}`}
           pageSize={15}
           dense
