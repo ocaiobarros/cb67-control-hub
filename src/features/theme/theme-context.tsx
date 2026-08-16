@@ -15,8 +15,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
+    const root = document.documentElement;
+    // Brief, scoped crossfade so the material shift reads as one continuous move.
+    root.classList.add("theme-transition");
+    root.classList.toggle("dark", theme === "dark");
+    root.style.colorScheme = theme;
     window.localStorage.setItem(STORAGE_KEY, theme);
+    const timer = window.setTimeout(() => root.classList.remove("theme-transition"), 320);
+    return () => window.clearTimeout(timer);
   }, [theme]);
 
   const toggle = useCallback(() => setTheme((prev) => (prev === "dark" ? "light" : "dark")), []);

@@ -53,10 +53,10 @@ function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-12">
+    <div className="flex min-h-dvh items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm space-y-6">
         <div className="space-y-2 text-center">
-          <span className="mx-auto grid size-9 place-items-center rounded bg-primary text-sm font-bold text-primary-foreground">
+          <span className="mx-auto grid size-9 place-items-center rounded-xl bg-primary text-sm font-bold shadow-depth-2 text-primary-foreground">
             C7
           </span>
           <h1 className="text-lg font-semibold tracking-tight">{platformMeta.productName}</h1>
@@ -65,7 +65,7 @@ function LoginPage() {
           </p>
         </div>
 
-        <form onSubmit={onSubmit} className="panel space-y-4 p-5">
+        <form onSubmit={onSubmit} className="liquid-modal edge-light space-y-4 rounded-3xl p-6">
           <div className="space-y-1.5">
             <Label htmlFor="username">Operator</Label>
             <Input

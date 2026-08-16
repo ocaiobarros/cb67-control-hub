@@ -6,15 +6,15 @@ import { cn } from "@/lib/utils";
  * Status is never communicated by colour alone — a dot plus the label is used.
  */
 const badge = cva(
-  "inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-xs font-medium whitespace-nowrap",
+  "relative inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[0.6875rem] font-semibold tracking-wide whitespace-nowrap backdrop-blur-[10px] transition-colors",
   {
     variants: {
       tone: {
-        ok: "border-ok/30 bg-ok/10 text-ok",
+        ok: "border-ok/30 bg-ok/12 text-ok",
         warn: "border-warn/35 bg-warn/12 text-warn",
-        crit: "border-crit/30 bg-crit/10 text-crit",
+        crit: "border-crit/35 bg-crit/14 text-crit",
         info: "border-info/30 bg-info/10 text-info",
-        neutral: "border-border bg-muted text-muted-foreground",
+        neutral: "border-border bg-surface-raised text-muted-foreground",
       },
     },
     defaultVariants: { tone: "neutral" },
@@ -81,7 +81,8 @@ export function StatusBadge({
       <span
         aria-hidden
         className={cn(
-          "size-1.5 rounded-full",
+          "relative size-1.5 rounded-full",
+          resolved === "crit" && "status-pulse",
           resolved === "ok" && "bg-ok",
           resolved === "warn" && "bg-warn",
           resolved === "crit" && "bg-crit",
@@ -102,7 +103,7 @@ export function HttpStatusBadge({ status }: { status: number }) {
 
 export function MethodBadge({ method }: { method: string }) {
   return (
-    <span className="mono-xs rounded border border-border bg-muted px-1.5 py-0.5 font-medium text-muted-foreground">
+    <span className="mono-xs rounded-md border border-border bg-surface-raised px-1.5 py-0.5 font-medium text-muted-foreground">
       {method}
     </span>
   );

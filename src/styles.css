@@ -5,184 +5,396 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * CB67 Labs design system.
- * Technical/operational aesthetic: neutral slate surfaces, single cyan accent,
- * dedicated status tokens (ok/warn/crit/info/neutral) used by every badge,
- * chart and health indicator. All values are oklch.
+ * ============================================================
+ * CB67 LIQUID INTERFACE
+ * ============================================================
+ * Design language for the CB67 Labs API Platform / Control Center.
+ *
+ * Five fundamentals: LIQUID MATERIAL · DEPTH · LIGHT · CONTINUITY · MOTION
+ *
+ * Everything visual is a token in this file. Components never hardcode
+ * colors, blurs, shadows, radii or durations.
+ * See docs/DESIGN-SYSTEM.md, docs/LIQUID-MATERIAL.md, docs/MOTION-SYSTEM.md.
+ * ============================================================
  */
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 3px);
-  --radius-md: calc(var(--radius) - 1px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  /* ---------- Radius scale (continuous, purpose-named) ---------- */
+  --radius-sm: var(--radius-control-sm);
+  --radius-md: var(--radius-control);
+  --radius-lg: var(--radius-card);
+  --radius-xl: var(--radius-panel);
+  --radius-2xl: var(--radius-floating);
+  --radius-3xl: var(--radius-modal);
+
+  /* ---------- Typography ---------- */
+  --font-sans:
+    "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
+
+  /* ---------- Semantic colour surface (shadcn-compatible names) ---------- */
+  --color-background: var(--canvas);
+  --color-foreground: var(--text-primary);
+  --color-canvas: var(--canvas);
+  --color-canvas-elevated: var(--canvas-elevated);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--text-primary);
+  --color-popover: var(--surface-overlay);
+  --color-popover-foreground: var(--text-primary);
   --color-surface: var(--surface);
-  --color-surface-foreground: var(--surface-foreground);
-  --color-ok: var(--ok);
-  --color-ok-foreground: var(--ok-foreground);
-  --color-warn: var(--warn);
-  --color-warn-foreground: var(--warn-foreground);
-  --color-crit: var(--crit);
-  --color-crit-foreground: var(--crit-foreground);
+  --color-surface-foreground: var(--text-primary);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-overlay: var(--surface-overlay);
+  --color-primary: var(--accent);
+  --color-primary-foreground: var(--accent-contrast);
+  --color-secondary: var(--surface-raised);
+  --color-secondary-foreground: var(--text-primary);
+  --color-muted: var(--surface-muted);
+  --color-muted-foreground: var(--text-secondary);
+  --color-accent: var(--tint-accent);
+  --color-accent-foreground: var(--tint-accent-foreground);
+  --color-destructive: var(--danger);
+  --color-destructive-foreground: var(--danger-contrast);
+  --color-border: var(--border-subtle);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--border-strong);
+  --color-ring: var(--focus-ring);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+
+  /* ---------- Status ---------- */
+  --color-ok: var(--success);
+  --color-ok-foreground: var(--success-contrast);
+  --color-warn: var(--warning);
+  --color-warn-foreground: var(--warning-contrast);
+  --color-crit: var(--danger);
+  --color-crit-foreground: var(--danger-contrast);
   --color-info: var(--info);
-  --color-info-foreground: var(--info-foreground);
+  --color-info-foreground: var(--info-contrast);
   --color-neutral: var(--neutral);
-  --color-neutral-foreground: var(--neutral-foreground);
+  --color-neutral-foreground: var(--neutral-contrast);
+
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --shadow-panel: 0 1px 2px oklch(0 0 0 / 8%), 0 8px 24px -12px oklch(0 0 0 / 18%);
+
+  /* ---------- Navigation ---------- */
+  --color-sidebar: var(--surface-nav);
+  --color-sidebar-foreground: var(--text-secondary);
+  --color-sidebar-primary: var(--accent);
+  --color-sidebar-primary-foreground: var(--accent-contrast);
+  --color-sidebar-accent: var(--tint-accent);
+  --color-sidebar-accent-foreground: var(--tint-accent-foreground);
+  --color-sidebar-border: var(--border-subtle);
+  --color-sidebar-ring: var(--focus-ring);
+
+  /* ---------- Depth ---------- */
+  --shadow-depth-1: var(--depth-1);
+  --shadow-depth-2: var(--depth-2);
+  --shadow-depth-3: var(--depth-3);
+  --shadow-depth-4: var(--depth-4);
+  --shadow-modal: var(--depth-modal);
+  --shadow-panel: var(--depth-1);
+
+  /* ---------- Motion ---------- */
+  --ease-standard: var(--ease-std);
+  --ease-enter: var(--ease-in-liquid);
+  --ease-exit: var(--ease-out-liquid);
+  --ease-spring: var(--ease-spring-liquid);
 }
 
+/* ============================================================
+   RADIUS + MOTION (theme independent)
+   ============================================================ */
 :root {
-  --radius: 0.5rem;
-  --background: oklch(0.985 0.002 250);
-  --foreground: oklch(0.21 0.015 255);
-  --surface: oklch(1 0 0);
-  --surface-foreground: oklch(0.21 0.015 255);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.21 0.015 255);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.21 0.015 255);
-  --primary: oklch(0.55 0.09 220);
-  --primary-foreground: oklch(0.99 0.002 250);
-  --secondary: oklch(0.955 0.005 250);
-  --secondary-foreground: oklch(0.3 0.015 255);
-  --muted: oklch(0.958 0.004 250);
-  --muted-foreground: oklch(0.52 0.014 255);
-  --accent: oklch(0.94 0.014 220);
-  --accent-foreground: oklch(0.3 0.03 230);
-  --destructive: oklch(0.55 0.19 25);
-  --destructive-foreground: oklch(0.99 0.002 250);
-  --border: oklch(0.9 0.006 250);
-  --input: oklch(0.9 0.006 250);
-  --ring: oklch(0.6 0.08 220);
-  --ok: oklch(0.62 0.12 155);
-  --ok-foreground: oklch(0.99 0.002 250);
-  --warn: oklch(0.72 0.14 75);
-  --warn-foreground: oklch(0.22 0.03 75);
-  --crit: oklch(0.55 0.19 25);
-  --crit-foreground: oklch(0.99 0.002 250);
-  --info: oklch(0.58 0.1 240);
-  --info-foreground: oklch(0.99 0.002 250);
-  --neutral: oklch(0.62 0.01 255);
-  --neutral-foreground: oklch(0.99 0.002 250);
-  --chart-1: oklch(0.58 0.1 220);
-  --chart-2: oklch(0.62 0.12 155);
-  --chart-3: oklch(0.72 0.14 75);
-  --chart-4: oklch(0.55 0.19 25);
-  --chart-5: oklch(0.55 0.1 285);
-  --sidebar: oklch(0.975 0.003 250);
-  --sidebar-foreground: oklch(0.3 0.015 255);
-  --sidebar-primary: oklch(0.55 0.09 220);
-  --sidebar-primary-foreground: oklch(0.99 0.002 250);
-  --sidebar-accent: oklch(0.93 0.012 220);
-  --sidebar-accent-foreground: oklch(0.28 0.03 230);
-  --sidebar-border: oklch(0.9 0.006 250);
-  --sidebar-ring: oklch(0.6 0.08 220);
+  --radius: 0.625rem;
+  --radius-control-sm: 0.375rem;
+  --radius-control: 0.625rem;
+  --radius-card: 0.875rem;
+  --radius-panel: 1.125rem;
+  --radius-floating: 1.375rem;
+  --radius-modal: 1.5rem;
+  --radius-pill: 999px;
+
+  --motion-instant: 80ms;
+  --motion-fast: 150ms;
+  --motion-standard: 240ms;
+  --motion-emphasized: 380ms;
+  --motion-slow: 620ms;
+
+  --ease-std: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-in-liquid: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-liquid: cubic-bezier(0.4, 0, 0.7, 0.2);
+  --ease-spring-liquid: cubic-bezier(0.34, 1.42, 0.5, 1);
+
+  --glass-blur-sm: 10px;
+  --glass-blur-md: 20px;
+  --glass-blur-lg: 34px;
+  --glass-saturation: 165%;
+  --glass-specular-intensity: 0.55;
 }
 
+/* ============================================================
+   LIGHT MODE — warm luminous canvas, controlled white diffusion
+   ============================================================ */
+:root {
+  --canvas: oklch(0.982 0.004 250);
+  --canvas-elevated: oklch(0.995 0.003 250);
+  --atmos-1: oklch(0.72 0.075 225 / 22%);
+  --atmos-2: oklch(0.78 0.05 190 / 16%);
+  --atmos-3: oklch(0.8 0.045 275 / 14%);
+
+  --surface: oklch(1 0 0 / 82%);
+  --surface-solid: oklch(1 0 0);
+  --surface-raised: oklch(0.985 0.003 250 / 92%);
+  --surface-muted: oklch(0.955 0.004 250);
+  --surface-overlay: oklch(0.995 0.002 250 / 88%);
+  --surface-nav: oklch(1 0 0 / 62%);
+
+  --text-primary: oklch(0.24 0.017 258);
+  --text-secondary: oklch(0.48 0.014 258);
+  --text-tertiary: oklch(0.62 0.012 258);
+
+  --border-subtle: oklch(0.24 0.017 258 / 9%);
+  --border-strong: oklch(0.24 0.017 258 / 17%);
+
+  --accent: oklch(0.55 0.115 232);
+  --accent-soft: oklch(0.55 0.115 232 / 12%);
+  --accent-contrast: oklch(0.99 0.002 250);
+  --tint-accent: oklch(0.55 0.115 232 / 10%);
+  --tint-accent-foreground: oklch(0.36 0.09 235);
+  --focus-ring: oklch(0.58 0.12 232 / 65%);
+
+  --success: oklch(0.6 0.125 155);
+  --success-contrast: oklch(0.99 0.002 250);
+  --warning: oklch(0.71 0.145 74);
+  --warning-contrast: oklch(0.24 0.04 74);
+  --danger: oklch(0.55 0.195 25);
+  --danger-contrast: oklch(0.99 0.002 250);
+  --info: oklch(0.57 0.11 242);
+  --info-contrast: oklch(0.99 0.002 250);
+  --neutral: oklch(0.6 0.011 258);
+  --neutral-contrast: oklch(0.99 0.002 250);
+
+  --chart-1: oklch(0.56 0.11 232);
+  --chart-2: oklch(0.6 0.125 155);
+  --chart-3: oklch(0.71 0.145 74);
+  --chart-4: oklch(0.55 0.195 25);
+  --chart-5: oklch(0.55 0.115 288);
+
+  /* Liquid material */
+  --glass-fill: oklch(1 0 0 / 58%);
+  --glass-fill-strong: oklch(1 0 0 / 80%);
+  --glass-fill-subtle: oklch(1 0 0 / 38%);
+  --glass-border: oklch(0.24 0.017 258 / 10%);
+  --glass-border-highlight: oklch(1 0 0 / 85%);
+  --glass-inner-light: oklch(1 0 0 / 62%);
+  --glass-specular: oklch(1 0 0 / 70%);
+  --glass-tint: oklch(0.6 0.06 232 / 5%);
+  --scrim: oklch(0.32 0.02 258 / 32%);
+
+  --depth-0: 0 0 0 0 oklch(0 0 0 / 0%);
+  --depth-1: 0 1px 2px oklch(0.3 0.02 258 / 7%);
+  --depth-2:
+    0 1px 2px oklch(0.3 0.02 258 / 6%), 0 4px 12px -4px oklch(0.3 0.02 258 / 10%);
+  --depth-3:
+    0 1px 3px oklch(0.3 0.02 258 / 7%), 0 10px 26px -10px oklch(0.3 0.02 258 / 16%);
+  --depth-4:
+    0 2px 6px oklch(0.3 0.02 258 / 8%), 0 20px 46px -18px oklch(0.3 0.02 258 / 22%);
+  --depth-modal:
+    0 4px 10px oklch(0.3 0.02 258 / 10%), 0 40px 90px -30px oklch(0.3 0.02 258 / 34%);
+}
+
+/* ============================================================
+   DARK MODE — deep neutral canvas, layered graphite, luminous edges
+   ============================================================ */
 .dark {
-  --background: oklch(0.17 0.012 255);
-  --foreground: oklch(0.93 0.005 250);
-  --surface: oklch(0.215 0.014 255);
-  --surface-foreground: oklch(0.93 0.005 250);
-  --card: oklch(0.215 0.014 255);
-  --card-foreground: oklch(0.93 0.005 250);
-  --popover: oklch(0.225 0.014 255);
-  --popover-foreground: oklch(0.93 0.005 250);
-  --primary: oklch(0.72 0.11 210);
-  --primary-foreground: oklch(0.17 0.02 250);
-  --secondary: oklch(0.27 0.014 255);
-  --secondary-foreground: oklch(0.9 0.005 250);
-  --muted: oklch(0.26 0.013 255);
-  --muted-foreground: oklch(0.68 0.012 255);
-  --accent: oklch(0.3 0.03 220);
-  --accent-foreground: oklch(0.9 0.02 220);
-  --destructive: oklch(0.62 0.19 25);
-  --destructive-foreground: oklch(0.98 0.002 250);
-  --border: oklch(0.3 0.012 255);
-  --input: oklch(0.32 0.012 255);
-  --ring: oklch(0.65 0.1 210);
-  --ok: oklch(0.7 0.13 155);
-  --ok-foreground: oklch(0.17 0.02 155);
-  --warn: oklch(0.78 0.14 75);
-  --warn-foreground: oklch(0.2 0.04 75);
-  --crit: oklch(0.65 0.2 25);
-  --crit-foreground: oklch(0.15 0.03 25);
-  --info: oklch(0.7 0.11 240);
-  --info-foreground: oklch(0.17 0.03 240);
-  --neutral: oklch(0.6 0.012 255);
-  --neutral-foreground: oklch(0.15 0.01 255);
-  --chart-1: oklch(0.7 0.11 210);
-  --chart-2: oklch(0.72 0.13 155);
-  --chart-3: oklch(0.78 0.14 75);
-  --chart-4: oklch(0.65 0.2 25);
-  --chart-5: oklch(0.68 0.12 290);
-  --sidebar: oklch(0.19 0.013 255);
-  --sidebar-foreground: oklch(0.88 0.005 250);
-  --sidebar-primary: oklch(0.72 0.11 210);
-  --sidebar-primary-foreground: oklch(0.17 0.02 250);
-  --sidebar-accent: oklch(0.28 0.02 220);
-  --sidebar-accent-foreground: oklch(0.9 0.02 220);
-  --sidebar-border: oklch(0.29 0.012 255);
-  --sidebar-ring: oklch(0.65 0.1 210);
+  --canvas: oklch(0.165 0.014 258);
+  --canvas-elevated: oklch(0.2 0.015 258);
+  --atmos-1: oklch(0.55 0.11 232 / 20%);
+  --atmos-2: oklch(0.5 0.08 195 / 14%);
+  --atmos-3: oklch(0.45 0.09 288 / 12%);
+
+  --surface: oklch(0.235 0.015 258 / 78%);
+  --surface-solid: oklch(0.225 0.015 258);
+  --surface-raised: oklch(0.275 0.016 258 / 88%);
+  --surface-muted: oklch(0.255 0.014 258);
+  --surface-overlay: oklch(0.245 0.016 258 / 86%);
+  --surface-nav: oklch(0.22 0.015 258 / 62%);
+
+  --text-primary: oklch(0.945 0.005 250);
+  --text-secondary: oklch(0.72 0.011 255);
+  --text-tertiary: oklch(0.6 0.012 255);
+
+  --border-subtle: oklch(0.98 0.005 250 / 9%);
+  --border-strong: oklch(0.98 0.005 250 / 16%);
+
+  --accent: oklch(0.74 0.12 214);
+  --accent-soft: oklch(0.74 0.12 214 / 16%);
+  --accent-contrast: oklch(0.17 0.02 250);
+  --tint-accent: oklch(0.74 0.12 214 / 14%);
+  --tint-accent-foreground: oklch(0.9 0.05 214);
+  --focus-ring: oklch(0.72 0.12 214 / 75%);
+
+  --success: oklch(0.73 0.14 158);
+  --success-contrast: oklch(0.17 0.03 158);
+  --warning: oklch(0.79 0.145 76);
+  --warning-contrast: oklch(0.2 0.04 76);
+  --danger: oklch(0.66 0.2 25);
+  --danger-contrast: oklch(0.15 0.03 25);
+  --info: oklch(0.72 0.115 242);
+  --info-contrast: oklch(0.17 0.03 242);
+  --neutral: oklch(0.62 0.012 258);
+  --neutral-contrast: oklch(0.16 0.01 258);
+
+  --chart-1: oklch(0.72 0.115 214);
+  --chart-2: oklch(0.74 0.14 158);
+  --chart-3: oklch(0.79 0.145 76);
+  --chart-4: oklch(0.67 0.2 25);
+  --chart-5: oklch(0.7 0.125 292);
+
+  --glass-fill: oklch(0.3 0.016 258 / 55%);
+  --glass-fill-strong: oklch(0.27 0.016 258 / 82%);
+  --glass-fill-subtle: oklch(0.32 0.016 258 / 34%);
+  --glass-border: oklch(0.98 0.005 250 / 10%);
+  --glass-border-highlight: oklch(0.98 0.01 250 / 24%);
+  --glass-inner-light: oklch(0.98 0.01 250 / 12%);
+  --glass-specular: oklch(0.95 0.02 220 / 26%);
+  --glass-tint: oklch(0.7 0.09 220 / 6%);
+  --scrim: oklch(0.1 0.015 258 / 58%);
+
+  --depth-0: 0 0 0 0 oklch(0 0 0 / 0%);
+  --depth-1: 0 1px 2px oklch(0 0 0 / 30%);
+  --depth-2: 0 1px 2px oklch(0 0 0 / 30%), 0 4px 14px -4px oklch(0 0 0 / 38%);
+  --depth-3: 0 2px 4px oklch(0 0 0 / 32%), 0 12px 30px -10px oklch(0 0 0 / 48%);
+  --depth-4: 0 3px 8px oklch(0 0 0 / 36%), 0 24px 54px -18px oklch(0 0 0 / 56%);
+  --depth-modal: 0 6px 14px oklch(0 0 0 / 40%), 0 48px 100px -30px oklch(0 0 0 / 70%);
 }
 
+/* ============================================================
+   BASE
+   ============================================================ */
 @layer base {
   * {
-    border-color: var(--color-border);
+    border-color: var(--border-subtle);
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background-color: var(--canvas);
+    color: var(--text-primary);
     font-family: var(--font-sans);
     font-feature-settings: "cv05", "ss01";
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* LEVEL 0 — atmospheric background: diffuse, static, never distracting. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(120% 90% at 12% -10%, var(--atmos-1), transparent 60%),
+      radial-gradient(100% 80% at 88% 0%, var(--atmos-2), transparent 62%),
+      radial-gradient(90% 70% at 50% 110%, var(--atmos-3), transparent 66%);
   }
 
   h1,
   h2,
-  h3 {
-    letter-spacing: -0.01em;
+  h3,
+  h4 {
+    letter-spacing: -0.015em;
+    text-wrap: balance;
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-ring);
+    outline: 2px solid var(--focus-ring);
     outline-offset: 2px;
+    border-radius: var(--radius-control-sm);
   }
+
+  ::selection {
+    background: var(--accent-soft);
+  }
+
+  /* Refined theme transition — surfaces only, brief. */
+  html.theme-transition,
+  html.theme-transition * {
+    transition:
+      background-color var(--motion-standard) var(--ease-std),
+      border-color var(--motion-standard) var(--ease-std),
+      color var(--motion-standard) var(--ease-std),
+      box-shadow var(--motion-standard) var(--ease-std) !important;
+    transition-delay: 0ms !important;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: var(--radius-pill);
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-tertiary);
+    background-clip: content-box;
+  }
+}
+
+/* ============================================================
+   TYPOGRAPHY UTILITIES
+   ============================================================ */
+@utility text-display {
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  font-weight: 600;
+}
+
+@utility text-page-title {
+  font-size: 1.375rem;
+  line-height: 1.75rem;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+
+@utility text-section-title {
+  font-size: 0.6875rem;
+  line-height: 1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--text-tertiary);
+}
+
+@utility text-metric {
+  font-size: 1.75rem;
+  line-height: 2rem;
+  letter-spacing: -0.03em;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+@utility text-caption {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--text-tertiary);
 }
 
 @utility tabular {
@@ -193,10 +405,278 @@
   font-family: var(--font-mono);
   font-size: 0.75rem;
   line-height: 1rem;
+  letter-spacing: -0.01em;
+  font-feature-settings: "zero" 1;
 }
 
+/* ============================================================
+   LIQUID MATERIAL PRIMITIVES
+   Composition: blur → saturation → translucent fill → inner light
+                → optical border → specular highlight → depth
+   ============================================================ */
+
+/* Glass/Subtle — inline chrome, chips, quiet controls */
+@utility liquid-subtle {
+  position: relative;
+  background-color: var(--glass-fill-subtle);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-control);
+  backdrop-filter: blur(var(--glass-blur-sm)) saturate(var(--glass-saturation));
+  box-shadow: var(--depth-1);
+}
+
+/* Glass/Navigation — sidebar, topbar; the product's structural chrome */
+@utility liquid-nav {
+  position: relative;
+  background-color: var(--surface-nav);
+  backdrop-filter: blur(var(--glass-blur-lg)) saturate(var(--glass-saturation));
+  box-shadow:
+    inset 0 1px 0 var(--glass-inner-light),
+    var(--depth-2);
+}
+
+/* Glass/Floating — floating controls, segmented controls, filter bars */
+@utility liquid-floating {
+  position: relative;
+  background-color: var(--glass-fill);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-floating);
+  backdrop-filter: blur(var(--glass-blur-md)) saturate(var(--glass-saturation));
+  box-shadow:
+    inset 0 1px 0 var(--glass-inner-light),
+    var(--depth-3);
+}
+
+/* Glass/Overlay — popovers, menus, dropdowns, tooltips */
+@utility liquid-overlay {
+  position: relative;
+  background-color: var(--glass-fill-strong);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur-md)) saturate(var(--glass-saturation));
+  box-shadow:
+    inset 0 1px 0 var(--glass-inner-light),
+    var(--depth-4);
+}
+
+/* Glass/Modal — dialogs, command palette, drawers */
+@utility liquid-modal {
+  position: relative;
+  background-color: var(--glass-fill-strong);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur-lg)) saturate(var(--glass-saturation));
+  box-shadow:
+    inset 0 1px 0 var(--glass-border-highlight),
+    var(--depth-modal);
+}
+
+/* Solid/Content — the reading plane. Opaque, high contrast, no blur. */
 @utility panel {
-  background-color: var(--color-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  background-color: var(--surface-solid);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  box-shadow: var(--depth-1);
+}
+
+/* Solid/Critical — destructive dialogs, unmissable states. Never translucent. */
+@utility solid-critical {
+  background-color: var(--canvas-elevated);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--depth-modal);
+  backdrop-filter: none;
+}
+
+/* CB67 EDGE LIGHT — signature optical rim on important surfaces. */
+@utility edge-light {
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    padding: 1px;
+    background: linear-gradient(
+      160deg,
+      var(--glass-border-highlight),
+      transparent 34%,
+      transparent 68%,
+      var(--glass-specular)
+    );
+    opacity: var(--glass-specular-intensity);
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    transition: opacity var(--motion-standard) var(--ease-std);
+  }
+}
+
+/* CB67 POINTER LIGHT — specular highlight tracking the cursor.
+   Driven by --px/--py written by usePointerLight(). Premium surfaces only. */
+@utility pointer-light {
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(
+      340px circle at var(--px, 50%) var(--py, 0%),
+      var(--glass-specular),
+      transparent 60%
+    );
+    transition: opacity var(--motion-emphasized) var(--ease-std);
+  }
+  &:hover::before {
+    opacity: 0.5;
+  }
+}
+
+/* Interactive elevation — minimal displacement, optical response. */
+@utility lift {
+  transition:
+    transform var(--motion-standard) var(--ease-std),
+    box-shadow var(--motion-standard) var(--ease-std),
+    border-color var(--motion-standard) var(--ease-std);
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--depth-3);
+    border-color: var(--border-strong);
+  }
+  &:active {
+    transform: translateY(0);
+    box-shadow: var(--depth-1);
+  }
+}
+
+/* Physical press feedback for controls. */
+@utility press {
+  transition:
+    transform var(--motion-fast) var(--ease-std),
+    box-shadow var(--motion-fast) var(--ease-std),
+    background-color var(--motion-fast) var(--ease-std),
+    color var(--motion-fast) var(--ease-std),
+    border-color var(--motion-fast) var(--ease-std);
+  &:active:not(:disabled) {
+    transform: scale(0.975);
+  }
+}
+
+/* CB67 STATUS PULSE — microscopic pulse for genuinely live/critical state. */
+@utility status-pulse {
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: inherit;
+    border: 1px solid currentColor;
+    opacity: 0;
+    animation: cb67-pulse 2.6s var(--ease-std) infinite;
+  }
+}
+
+@keyframes cb67-pulse {
+  0% {
+    opacity: 0.5;
+    transform: scale(0.9);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.35);
+  }
+}
+
+/* Skeleton shimmer — tonal, theme aware, low intensity. */
+@utility shimmer {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--surface-muted);
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, var(--glass-inner-light), transparent);
+    animation: cb67-shimmer 1.8s var(--ease-std) infinite;
+  }
+}
+
+@keyframes cb67-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Page/content reveal — continuity between routes. */
+@utility content-enter {
+  animation: cb67-content-enter var(--motion-emphasized) var(--ease-in-liquid) both;
+}
+
+@keyframes cb67-content-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Number/value settle for updated metrics. */
+@utility value-settle {
+  animation: cb67-value-settle var(--motion-standard) var(--ease-spring-liquid) both;
+}
+
+@keyframes cb67-value-settle {
+  from {
+    opacity: 0.4;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Scrim for overlays */
+@utility scrim {
+  background-color: var(--scrim);
+  backdrop-filter: blur(var(--glass-blur-sm)) saturate(120%);
+}
+
+/* ============================================================
+   FALLBACKS — browsers without backdrop-filter get opaque surfaces
+   ============================================================ */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root,
+  .dark {
+    --glass-fill: var(--surface-solid);
+    --glass-fill-strong: var(--surface-solid);
+    --glass-fill-subtle: var(--surface-muted);
+    --surface-nav: var(--canvas-elevated);
+    --scrim: oklch(0.2 0.02 258 / 62%);
+  }
+}
+
+/* ============================================================
+   REDUCED MOTION — decorative motion removed, feedback preserved
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .lift:hover,
+  .press:active {
+    transform: none !important;
+  }
 }
