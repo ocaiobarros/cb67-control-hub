@@ -601,7 +601,7 @@ export const MockApiErrorGroups: ApiErrorGroup[] = [
   {
     id: "err-provider",
     statusClass: "provider",
-    status: "Provider rejected request",
+    status: "Provedor rejeitou a requisição",
     count: 28,
     ratePerMin: 0.7,
     trend: 8,
@@ -1465,7 +1465,7 @@ export const MockHosts: Host[] = [
   {
     id: "host-4",
     name: "cb67-obs-01",
-    role: "Observability",
+    role: "Observabilidade",
     environment: "production",
     cpu: 58,
     memory: 72,
@@ -1876,11 +1876,11 @@ export const MockStatusDistribution: MetricPoint[] = [
 ];
 
 export const MockLicensesByStatus: MetricPoint[] = [
-  { t: "Active", value: 124 },
-  { t: "Grace", value: 6 },
-  { t: "Suspended", value: 4 },
-  { t: "Expired", value: 19 },
-  { t: "Revoked", value: 7 },
+  { t: "Ativas", value: 124 },
+  { t: "Carência", value: 6 },
+  { t: "Suspensas", value: 4 },
+  { t: "Expiradas", value: 19 },
+  { t: "Revogadas", value: 7 },
 ];
 
 export const MockLicensesByProduct: MetricPoint[] = MockProducts.map((p) => ({
