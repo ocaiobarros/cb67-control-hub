@@ -184,17 +184,18 @@ export function CategoryBarChart({
         margin={{ top: 4, right: 12, left: horizontal ? 8 : -16, bottom: 0 }}
       >
         <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={horizontal} horizontal={!horizontal} />
-        {horizontal ? (
-          <>
-            <XAxis type="number" tickFormatter={(v: number) => formatCompact(v)} {...axisProps} />
-            <YAxis type="category" dataKey="t" width={120} {...axisProps} />
-          </>
-        ) : (
-          <>
-            <XAxis dataKey="t" {...axisProps} />
-            <YAxis tickFormatter={(v: number) => formatCompact(v)} width={48} {...axisProps} />
-          </>
-        )}
+        <XAxis
+          {...(horizontal
+            ? { type: "number" as const, tickFormatter: (v: number) => formatCompact(v) }
+            : { dataKey: "t" })}
+          {...axisProps}
+        />
+        <YAxis
+          {...(horizontal
+            ? { type: "category" as const, dataKey: "t", width: 120 }
+            : { tickFormatter: (v: number) => formatCompact(v), width: 48 })}
+          {...axisProps}
+        />
         <Tooltip {...tooltipStyle} formatter={(value: number) => formatCompact(value)} />
         <Bar dataKey={dataKey} radius={3} fill="var(--chart-1)">
           {colorByIndex &&
