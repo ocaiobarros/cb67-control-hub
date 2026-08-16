@@ -6,7 +6,11 @@ Frontend only. Two planes delivered in one application:
 
 - **Public plane** — platform landing, documentation, status, changelog.
 - **Management plane** — CB67 Labs Control Center for platform operators.
-- **Observability plane** — surfaced inside the Control Center, with deep-dive links to Grafana.
+- **Observability plane** — surfaced inside the Control Center, fed by Prometheus
+  and Alertmanager. Grafana was removed from platform scope (D-010) to keep the
+  memory budget on a 4 vCPU / 8 GiB host; the screen and its design are retained
+  and remapped (D-018) rather than left promising infrastructure that does not
+  exist.
 
 Explicitly out of scope: backend services, database schema, migrations, authentication
 implementation, secret storage, infrastructure automation.

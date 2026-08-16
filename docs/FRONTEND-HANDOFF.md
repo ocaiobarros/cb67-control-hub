@@ -5,8 +5,33 @@ and the CB67 Labs Control Center (management plane). There is no backend code he
 database, no migrations and no server-side business logic. Everything the interface shows
 comes from a provisional data contract that the backend team owns.
 
-Target deployment: **Debian 13 on Proxmox, on-premises**, served as static assets behind the
-platform reverse proxy.
+## Deployment target
+
+**Self-hosted Node/Nitro SSR on Debian 13, behind the platform reverse proxy.**
+
+An earlier revision of this document said "static assets". That was inaccurate:
+the build produces a **Nitro server bundle** with a TanStack Start server entry
+(`src/server.ts`), and Nitro's default preset in this configuration is
+**Cloudflare** — which emitted `wrangler.json` and would have shipped a
+Cloudflare worker into a platform whose whole premise is self-hosting.
+
+Build with:
+
+```
+NITRO_PRESET=node-server bun run build
+node .output/server/index.mjs
+```
+
+Verified on Debian 13: `nitro.json` reports `"preset": "node-server"`, no
+`wrangler.json` or `.wrangler/` is emitted, the server serves `200` on `/`,
+`/status`, `/docs` and `/overview`, returns a correct `404` on unknown routes,
+renders real server-side HTML in `pt-BR`, makes zero external font requests, and
+occupies roughly **84 MiB RSS**.
+
+It runs as a systemd service under a dedicated non-root user with `MemoryMax`
+and `CPUQuota`, behind Caddy. It is a long-running process, not a static
+directory — that difference determines its service user, resource budget, patch
+surface and failure modes.
 
 ## What is implemented
 
@@ -60,7 +85,9 @@ route/component  ->  q.<query>()  ->  PlatformAdapter  ->  MockAdapter | HttpAda
 
 - Per-consumer database connection counters are illustrative (`/database/connections`).
 - Database growth trend is derived from current size; a real series is needed.
-- Grafana dashboard slugs must match the provisioned dashboards.
+- ~~Grafana dashboard slugs must match the provisioned dashboards.~~ **Obsolete** —
+  Grafana is not deployed (D-010). The observability surface is fed by Prometheus
+  and Alertmanager (D-018), so there are no dashboard slugs to match.
 - `performAction` accepts every request in mock mode; real authorization is pending.
 
 ## Localization

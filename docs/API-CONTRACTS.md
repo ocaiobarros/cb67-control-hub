@@ -7,7 +7,8 @@ must be reviewed by the backend team. Payload shapes are the TypeScript interfac
 ## Conventions
 
 - Base URL from `VITE_CB67_API_BASE_URL`; no path is hardcoded elsewhere.
-- `Authorization: Bearer <token>` on every management call.
+- **Session: HttpOnly cookie**, sent with `credentials: "include"`. No bearer
+  token, and no token in `localStorage` or `sessionStorage`.
 - Responses are JSON objects or arrays; errors use `{ code, message, requestId }`.
 - Every response carries a request identifier used for log/audit correlation.
 - `range` query parameter accepts `15m | 1h | 6h | 24h | 7d | 30d`.
@@ -16,11 +17,51 @@ must be reviewed by the backend team. Payload shapes are the TypeScript interfac
 
 ## Auth
 
+The browser admin plane uses **HttpOnly cookie sessions**, not bearer tokens.
+
+An earlier revision of this document specified `Authorization: Bearer <token>`
+while `src/api/http-adapter.ts` sent `credentials: "include"`. Those are
+different security models and the backend cannot satisfy both by implication.
+The cookie model is authoritative (platform decision D-017); this document was
+the side that was wrong.
+
+**Why cookies for a browser admin plane:** the session is unreachable from
+JavaScript, so an XSS in the Control Center cannot exfiltrate it. A bearer token
+held in JS is readable by any injected script — a poor property for a plane that
+issues and revokes licences.
+
+**Machine-to-machine traffic does not use this.** SaaS instances authenticate
+with mTLS client certificates. The two planes have different threat models and
+deliberately different mechanisms.
+
 | Method | Path           | Returns                     |
 | ------ | -------------- | --------------------------- |
 | POST   | `/auth/login`  | `AuthenticatedUser`         |
 | GET    | `/auth/me`     | `AuthenticatedUser \| null` |
 | POST   | `/auth/logout` | `204`                       |
+| GET    | `/auth/csrf`   | CSRF token for mutations    |
+
+### Cookie attributes the backend must set
+
+| Attribute  | Value    | Reason                              |
+| ---------- | -------- | ----------------------------------- |
+| `HttpOnly` | always   | JavaScript cannot read the session  |
+| `Secure`   | always   | TLS only                            |
+| `SameSite` | `Strict` | admin plane has no cross-site flows |
+| `Path`     | `/`      | —                                   |
+
+### CSRF — the debt cookies create
+
+Cookies are attached by the browser automatically, so a cross-origin page can
+trigger authenticated requests. Every **state-changing** call — including
+`performAction()` — must carry a CSRF token, and the server must validate
+`Origin`/`Referer`. Read-only `GET` requests do not.
+
+Also required server-side: absolute and idle session expiry, and a new session
+identifier on privilege change (session fixation).
+
+**Frontend guards are UX only.** Authorization is enforced by the backend and
+never by the client.
 
 ## Overview and search
 
