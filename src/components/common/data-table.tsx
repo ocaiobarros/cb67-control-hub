@@ -88,7 +88,9 @@ export function DataTable<T>({
             .map((c) => c.sortValue?.(row) ?? "")
             .join(" ")
             .concat(" ", JSON.stringify(row));
-      return haystack.toLowerCase().includes(q);
+      return String(haystack ?? "")
+        .toLowerCase()
+        .includes(q);
     });
   }, [data, query, searchable, searchValue, columns]);
 
