@@ -149,18 +149,18 @@
   --atmos-3: oklch(0.8 0.045 275 / 14%);
 
   --surface: oklch(1 0 0 / 82%);
-  --surface-solid: oklch(1 0 0);
+  --surface-solid: oklch(0.998 0.0025 250);
   --surface-raised: oklch(0.985 0.003 250 / 92%);
   --surface-muted: oklch(0.955 0.004 250);
   --surface-overlay: oklch(0.995 0.002 250 / 88%);
   --surface-nav: oklch(1 0 0 / 62%);
 
   --text-primary: oklch(0.24 0.017 258);
-  --text-secondary: oklch(0.48 0.014 258);
-  --text-tertiary: oklch(0.62 0.012 258);
+  --text-secondary: oklch(0.45 0.015 258);
+  --text-tertiary: oklch(0.57 0.013 258);
 
-  --border-subtle: oklch(0.24 0.017 258 / 9%);
-  --border-strong: oklch(0.24 0.017 258 / 17%);
+  --border-subtle: oklch(0.24 0.017 258 / 13%);
+  --border-strong: oklch(0.24 0.017 258 / 22%);
 
   --accent: oklch(0.55 0.115 232);
   --accent-soft: oklch(0.55 0.115 232 / 12%);
@@ -180,9 +180,9 @@
   --neutral: oklch(0.6 0.011 258);
   --neutral-contrast: oklch(0.99 0.002 250);
 
-  --chart-1: oklch(0.56 0.11 232);
-  --chart-2: oklch(0.6 0.125 155);
-  --chart-3: oklch(0.71 0.145 74);
+  --chart-1: oklch(0.52 0.125 232);
+  --chart-2: oklch(0.55 0.13 155);
+  --chart-3: oklch(0.64 0.145 74);
   --chart-4: oklch(0.55 0.195 25);
   --chart-5: oklch(0.55 0.115 288);
 
@@ -220,7 +220,7 @@
   --atmos-3: oklch(0.45 0.09 288 / 12%);
 
   --surface: oklch(0.235 0.015 258 / 78%);
-  --surface-solid: oklch(0.225 0.015 258);
+  --surface-solid: oklch(0.222 0.016 258);
   --surface-raised: oklch(0.275 0.016 258 / 88%);
   --surface-muted: oklch(0.255 0.014 258);
   --surface-overlay: oklch(0.245 0.016 258 / 86%);
@@ -666,12 +666,27 @@
    REDUCED MOTION — decorative motion removed, feedback preserved
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
+  :root {
+    /* Feedback survives, but as a near-instant tonal change, never a journey. */
+    --motion-instant: 1ms;
+    --motion-fast: 60ms;
+    --motion-standard: 80ms;
+    --motion-emphasized: 80ms;
+    --motion-slow: 80ms;
+  }
+
+  /* Decorative / large-transform motion is removed outright. */
+  .content-enter,
+  .value-settle,
+  .status-pulse::after,
+  .shimmer::after {
+    animation: none !important;
+  }
+
   *,
   *::before,
   *::after {
-    animation-duration: 1ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 1ms !important;
     scroll-behavior: auto !important;
   }
 
