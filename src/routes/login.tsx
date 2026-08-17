@@ -4,7 +4,8 @@ import { useAuth } from "@/features/auth/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { describeError } from "@/components/common/error-state";
+import { formatError } from "@/components/common/error-state";
+import { submitLogin } from "@/features/auth/login-validation";
 import { env, platformMeta } from "@/config/env";
 import { isMockMode } from "@/api/client";
 
@@ -47,14 +48,22 @@ function LoginPage() {
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmitting(true);
     setError(null);
+
+    setSubmitting(true);
     try {
       if (awaitingCode) {
         await verifyMfa({ code });
       } else {
-        const needsCode = await login({ username, password });
-        if (needsCode) {
+        // submitLogin applies the required-field rules and only then reaches
+        // the network, so a blank field never becomes a 401 reported as a wrong
+        // password.
+        const outcome = await submitLogin({ username, password }, login, formatError);
+        if (!outcome.ok) {
+          setError(outcome.message);
+          return;
+        }
+        if (outcome.result) {
           setPassword("");
           setCode("");
           setAwaitingCode(true);
@@ -63,8 +72,7 @@ function LoginPage() {
       }
       await navigate({ to: "/overview" as never, replace: true });
     } catch (cause) {
-      const { title, detail } = describeError(cause);
-      setError(detail ? `${title}: ${detail}` : title);
+      setError(formatError(cause));
     } finally {
       setSubmitting(false);
     }
@@ -112,7 +120,6 @@ function LoginPage() {
                   autoComplete="username"
                   value={username}
                   onChange={(event) => setUsername(event.target.value)}
-                  required
                 />
               </div>
               <div className="space-y-1.5">
@@ -124,7 +131,6 @@ function LoginPage() {
                   autoComplete="current-password"
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
-                  required
                 />
               </div>
             </>

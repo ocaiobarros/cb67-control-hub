@@ -34,17 +34,17 @@ issues and revokes licences.
 with mTLS client certificates. The two planes have different threat models and
 deliberately different mechanisms.
 
-| Method | Path                      | Returns                                  |
-| ------ | ------------------------- | ---------------------------------------- |
-| POST   | `/auth/login`             | `AuthenticatedUser \| MfaChallenge`      |
-| POST   | `/auth/mfa/verify`        | `AuthenticatedUser`                      |
-| GET    | `/auth/mfa`               | `MfaStatus`                              |
-| POST   | `/auth/mfa/enrol`         | `{ secret, uri, recoveryCodes }`         |
-| POST   | `/auth/mfa/enrol/confirm` | `MfaStatus`                              |
-| POST   | `/auth/mfa/disable`       | `{ enabled: false }`                     |
-| GET    | `/auth/me`                | `AuthenticatedUser \| null`              |
-| POST   | `/auth/logout`            | `204`                                    |
-| GET    | `/auth/csrf`              | `{ token }` — see CSRF below             |
+| Method | Path                      | Returns                             |
+| ------ | ------------------------- | ----------------------------------- |
+| POST   | `/auth/login`             | `AuthenticatedUser \| MfaChallenge` |
+| POST   | `/auth/mfa/verify`        | `AuthenticatedUser`                 |
+| GET    | `/auth/mfa`               | `MfaStatus`                         |
+| POST   | `/auth/mfa/enrol`         | `{ secret, uri, recoveryCodes }`    |
+| POST   | `/auth/mfa/enrol/confirm` | `MfaStatus`                         |
+| POST   | `/auth/mfa/disable`       | `{ enabled: false }`                |
+| GET    | `/auth/me`                | `AuthenticatedUser \| null`         |
+| POST   | `/auth/logout`            | `204`                               |
+| GET    | `/auth/csrf`              | `{ token }` — see CSRF below        |
 
 ### Second factor
 

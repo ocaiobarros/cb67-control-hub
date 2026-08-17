@@ -24,10 +24,38 @@ export class HttpError extends Error {
     readonly status: number,
     readonly body: unknown,
     message?: string,
+    /**
+     * Request path that produced the error.
+     *
+     * Carried because a status code alone does not say what went wrong: 401 on
+     * a login attempt means the credentials were rejected, while 401 on any
+     * other endpoint means the session is gone. Reporting both as "session
+     * expired" tells an operator with a mistyped password to log in again,
+     * which is exactly what they were already doing.
+     */
+    readonly path?: string,
   ) {
     super(message ?? `Request failed with status ${status}`);
     this.name = "HttpError";
   }
+}
+
+/**
+ * Endpoints where a 401 means "these credentials are wrong", not "your session
+ * ended". Matched by suffix so a base path or an API prefix does not change the
+ * classification.
+ */
+const AUTHENTICATION_ATTEMPT_PATHS = ["/auth/login", "/auth/mfa/verify"];
+
+/** True when a 401 from this path is a rejected credential, not a lost session. */
+export function isAuthenticationAttempt(path: string | undefined): boolean {
+  if (!path) return false;
+  // Strip the query string and any trailing slash, and guarantee a single
+  // leading one, so "/auth/login", "auth/login/" and "auth/login?next=/x" are
+  // classified the same way.
+  const withoutQuery = path.split("?")[0] ?? "";
+  const normalised = withoutQuery.replace(/^\/*/, "/").replace(/\/+$/, "");
+  return AUTHENTICATION_ATTEMPT_PATHS.some((p) => normalised.endsWith(p));
 }
 
 /** Methods that change state and therefore require a CSRF token. */
@@ -204,7 +232,7 @@ export async function request<T>(
 
   if (!response.ok) {
     const body = await response.text().catch(() => "");
-    throw new HttpError(response.status, body);
+    throw new HttpError(response.status, body, undefined, path);
   }
   if (response.status === 204) return undefined as T;
   return (await response.json()) as T;

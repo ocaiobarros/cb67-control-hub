@@ -1,16 +1,27 @@
 import { AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { HttpError } from "@/api/http-adapter";
+import { HttpError, isAuthenticationAttempt } from "@/api/http-adapter";
 
 /**
  * Maps transport failures to operator-facing copy. Raw fetch errors and stack
  * traces are never surfaced to the user.
+ *
+ * On 401 the status alone is not enough. A rejected password and an ended
+ * session are the same code and completely different situations, and reporting
+ * both as "session expired" told an operator who mistyped their password to log
+ * in again — which is what they were already trying to do. The request path
+ * separates them.
  */
 export function describeError(error: unknown): { title: string; detail: string } {
   if (error instanceof HttpError) {
     switch (error.status) {
       case 401:
-        return { title: "Sessão expirada", detail: "Entre novamente para continuar." };
+        return isAuthenticationAttempt(error.path)
+          ? { title: "Usuário ou senha inválidos.", detail: "" }
+          : {
+              title: "Sessão expirada.",
+              detail: "Entre novamente para continuar.",
+            };
       case 403:
         return {
           title: "Acesso negado",
@@ -48,6 +59,20 @@ export function describeError(error: unknown): { title: string; detail: string }
     detail:
       "Não foi possível acessar a API de gestão. Verifique a conectividade e tente novamente.",
   };
+}
+
+/**
+ * Renders an error as a single operator-facing line, for places with one slot
+ * rather than a title and a body — the login form, for instance.
+ *
+ * Some titles are labels ("Acesso negado") and some are complete sentences
+ * ("Sessão expirada."). Joining both with ": " produced "Sessão expirada.:
+ * Entre novamente para continuar."
+ */
+export function formatError(error: unknown): string {
+  const { title, detail } = describeError(error);
+  if (!detail) return title;
+  return /[.!?]$/.test(title) ? `${title} ${detail}` : `${title}: ${detail}`;
 }
 
 export function ErrorState({ error, onRetry }: { error: unknown; onRetry?: () => void }) {
