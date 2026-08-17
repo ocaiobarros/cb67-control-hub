@@ -21,6 +21,8 @@ import {
   formatNumber,
   formatPercent,
   formatRelative,
+  formatMsOrNull,
+  formatPercentOrNull,
 } from "@/utils/format";
 import type { CredentialMetadata, Provider, ProviderProject, TimeRange } from "@/types";
 
@@ -121,11 +123,13 @@ function ProviderDetail() {
       id: "quota",
       header: "Uso de cota",
       cell: (row) => (
-        <span className={row.quotaUsage > 85 ? "tabular text-crit" : "tabular"}>
-          {formatPercent(row.quotaUsage, 1)}
+        // No verdict without a measurement: a project whose provider allowance
+        // we never learned is not "under quota", it is unmeasured.
+        <span className={(row.quotaUsage ?? 0) > 85 ? "tabular text-crit" : "tabular"}>
+          {formatPercentOrNull(row.quotaUsage, 1)}
         </span>
       ),
-      sortValue: (row) => row.quotaUsage,
+      sortValue: (row) => row.quotaUsage ?? -1,
       align: "right",
     },
     {
@@ -218,7 +222,7 @@ function ProviderDetail() {
         />
         <MetricCard
           label="p95 upstream"
-          value={provider ? formatMs(provider.p95Ms) : "—"}
+          value={formatMsOrNull(provider?.p95Ms ?? null)}
           isLoading={providers.isLoading}
         />
         <MetricCard

@@ -7,7 +7,13 @@ import { MetricCard } from "@/components/common/metric-card";
 import { StatusBadge } from "@/components/common/status-badge";
 import { ChartPanel, CategoryBarChart } from "@/components/charts/chart-panel";
 import { AppLink } from "@/components/common/app-link";
-import { formatCompact, formatMs, formatNumber, formatRelative } from "@/utils/format";
+import {
+  formatCompact,
+  formatMs,
+  formatNumber,
+  formatRelative,
+  formatMsOrNull,
+} from "@/utils/format";
 import type { CredentialMetadata, Provider } from "@/types";
 
 export const Route = createFileRoute("/_admin/providers/")({
@@ -79,8 +85,8 @@ function ProvidersOverview() {
     {
       id: "p95",
       header: "p95",
-      cell: (row) => <span className="tabular">{formatMs(row.p95Ms)}</span>,
-      sortValue: (row) => row.p95Ms,
+      cell: (row) => <span className="tabular">{formatMsOrNull(row.p95Ms)}</span>,
+      sortValue: (row) => row.p95Ms ?? -1,
       align: "right",
     },
     {

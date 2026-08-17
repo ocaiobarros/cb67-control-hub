@@ -231,13 +231,16 @@ export interface QuotaRecord {
 export interface Provider {
   id: "openai" | "gemini" | "google-maps";
   name: string;
-  status: HealthStatus;
+  /** May be "unknown" for a provider that has never been called. */
+  status: ObservedHealthStatus;
   requests24h: number;
   errors24h: number;
   rateLimited24h: number;
-  p95Ms: number;
+  /** Null when nothing was measured, or the quantile is beyond the histogram. */
+  p95Ms: number | null;
   projects: number;
   credentials: number;
+  /** Empty when no call has ever succeeded. */
   lastSuccessAt: string;
 }
 
@@ -251,7 +254,12 @@ export interface ProviderProject {
   status: EntityStatus;
   requests24h: number;
   rateLimited24h: number;
-  quotaUsage: number;
+  /**
+   * Percentage of the provider's own monthly allowance. Null when we do not
+   * know that allowance, and null when nothing has been consumed — a percentage
+   * of an unknown denominator is not a percentage.
+   */
+  quotaUsage: number | null;
 }
 
 export interface CredentialMetadata {
