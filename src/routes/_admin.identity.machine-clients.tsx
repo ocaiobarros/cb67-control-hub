@@ -7,7 +7,7 @@ import { MetricCard } from "@/components/common/metric-card";
 import { StatusBadge } from "@/components/common/status-badge";
 import { IdentifierCell, MaskedSecret } from "@/components/common/copy-button";
 import { AppLink } from "@/components/common/app-link";
-import { formatRelative } from "@/utils/format";
+import { formatRelative, formatRelativeOrNull } from "@/utils/format";
 import type { MachineClient } from "@/types";
 
 export const Route = createFileRoute("/_admin/identity/machine-clients")({
@@ -66,9 +66,9 @@ function MachineClientsPage() {
       id: "lastAuth",
       header: "Visto por último",
       cell: (row) => (
-        <span className="mono-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>
+        <span className="mono-xs text-muted-foreground">{formatRelativeOrNull(row.lastSeen)}</span>
       ),
-      sortValue: (row) => row.lastSeen,
+      sortValue: (row) => row.lastSeen ?? "",
       align: "right",
     },
     {

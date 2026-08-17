@@ -15,7 +15,23 @@ import {
   SquareStack,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-
+/**
+ * A path in the menu.
+ *
+ * Deliberately `string` rather than the router's generated key union. That union
+ * spells index routes with a trailing slash ("/providers/") and contains route
+ * PATTERNS ("/providers/$providerId") rather than the concrete paths a menu
+ * links to ("/providers/openai"), so typing against it would reject entries that
+ * resolve perfectly well.
+ *
+ * The guarantee is enforced instead by src/config/navigation.test.ts, which
+ * matches every entry against the router's real patterns — index slash and
+ * dynamic segments included. Two entries, "Ambientes" (/saas/environments) and
+ * "Uso" (/saas/usage), were present in the menu, absent from the router and from
+ * docs/ROUTES.md, and were the source of the 404s the owner hit after signing
+ * in. A menu item that leads nowhere advertises a capability the platform does
+ * not have.
+ */
 export interface NavItem {
   label: string;
   to: string;
@@ -49,8 +65,6 @@ export const NAVIGATION: NavGroup[] = [
       { label: "Aplicações", to: "/saas/applications" },
       { label: "Instâncias", to: "/saas/instances" },
       { label: "Clientes", to: "/saas/clients" },
-      { label: "Ambientes", to: "/saas/environments" },
-      { label: "Uso", to: "/saas/usage" },
     ],
   },
   {

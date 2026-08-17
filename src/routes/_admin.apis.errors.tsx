@@ -12,6 +12,7 @@ import {
   formatNumber,
   formatRelative,
   NOT_MEASURED,
+  formatRelativeOrNull,
 } from "@/utils/format";
 import type { ApiErrorGroup } from "@/types";
 
@@ -151,9 +152,9 @@ function ApiErrorsPage() {
       id: "lastSeen",
       header: "Última ocorrência",
       cell: (row) => (
-        <span className="mono-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>
+        <span className="mono-xs text-muted-foreground">{formatRelativeOrNull(row.lastSeen)}</span>
       ),
-      sortValue: (row) => row.lastSeen,
+      sortValue: (row) => row.lastSeen ?? "",
       align: "right",
     },
   ];

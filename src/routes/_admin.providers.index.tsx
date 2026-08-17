@@ -13,6 +13,7 @@ import {
   formatNumber,
   formatRelative,
   formatMsOrNull,
+  formatRelativeOrNull,
 } from "@/utils/format";
 import type { CredentialMetadata, Provider } from "@/types";
 
@@ -107,9 +108,11 @@ function ProvidersOverview() {
       id: "lastSuccess",
       header: "Último sucesso",
       cell: (row) => (
-        <span className="mono-xs text-muted-foreground">{formatRelative(row.lastSuccessAt)}</span>
+        <span className="mono-xs text-muted-foreground">
+          {formatRelativeOrNull(row.lastSuccessAt)}
+        </span>
       ),
-      sortValue: (row) => row.lastSuccessAt,
+      sortValue: (row) => row.lastSuccessAt ?? "",
       align: "right",
     },
     {
@@ -149,8 +152,8 @@ function ProvidersOverview() {
     {
       id: "rotated",
       header: "Última rotação",
-      cell: (row) => <span className="mono-xs">{formatRelative(row.lastRotatedAt)}</span>,
-      sortValue: (row) => row.lastRotatedAt,
+      cell: (row) => <span className="mono-xs">{formatRelativeOrNull(row.lastRotatedAt)}</span>,
+      sortValue: (row) => row.lastRotatedAt ?? "",
       align: "right",
     },
     {

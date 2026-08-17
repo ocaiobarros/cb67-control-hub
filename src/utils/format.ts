@@ -62,6 +62,33 @@ export const formatDateTime = (iso: string) => dateTimeFmt.format(new Date(iso))
 export const formatDate = (iso: string) => dateFmt.format(new Date(iso));
 export const formatTime = (iso: string) => timeFmt.format(new Date(iso));
 
+/**
+ * Relative time, or absence.
+ *
+ * The backend sends an empty string for "this never happened" — a provider that
+ * has never answered, an instance never seen, a credential never rotated. An
+ * empty string is not a date: `new Date("")` is NaN, and Intl.RelativeTimeFormat
+ * throws a RangeError on it. That threw on every provider page.
+ *
+ * Guarding here as well as at the source, because a date that cannot be parsed
+ * should never take down a screen whatever produced it.
+ */
+export function formatRelativeOrNull(
+  iso: string | null | undefined,
+  now = new Date("2026-08-16T14:00:00Z"),
+): string {
+  if (!iso) return NOT_MEASURED;
+  if (Number.isNaN(new Date(iso).getTime())) return NOT_MEASURED;
+  return formatRelative(iso, now);
+}
+
+/** As formatDateTime, but absence is absence rather than "Invalid Date". */
+export function formatDateTimeOrNull(iso: string | null | undefined): string {
+  if (!iso) return NOT_MEASURED;
+  if (Number.isNaN(new Date(iso).getTime())) return NOT_MEASURED;
+  return formatDateTime(iso);
+}
+
 export function formatRelative(iso: string, now = new Date("2026-08-16T14:00:00Z")): string {
   const diffMs = new Date(iso).getTime() - now.getTime();
   const abs = Math.abs(diffMs);

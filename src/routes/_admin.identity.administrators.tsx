@@ -10,7 +10,7 @@ import { ConfirmActionDialog } from "@/components/common/confirm-action-dialog";
 import { Button } from "@/components/ui/button";
 import { Permitted } from "@/features/auth/guards";
 import { useAdminAction } from "@/hooks/use-admin-action";
-import { formatDate, formatRelative } from "@/utils/format";
+import { formatDate, formatRelative, formatRelativeOrNull } from "@/utils/format";
 import type { Administrator } from "@/types";
 
 export const Route = createFileRoute("/_admin/identity/administrators")({
@@ -62,9 +62,11 @@ function AdministratorsPage() {
       id: "lastLogin",
       header: "Último login",
       cell: (row) => (
-        <span className="mono-xs text-muted-foreground">{formatRelative(row.lastLoginAt)}</span>
+        <span className="mono-xs text-muted-foreground">
+          {formatRelativeOrNull(row.lastLoginAt)}
+        </span>
       ),
-      sortValue: (row) => row.lastLoginAt,
+      sortValue: (row) => row.lastLoginAt ?? "",
       align: "right",
     },
     {

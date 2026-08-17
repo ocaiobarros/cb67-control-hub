@@ -7,7 +7,7 @@ import { MetricCard } from "@/components/common/metric-card";
 import { StatusBadge } from "@/components/common/status-badge";
 import { IdentifierCell } from "@/components/common/copy-button";
 import { ChartPanel, CategoryBarChart } from "@/components/charts/chart-panel";
-import { formatDateTime, formatRelative } from "@/utils/format";
+import { formatDateTime, formatRelative, formatRelativeOrNull } from "@/utils/format";
 import type { Installation } from "@/types";
 
 export const Route = createFileRoute("/_admin/licensing/installations")({
@@ -77,9 +77,9 @@ function InstallationsPage() {
       id: "lastSeen",
       header: "Heartbeat",
       cell: (row) => (
-        <span className="mono-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>
+        <span className="mono-xs text-muted-foreground">{formatRelativeOrNull(row.lastSeen)}</span>
       ),
-      sortValue: (row) => row.lastSeen,
+      sortValue: (row) => row.lastSeen ?? "",
       align: "right",
     },
     {

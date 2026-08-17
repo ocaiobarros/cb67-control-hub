@@ -23,6 +23,7 @@ import {
   formatRelative,
   formatMsOrNull,
   formatPercentOrNull,
+  formatRelativeOrNull,
 } from "@/utils/format";
 import type { CredentialMetadata, Provider, ProviderProject, TimeRange } from "@/types";
 
@@ -158,17 +159,19 @@ function ProviderDetail() {
     {
       id: "rotated",
       header: "Última rotação",
-      cell: (row) => <span className="mono-xs">{formatRelative(row.lastRotatedAt)}</span>,
-      sortValue: (row) => row.lastRotatedAt,
+      cell: (row) => <span className="mono-xs">{formatRelativeOrNull(row.lastRotatedAt)}</span>,
+      sortValue: (row) => row.lastRotatedAt ?? "",
       align: "right",
     },
     {
       id: "used",
       header: "Último uso",
       cell: (row) => (
-        <span className="mono-xs text-muted-foreground">{formatRelative(row.lastUsedAt)}</span>
+        <span className="mono-xs text-muted-foreground">
+          {formatRelativeOrNull(row.lastUsedAt)}
+        </span>
       ),
-      sortValue: (row) => row.lastUsedAt,
+      sortValue: (row) => row.lastUsedAt ?? "",
       align: "right",
     },
     {
@@ -227,7 +230,7 @@ function ProviderDetail() {
         />
         <MetricCard
           label="Último sucesso"
-          value={provider ? formatRelative(provider.lastSuccessAt) : "—"}
+          value={provider ? formatRelativeOrNull(provider.lastSuccessAt) : "—"}
           isLoading={providers.isLoading}
         />
       </div>

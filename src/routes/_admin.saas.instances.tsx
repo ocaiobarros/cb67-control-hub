@@ -7,7 +7,7 @@ import { StatusBadge } from "@/components/common/status-badge";
 import { MetricCard } from "@/components/common/metric-card";
 import { IdentifierCell } from "@/components/common/copy-button";
 import { Badge } from "@/components/ui/badge";
-import { formatRelative } from "@/utils/format";
+import { formatRelative, formatRelativeOrNull } from "@/utils/format";
 import type { Instance } from "@/types";
 
 export const Route = createFileRoute("/_admin/saas/instances")({
@@ -79,9 +79,9 @@ function InstancesPage() {
       id: "lastSeen",
       header: "Heartbeat",
       cell: (row) => (
-        <span className="text-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>
+        <span className="text-xs text-muted-foreground">{formatRelativeOrNull(row.lastSeen)}</span>
       ),
-      sortValue: (row) => row.lastSeen,
+      sortValue: (row) => row.lastSeen ?? "",
     },
     {
       id: "status",

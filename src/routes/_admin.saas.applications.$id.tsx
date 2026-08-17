@@ -25,6 +25,7 @@ import {
   formatRelative,
   formatMsOrNull,
   formatPercentOrNull,
+  formatRelativeOrNull,
 } from "@/utils/format";
 import type { Instance } from "@/types";
 
@@ -90,9 +91,9 @@ function ApplicationDetailPage() {
       id: "lastSeen",
       header: "Visto por último",
       cell: (row) => (
-        <span className="text-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>
+        <span className="text-xs text-muted-foreground">{formatRelativeOrNull(row.lastSeen)}</span>
       ),
-      sortValue: (row) => row.lastSeen,
+      sortValue: (row) => row.lastSeen ?? "",
     },
     {
       id: "status",
@@ -202,7 +203,7 @@ function ApplicationDetailPage() {
                       </span>
                     }
                   />
-                  <StatRow label="Visto por último" value={formatRelative(app.lastSeen)} />
+                  <StatRow label="Visto por último" value={formatRelativeOrNull(app.lastSeen)} />
                 </dl>
                 <p className="mt-3 text-xs text-muted-foreground">
                   Segredos de cliente e chaves privadas nunca são exibidos. A rotação emite novo

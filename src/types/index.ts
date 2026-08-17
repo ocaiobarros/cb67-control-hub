@@ -82,7 +82,8 @@ export interface Application {
   errorRate: number | null;
   /** Null when there is no sample, or the quantile is beyond the histogram. */
   p95Ms: number | null;
-  lastSeen: string;
+  /** Null when never seen. */
+  lastSeen: string | null;
   certificateStatus: EntityStatus;
   certificateExpiresAt: string;
   allowedServices: string[];
@@ -103,7 +104,8 @@ export interface Instance {
   environment: Environment;
   version: string;
   status: EntityStatus;
-  lastSeen: string;
+  /** Null when never seen. */
+  lastSeen: string | null;
   licenseId: string;
   certificateStatus: EntityStatus;
 }
@@ -118,7 +120,8 @@ export interface MachineClient {
   scopes: string[];
   status: EntityStatus;
   createdAt: string;
-  lastSeen: string;
+  /** Null when never seen. */
+  lastSeen: string | null;
 }
 
 export interface ScopeDefinition {
@@ -173,7 +176,8 @@ export interface ApiErrorGroup {
   /** Null when the previous hour had none — change from zero is undefined. */
   trend: number | null;
   firstSeen: string;
-  lastSeen: string;
+  /** Null when never seen. */
+  lastSeen: string | null;
   affectedClients: number;
   affectedEndpoints: string[];
 }
@@ -241,7 +245,8 @@ export interface Provider {
   projects: number;
   credentials: number;
   /** Empty when no call has ever succeeded. */
-  lastSuccessAt: string;
+  /** Null when no call has ever succeeded — not an empty string, which is NaN. */
+  lastSuccessAt: string | null;
 }
 
 export interface ProviderProject {
@@ -269,8 +274,9 @@ export interface CredentialMetadata {
   applicationName: string;
   environment: Environment;
   createdAt: string;
-  lastRotatedAt: string;
-  lastUsedAt: string;
+  /** Null when it has not happened. */
+  lastRotatedAt: string | null;
+  lastUsedAt: string | null;
   status: EntityStatus;
 }
 
@@ -318,7 +324,8 @@ export interface Installation {
   productName: string;
   version: string;
   status: EntityStatus;
-  lastSeen: string;
+  /** Null when never seen. */
+  lastSeen: string | null;
   leaseId: string;
   graceUntil: string | null;
 }
@@ -371,7 +378,8 @@ export interface Administrator {
   name: string;
   role: string;
   status: EntityStatus;
-  lastLoginAt: string;
+  /** Null when the administrator has never signed in. */
+  lastLoginAt: string | null;
   sessions: number;
   createdAt: string;
 }

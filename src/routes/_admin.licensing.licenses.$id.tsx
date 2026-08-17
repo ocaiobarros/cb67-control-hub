@@ -14,7 +14,13 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Permitted } from "@/features/auth/guards";
 import { useAdminAction } from "@/hooks/use-admin-action";
-import { daysUntil, formatDate, formatDateTime, formatRelative } from "@/utils/format";
+import {
+  daysUntil,
+  formatDate,
+  formatDateTime,
+  formatRelative,
+  formatRelativeOrNull,
+} from "@/utils/format";
 import type { Installation, Lease } from "@/types";
 
 export const Route = createFileRoute("/_admin/licensing/licenses/$id")({
@@ -94,9 +100,9 @@ function LicenseDetail() {
       id: "lastSeen",
       header: "Visto por último",
       cell: (row) => (
-        <span className="mono-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>
+        <span className="mono-xs text-muted-foreground">{formatRelativeOrNull(row.lastSeen)}</span>
       ),
-      sortValue: (row) => row.lastSeen,
+      sortValue: (row) => row.lastSeen ?? "",
       align: "right",
     },
     {

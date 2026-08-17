@@ -14,6 +14,7 @@ import {
   formatPercent,
   formatPercentOrNull,
   formatRelative,
+  formatRelativeOrNull,
 } from "@/utils/format";
 import type { Application } from "@/types";
 
@@ -114,9 +115,9 @@ function ApplicationsPage() {
       id: "lastSeen",
       header: "Visto por último",
       cell: (row) => (
-        <span className="text-xs text-muted-foreground">{formatRelative(row.lastSeen)}</span>
+        <span className="text-xs text-muted-foreground">{formatRelativeOrNull(row.lastSeen)}</span>
       ),
-      sortValue: (row) => row.lastSeen,
+      sortValue: (row) => row.lastSeen ?? "",
     },
     {
       id: "status",
