@@ -2010,8 +2010,15 @@ export const MockCharts = {
       { errors4xx: { base: 22, spread: 14 }, errors5xx: { base: 3, spread: 4 } },
       5,
     ),
+  /**
+   * HOURLY, like the aggregate it stands in for. provider_request_stats groups
+   * only by bucket_hour and the window is floored at one hour, so the backend
+   * can return at most 1, 1 and 6 points for 15m, 1h and 6h. buildSeries gave
+   * 15, 24 and 36, rehearsing a much denser chart than production can fill and
+   * hiding how a sparse series actually renders.
+   */
   providerLatency: (range: TimeRange) =>
-    buildSeries(
+    buildHourlySeries(
       range,
       {
         openai: { base: 910, spread: 200 },
