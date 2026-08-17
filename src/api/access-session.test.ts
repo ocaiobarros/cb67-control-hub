@@ -7,6 +7,7 @@ import {
   isAccessInterception,
   readReauthRecord,
   recoverAccessSession,
+  DOCUMENT_ID,
   routeKey,
   shouldReauthenticate,
   writeReauthRecord,
@@ -51,7 +52,7 @@ function environment(overrides?: Partial<RecoveryEnvironment>) {
   const env: RecoveryEnvironment = {
     href: ADMIN_URL,
     now: 1_000_000,
-    pageLoadedAt: 0,
+    documentId: DOCUMENT_ID,
     storage,
     navigate: (href) => void navigations.push(href),
     ...overrides,
@@ -200,9 +201,13 @@ describe("G — recovery never loops", () => {
     const at = 500;
     const key = routeKey(ADMIN_URL);
     expect(shouldReauthenticate(ADMIN_URL, at, null)).toBe(true);
-    expect(shouldReauthenticate(ADMIN_URL, at, { key, at })).toBe(false);
-    expect(shouldReauthenticate(ADMIN_URL, at + REAUTH_COOLDOWN_MS, { key, at })).toBe(true);
-    expect(shouldReauthenticate("https://admin.cb67labs.api.br/x", at, { key, at })).toBe(true);
+    expect(shouldReauthenticate(ADMIN_URL, at, { key, at, doc: DOCUMENT_ID })).toBe(false);
+    expect(
+      shouldReauthenticate(ADMIN_URL, at + REAUTH_COOLDOWN_MS, { key, at, doc: DOCUMENT_ID }),
+    ).toBe(true);
+    expect(
+      shouldReauthenticate("https://admin.cb67labs.api.br/x", at, { key, at, doc: DOCUMENT_ID }),
+    ).toBe(true);
   });
 
   test("a fragment or a throwaway query parameter does not buy a fresh attempt", () => {
@@ -217,13 +222,15 @@ describe("G — recovery never loops", () => {
       `${ADMIN_URL}?t=2`,
       `${ADMIN_URL}/`,
     ]) {
-      expect(`${href}: ${shouldReauthenticate(href, at + 1, { key, at })}`).toBe(`${href}: false`);
+      expect(`${href}: ${shouldReauthenticate(href, at + 1, { key, at, doc: DOCUMENT_ID })}`).toBe(
+        `${href}: false`,
+      );
     }
   });
 
   test("a clock that moved backwards does not suppress recovery indefinitely", () => {
     const key = routeKey(ADMIN_URL);
-    expect(shouldReauthenticate(ADMIN_URL, 100, { key, at: 10_000 })).toBe(true);
+    expect(shouldReauthenticate(ADMIN_URL, 100, { key, at: 10_000, doc: DOCUMENT_ID })).toBe(true);
   });
 });
 
@@ -237,18 +244,18 @@ describe("D — once Access is renewed the guard resets", () => {
     recoverAccessSession(env);
     expect(readReauthRecord(storage)).not.toBeNull();
 
-    // What the adapter does after any response that reached the origin. The
-    // page-load instant is later than the marker, so the marker predates this
-    // page and is cleared.
-    clearReauthRecord(storage, env.now + 1);
+    // What the adapter does after any response that reached the origin. A
+    // different document id means the recovery already completed.
+    clearReauthRecord(storage, "document-after-recovery");
     expect(readReauthRecord(storage)).toBeNull();
   });
 
   test("after renewal a later expiry recovers immediately, not after a cooldown", () => {
     const { env, navigations, storage } = environment();
     recoverAccessSession(env);
-    // The operator came back: this page loaded AFTER the marker was written.
-    clearReauthRecord(storage, env.now + 1);
+    // The operator came back: a NEW document is running, so the marker belongs
+    // to a previous one and is cleared.
+    clearReauthRecord(storage, "document-after-recovery");
 
     const later = recoverAccessSession({ ...env, storage, now: env.now + 1_000 });
     expect(later).toBe("navigated");
@@ -257,25 +264,45 @@ describe("D — once Access is renewed the guard resets", () => {
 });
 
 describe("a recovery in flight is not erased by a slow earlier request", () => {
-  test("a marker written by THIS page survives a late success", () => {
+  test("a marker written by THIS document survives a late success", () => {
     // The race: a request issued while Access was still valid lands after a
     // later one was intercepted, and clearing unconditionally wiped the marker
     // the interception had just written — re-enabling the loop.
-    const pageLoadedAt = 1_000;
     const { env, storage } = environment({ now: 2_000 });
 
     recoverAccessSession(env);
-    clearReauthRecord(storage, pageLoadedAt); // the slow 200 arrives
+    clearReauthRecord(storage, DOCUMENT_ID); // the slow 200 arrives, same document
 
     expect(readReauthRecord(storage)).not.toBeNull();
     expect(shouldReauthenticate(ADMIN_URL, 2_500, readReauthRecord(storage))).toBe(false);
   });
 
-  test("a marker from BEFORE this page loaded is cleared", () => {
+  test("a marker from ANOTHER document is cleared", () => {
     const { storage } = environment();
-    writeReauthRecord(storage, { key: routeKey(ADMIN_URL), at: 500 });
-    clearReauthRecord(storage, 1_000); // this page loaded after that marker
+    writeReauthRecord(storage, { key: routeKey(ADMIN_URL), at: 500, doc: "previous-document" });
+    clearReauthRecord(storage, DOCUMENT_ID);
     expect(readReauthRecord(storage)).toBeNull();
+  });
+
+  test("a wall clock that moves backwards cannot make this document's marker clearable", () => {
+    // The earlier rule compared the marker's Date.now() against the page's
+    // performance.timeOrigin. Different clock bases: a backwards jump made a
+    // marker written by this document look older than the document itself, and
+    // a slow success then cleared a recovery still in flight.
+    const { env, storage } = environment({ now: 1 }); // as if the clock rewound
+    recoverAccessSession(env);
+    clearReauthRecord(storage, DOCUMENT_ID);
+    expect(readReauthRecord(storage)).not.toBeNull();
+  });
+
+  test("a marker of the old shape, without a document id, is discarded", () => {
+    // Written by a build that predates this rule; treating it as belonging to
+    // the current document would suppress a legitimate recovery.
+    const storage = memoryStorage({
+      [REAUTH_MARKER]: JSON.stringify({ key: routeKey(ADMIN_URL), at: 1 }),
+    });
+    expect(readReauthRecord(storage)).toBeNull();
+    expect(shouldReauthenticate(ADMIN_URL, 2, readReauthRecord(storage))).toBe(true);
   });
 });
 
@@ -292,7 +319,7 @@ describe("the loop guard degrades rather than blocking recovery", () => {
       recoverAccessSession({
         href: ADMIN_URL,
         now: 1,
-        pageLoadedAt: 0,
+        documentId: DOCUMENT_ID,
         storage,
         navigate: (h) => void nav.push(h),
       });
@@ -302,7 +329,9 @@ describe("the loop guard degrades rather than blocking recovery", () => {
   });
 
   test("a marker of the wrong shape is ignored", () => {
-    const storage = memoryStorage({ [REAUTH_MARKER]: JSON.stringify({ key: 7, at: "soon" }) });
+    const storage = memoryStorage({
+      [REAUTH_MARKER]: JSON.stringify({ key: 7, at: "soon", doc: 3 }),
+    });
     expect(readReauthRecord(storage)).toBeNull();
   });
 
@@ -324,7 +353,7 @@ describe("the loop guard degrades rather than blocking recovery", () => {
       recoverAccessSession({
         href: ADMIN_URL,
         now: 1,
-        pageLoadedAt: 0,
+        documentId: DOCUMENT_ID,
         storage: { getItem: () => null, setItem: () => undefined, removeItem: () => undefined },
         navigate: (h) => void nav.push(h),
       }),
@@ -351,7 +380,7 @@ describe("the loop guard degrades rather than blocking recovery", () => {
       recoverAccessSession({
         href: ADMIN_URL,
         now: 1,
-        pageLoadedAt: 0,
+        documentId: DOCUMENT_ID,
         storage: throwing,
         navigate: (h) => void nav.push(h),
       }),
@@ -361,9 +390,13 @@ describe("the loop guard degrades rather than blocking recovery", () => {
 
   test("writeReauthRecord and clearReauthRecord round-trip", () => {
     const storage = memoryStorage();
-    writeReauthRecord(storage, { key: routeKey(ADMIN_URL), at: 42 });
-    expect(readReauthRecord(storage)).toEqual({ key: routeKey(ADMIN_URL), at: 42 });
-    clearReauthRecord(storage, 100);
+    writeReauthRecord(storage, { key: routeKey(ADMIN_URL), at: 42, doc: DOCUMENT_ID });
+    expect(readReauthRecord(storage)).toEqual({
+      key: routeKey(ADMIN_URL),
+      at: 42,
+      doc: DOCUMENT_ID,
+    });
+    clearReauthRecord(storage, "another-document");
     expect(readReauthRecord(storage)).toBeNull();
   });
 });

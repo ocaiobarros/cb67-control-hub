@@ -42,7 +42,7 @@ function stubFetch(handler: (call: Call) => Response) {
   }) as typeof globalThis.fetch;
 }
 
-function fakeBrowser(timeOrigin = 0) {
+function fakeBrowser() {
   const navigations: string[] = [];
   const store = new Map<string, string>();
   const win = {
@@ -56,18 +56,24 @@ function fakeBrowser(timeOrigin = 0) {
       setItem: (k: string, v: string) => void store.set(k, v),
       removeItem: (k: string) => void store.delete(k),
     },
-    // When this document started loading. A page that came back from the Access
-    // round trip is a NEW document with a later origin, which is how a finished
-    // recovery is told apart from one still in flight.
-    performance: { timeOrigin },
   };
   (globalThis as { window?: unknown }).window = win;
   return {
     navigations,
     store,
-    /** Simulates the browser returning from Access with a fresh document. */
+    /**
+     * Simulates the browser returning from Access with a fresh document: the
+     * module reloads, so DOCUMENT_ID changes. Rewriting the marker with another
+     * document's id is the observable equivalent.
+     */
     reload: () => {
-      win.performance.timeOrigin = Date.now() + 1;
+      const raw = store.get("cb67:access-reauth");
+      if (raw) {
+        store.set(
+          "cb67:access-reauth",
+          JSON.stringify({ ...JSON.parse(raw), doc: "previous-document" }),
+        );
+      }
     },
   };
 }
@@ -115,10 +121,13 @@ describe("A — Access valid and CB67 session valid", () => {
   });
 
   test("a successful response clears a marker left by a completed recovery", async () => {
-    // timeOrigin is later than the marker, so the marker belongs to a previous
-    // document: the recovery finished and the browser came back.
-    const { store } = fakeBrowser(5_000);
-    store.set("cb67:access-reauth", JSON.stringify({ key: "x", at: 1 }));
+    // The marker carries another document's id, so the recovery finished and
+    // the browser came back.
+    const { store } = fakeBrowser();
+    store.set(
+      "cb67:access-reauth",
+      JSON.stringify({ key: "x", at: 1, doc: "a-previous-document" }),
+    );
 
     const { httpAdapter } = await loadAdapter();
     stubFetch(() => jsonResponse({ role: "owner" }));
@@ -214,7 +223,7 @@ describe("D — Access renewed", () => {
     await httpAdapter.currentUser().catch(() => undefined);
     expect(browser.navigations).toHaveLength(1);
 
-    // The operator signed in to Access; the browser comes back with a NEW
+    // The operator signed in to Access; the browser comes back as a NEW
     // document, which is what makes the old marker clearable.
     browser.reload();
     intercept = false;
@@ -230,7 +239,7 @@ describe("D — Access renewed", () => {
     // The race the guard exists for: a request issued while Access was still
     // valid lands after a later one was intercepted. Clearing on it would
     // re-arm the loop.
-    const browser = fakeBrowser(Date.now() - 10_000);
+    const browser = fakeBrowser();
     const { httpAdapter } = await loadAdapter();
 
     let intercept = true;

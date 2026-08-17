@@ -311,7 +311,7 @@ export async function request<T>(
   // zone — every request failed with "Cannot access 'env' before
   // initialization" rather than anything to do with Access.
   const recovery = browserRecoveryEnvironment();
-  if (recovery) clearReauthRecord(recovery.storage, recovery.pageLoadedAt);
+  if (recovery) clearReauthRecord(recovery.storage, recovery.documentId);
 
   if (response.status === 204) return undefined as T;
   return (await response.json()) as T;

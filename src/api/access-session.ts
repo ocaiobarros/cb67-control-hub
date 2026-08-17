@@ -66,7 +66,34 @@ export interface ReauthRecord {
   /** Origin and pathname only — see routeKey. */
   key: string;
   at: number;
+  /** Which document wrote it — see DOCUMENT_ID. */
+  doc: string;
 }
+
+/**
+ * Identity of the document currently running.
+ *
+ * Generated once per module load, and a module is loaded once per document, so
+ * this is exactly "this page" — including after the Access round trip, which
+ * produces a new document and therefore a new value.
+ *
+ * It replaces comparing the marker's timestamp against performance.timeOrigin.
+ * Those two came from different clock bases: the marker used Date.now() and the
+ * page load used timeOrigin, so a wall clock that moved backwards after load
+ * could make a marker written by THIS document look older than the document
+ * itself. A slow success would then clear a recovery still in flight and reopen
+ * the very race the marker exists to prevent. An identity cannot drift.
+ */
+export const DOCUMENT_ID = (() => {
+  try {
+    if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+      return crypto.randomUUID();
+    }
+  } catch {
+    /* fall through to the arithmetic form */
+  }
+  return `d${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`;
+})();
 
 /**
  * The identity a recovery attempt is remembered under.
@@ -123,7 +150,8 @@ export function readReauthRecord(storage: Pick<Storage, "getItem">): ReauthRecor
       typeof parsed === "object" &&
       parsed !== null &&
       typeof (parsed as ReauthRecord).key === "string" &&
-      typeof (parsed as ReauthRecord).at === "number"
+      typeof (parsed as ReauthRecord).at === "number" &&
+      typeof (parsed as ReauthRecord).doc === "string"
     ) {
       return parsed as ReauthRecord;
     }
@@ -145,24 +173,26 @@ export function writeReauthRecord(storage: Pick<Storage, "setItem">, record: Rea
 }
 
 /**
- * Clears the marker, but only when it predates this page load.
+ * Clears the marker, but only when it was written by a DIFFERENT document.
  *
  * Clearing unconditionally on every successful response was a race: a slow
  * request issued while Access was still valid could land AFTER a later request
  * had been intercepted and written its marker, wipe it, and let the next
  * interception navigate again — the loop the marker exists to prevent.
  *
- * A marker written by the page currently running is a recovery in flight and
- * must survive. One written before this page loaded means the navigation
- * happened and the browser came back, so it has done its job.
+ * A marker written by the document currently running is a recovery in flight
+ * and must survive. One from another document means the navigation happened and
+ * the browser came back, so it has done its job.
+ *
+ * Identity rather than a timestamp comparison: see DOCUMENT_ID.
  */
 export function clearReauthRecord(
   storage: Pick<Storage, "getItem" | "removeItem">,
-  pageLoadedAt: number,
+  documentId: string,
 ): void {
   try {
     const record = readReauthRecord(storage);
-    if (record && record.at >= pageLoadedAt) return;
+    if (record && record.doc === documentId) return;
     storage.removeItem(REAUTH_MARKER);
   } catch {
     /* see writeReauthRecord */
@@ -174,11 +204,8 @@ export interface RecoveryEnvironment {
   now: number;
   storage: Pick<Storage, "getItem" | "setItem" | "removeItem">;
   navigate: (href: string) => void;
-  /**
-   * When this document started loading. A marker at or after this instant
-   * belongs to the current page and is still in flight.
-   */
-  pageLoadedAt: number;
+  /** Identity of the document performing the recovery — see DOCUMENT_ID. */
+  documentId: string;
 }
 
 /**
@@ -216,7 +243,11 @@ export function recoverAccessSession(env: RecoveryEnvironment): RecoveryOutcome 
   if (!shouldReauthenticate(env.href, env.now, previous)) {
     return "suppressed";
   }
-  writeReauthRecord(env.storage, { key: routeKey(env.href), at: env.now });
+  writeReauthRecord(env.storage, {
+    key: routeKey(env.href),
+    at: env.now,
+    doc: env.documentId,
+  });
   // Navigating to the CURRENT url: Access gates the hostname, so it intercepts
   // this navigation, authenticates, and returns here by itself.
   env.navigate(env.href);
@@ -233,15 +264,7 @@ export function browserRecoveryEnvironment(): RecoveryEnvironment | null {
     href: window.location.href,
     now: Date.now(),
     storage: safeSessionStorage(),
-    // timeOrigin is when THIS document started loading, which is exactly the
-    // boundary between "a recovery this page started" and "a recovery that has
-    // already completed and brought us back here".
-    //
-    // Read from `window`, not the global: after the Access round trip the
-    // document is new and carries a new origin, and taking it from the window
-    // is what lets that be observed rather than assumed.
-    pageLoadedAt:
-      typeof window.performance?.timeOrigin === "number" ? window.performance.timeOrigin : 0,
+    documentId: DOCUMENT_ID,
     navigate: (href) => {
       window.location.assign(href);
     },
