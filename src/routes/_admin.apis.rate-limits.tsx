@@ -79,7 +79,7 @@ function RateLimitsPage() {
     },
     {
       id: "usage",
-      header: "Pico de uso",
+      header: "Uso 24h",
       cell: (row) => <span className="tabular">{formatPercent(row.currentUsage, 1)}</span>,
       sortValue: (row) => row.currentUsage,
       align: "right",

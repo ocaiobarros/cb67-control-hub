@@ -631,9 +631,14 @@ export const MockRateLimits: RateLimitRule[] = MockApplications.slice(0, 5).map(
   rps: [20, 15, 10, 8, 30][i]!,
   rpm: [1200, 900, 600, 480, 1800][i]!,
   daily: [200000, 120000, 80000, 40000, 300000][i]!,
-  currentUsage: [864, 712, 240, 431, 190][i]!,
+  // Percentages of the daily allowance, matching what the backend sends and
+  // what the column renders. These were counts, so the mock displayed "864.0%"
+  // — a mock that shows an impossible value is a worse rehearsal than none.
+  currentUsage: [86.4, 71.2, 24, 43.1, 19][i]!,
   rateLimited: app.rateLimited,
-  headroom: [28, 21, 60, 10, 89][i]!,
+  // Derived, not chosen: headroom is the complement of usage, and picking both
+  // independently produced rows where they summed to 114%.
+  headroom: Math.max(0, 100 - [86.4, 71.2, 24, 43.1, 19][i]!),
   status: (["healthy", "healthy", "healthy", "degraded", "healthy"] as const)[i]!,
 }));
 
