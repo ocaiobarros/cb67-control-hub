@@ -349,6 +349,13 @@ export const httpAdapter: PlatformAdapter = {
     resetCsrfToken();
     return user;
   },
+  getMfaStatus: () => request("v1/admin/auth/mfa"),
+  beginMfaEnrolment: () => request("v1/admin/auth/mfa/enrol", { method: "POST" }),
+  confirmMfaEnrolment: (input) =>
+    request("v1/admin/auth/mfa/enrol/confirm", {
+      method: "POST",
+      body: JSON.stringify(input),
+    }),
   currentUser: () => request("v1/admin/auth/session"),
   logout: async () => {
     try {

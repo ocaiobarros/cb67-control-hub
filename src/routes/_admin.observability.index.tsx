@@ -9,7 +9,14 @@ import { TimeRangeSelect } from "@/components/common/time-range-select";
 import { DataTable, type Column } from "@/components/common/data-table";
 import { StatusBadge } from "@/components/common/status-badge";
 import { AppLink } from "@/components/common/app-link";
-import { formatCompact, formatMs, formatPercent, formatRelative } from "@/utils/format";
+import {
+  formatCompact,
+  formatMs,
+  formatPercent,
+  formatRelative,
+  formatMsOrNull,
+  formatPercentOrNull,
+} from "@/utils/format";
 import type { Alert, TimeRange } from "@/types";
 
 export const Route = createFileRoute("/_admin/observability/")({
@@ -96,13 +103,13 @@ function ObservabilityOverview() {
         />
         <MetricCard
           label="Latência p95"
-          value={snapshot ? formatMs(snapshot.p95) : "—"}
+          value={snapshot ? formatMsOrNull(snapshot.p95) : "—"}
           isLoading={overview.isLoading}
         />
         <MetricCard
           label="Taxa de erro"
-          value={snapshot ? formatPercent(snapshot.errorRate) : "—"}
-          tone={snapshot && snapshot.errorRate > 1 ? "warn" : "ok"}
+          value={snapshot ? formatPercentOrNull(snapshot.errorRate) : "—"}
+          tone={snapshot && (snapshot.errorRate ?? 0) > 1 ? "warn" : "ok"}
           isLoading={overview.isLoading}
         />
         <MetricCard

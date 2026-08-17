@@ -15,7 +15,15 @@ import {
 } from "@/components/charts/chart-panel";
 import { AppLink } from "@/components/common/app-link";
 import { Progress } from "@/components/ui/progress";
-import { formatCompact, formatMs, formatNumber, formatPercent } from "@/utils/format";
+import {
+  formatCompact,
+  formatMs,
+  formatNumber,
+  formatPercent,
+  formatMsOrNull,
+  formatPercentOrNull,
+  NOT_MEASURED,
+} from "@/utils/format";
 import type { TimeRange } from "@/types";
 
 export const Route = createFileRoute("/_admin/overview")({
@@ -47,13 +55,16 @@ function OverviewPage() {
     return <ErrorState error={overview.error} onRetry={() => void overview.refetch()} />;
   }
 
-  const errorTone = !data
-    ? "neutral"
-    : data.errorRate > 2
-      ? "crit"
-      : data.errorRate > 1
-        ? "warn"
-        : "ok";
+  // No traffic, no verdict. A green "error rate" card on a platform that has
+  // served nothing reports a health check nobody ran.
+  const errorTone =
+    !data || data.errorRate === null
+      ? "neutral"
+      : data.errorRate > 2
+        ? "crit"
+        : data.errorRate > 1
+          ? "warn"
+          : "ok";
 
   return (
     <div className="space-y-6">
@@ -73,13 +84,13 @@ function OverviewPage() {
         />
         <MetricCard
           label="Latência p95 / p99"
-          value={data ? `${formatMs(data.p95)} / ${formatMs(data.p99)}` : "—"}
+          value={data ? `${formatMsOrNull(data.p95)} / ${formatMsOrNull(data.p99)}` : NOT_MEASURED}
           hint="Do ingresso no gateway até a resposta"
           isLoading={overview.isLoading}
         />
         <MetricCard
           label="Taxa de erros"
-          value={data ? formatPercent(data.errorRate) : "—"}
+          value={data ? formatPercentOrNull(data.errorRate) : NOT_MEASURED}
           tone={errorTone}
           hint="5xx sobre o total de requisições"
           isLoading={overview.isLoading}
@@ -168,16 +179,18 @@ function OverviewPage() {
         <div className="grid gap-3 sm:grid-cols-3">
           {(
             [
-              ["CPU", data?.resources.cpu],
-              ["Memória", data?.resources.memory],
-              ["Armazenamento", data?.resources.storage],
+              // resources is null until something collects host metrics, so
+              // these read "not measured" rather than showing an idle gauge.
+              ["CPU", data?.resources?.cpu],
+              ["Memória", data?.resources?.memory],
+              ["Armazenamento", data?.resources?.storage],
             ] as const
           ).map(([label, value]) => (
             <div key={label} className="panel space-y-2 p-4">
               <div className="flex items-center justify-between text-sm">
                 <span className="font-medium">{label}</span>
                 <span className="tabular text-muted-foreground">
-                  {value === undefined ? "—" : formatPercent(value, 1)}
+                  {value === undefined || value === null ? NOT_MEASURED : formatPercent(value, 1)}
                 </span>
               </div>
               <Progress value={value ?? 0} />

@@ -16,6 +16,8 @@ interface AuthState {
   /** Resolves true when a second factor is required before the session exists. */
   login: (input: { username: string; password: string }) => Promise<boolean>;
   verifyMfa: (input: { code: string }) => Promise<void>;
+  /** Re-reads the signed-in user, after something changed about the account. */
+  refresh: () => Promise<void>;
   logout: () => Promise<void>;
   can: (permission: string) => boolean;
 }
@@ -66,6 +68,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(await api.verifyMfa(input));
   }, []);
 
+  const refresh = useCallback(async () => {
+    setUser(await api.currentUser());
+  }, []);
+
   const logout = useCallback(async () => {
     await api.logout();
     setUser(null);
@@ -77,8 +83,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const value = useMemo(
-    () => ({ user, loading, login, verifyMfa, logout, can }),
-    [user, loading, login, verifyMfa, logout, can],
+    () => ({ user, loading, login, verifyMfa, refresh, logout, can }),
+    [user, loading, login, verifyMfa, refresh, logout, can],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

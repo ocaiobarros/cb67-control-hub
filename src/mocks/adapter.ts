@@ -51,6 +51,17 @@ export const mockAdapter: PlatformAdapter = {
     }
     throw new Error("O modo mock não possui segundo fator cadastrado.");
   },
+  async getMfaStatus() {
+    // Mock mode has no second factor. Reporting it as enrolled would rehearse a
+    // screen the operator never reaches here.
+    return delay({ enabled: false, enrolledAt: "", recoveryCodesLeft: 0, pendingEnrolment: false });
+  },
+  async beginMfaEnrolment() {
+    throw new Error("O modo mock não cadastra segundo fator.");
+  },
+  async confirmMfaEnrolment() {
+    throw new Error("O modo mock não cadastra segundo fator.");
+  },
   async currentUser() {
     return readSession();
   },

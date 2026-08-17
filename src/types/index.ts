@@ -548,11 +548,13 @@ export interface AuditEvent {
 
 export interface OverviewSnapshot {
   platformHealth: PlatformHealth;
+  /** Counts. Zero traffic really is zero. */
   requests: number;
   rps: number;
-  p95: number;
-  p99: number;
-  errorRate: number;
+  /** Measurements over that traffic. Null when there was none. */
+  p95: number | null;
+  p99: number | null;
+  errorRate: number | null;
   activeSaas: number;
   activeLicenses: number;
   authFailures: number;
@@ -560,7 +562,11 @@ export interface OverviewSnapshot {
   statusCounts: { code: string; value: number }[];
   providers: Provider[];
   services: ServiceHealth[];
-  resources: { cpu: number; memory: number; storage: number };
+  /**
+   * Null until something collects host metrics. "0% CPU" is a measurement, and
+   * none has been taken — an idle-looking gauge would be an invented reading.
+   */
+  resources: { cpu: number; memory: number; storage: number } | null;
   charts: {
     requests: MetricPoint[];
     latency: MetricPoint[];

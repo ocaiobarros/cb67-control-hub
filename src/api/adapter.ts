@@ -60,6 +60,24 @@ export interface MfaChallenge {
 
 export type LoginResult = AuthenticatedUser | MfaChallenge;
 
+export interface MfaStatus {
+  enabled: boolean;
+  /** Empty until the factor is activated. */
+  enrolledAt: string;
+  recoveryCodesLeft: number;
+  /** A secret is staged but no code has confirmed it yet. */
+  pendingEnrolment: boolean;
+}
+
+export interface MfaEnrolment {
+  /** For an authenticator that takes a typed key rather than a scan. */
+  secret: string;
+  uri: string;
+  /** An inline PNG. Empty if it could not be rendered; secret and uri still work. */
+  qrDataUri: string;
+  recoveryCodes: string[];
+}
+
 /** Narrows a login result to the second-factor case. */
 export function isMfaChallenge(result: LoginResult): result is MfaChallenge {
   return (result as MfaChallenge).mfaRequired === true;
@@ -76,6 +94,18 @@ export interface PlatformAdapter {
   login(input: { username: string; password: string }): Promise<LoginResult>;
   /** Completes a login that stopped at the second factor. */
   verifyMfa(input: { code: string }): Promise<AuthenticatedUser>;
+
+  /** Whether the signed-in administrator has a second factor. Never the secret. */
+  getMfaStatus(): Promise<MfaStatus>;
+  /**
+   * Starts enrolment: a secret, an inline QR, and the recovery codes.
+   *
+   * The recovery codes are returned HERE AND NOWHERE ELSE. They are stored
+   * hashed, so a screen that loses them cannot ask for them again.
+   */
+  beginMfaEnrolment(): Promise<MfaEnrolment>;
+  /** Activates the factor once a code proves the authenticator is configured. */
+  confirmMfaEnrolment(input: { code: string }): Promise<MfaStatus>;
   currentUser(): Promise<AuthenticatedUser | null>;
   logout(): Promise<void>;
 

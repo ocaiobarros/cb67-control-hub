@@ -14,6 +14,7 @@ import { Route as AdminRouteImport } from './routes/_admin'
 import { Route as ChangelogRouteImport } from './routes/changelog'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as MfaEnrolmentRouteImport } from './routes/mfa-enrolment'
 import { Route as StatusRouteImport } from './routes/status'
 import { Route as AdminAuditRouteImport } from './routes/_admin.audit'
 import { Route as AdminOverviewRouteImport } from './routes/_admin.overview'
@@ -100,6 +101,11 @@ const DocsRoute = DocsRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MfaEnrolmentRoute = MfaEnrolmentRouteImport.update({
+  id: '/mfa-enrolment',
+  path: '/mfa-enrolment',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StatusRoute = StatusRouteImport.update({
@@ -447,6 +453,7 @@ export interface FileRoutesByFullPath {
   '/changelog': typeof ChangelogRoute
   '/docs': typeof DocsRoute
   '/login': typeof LoginRoute
+  '/mfa-enrolment': typeof MfaEnrolmentRoute
   '/status': typeof StatusRoute
   '/audit': typeof AdminAuditRoute
   '/overview': typeof AdminOverviewRoute
@@ -516,6 +523,7 @@ export interface FileRoutesByTo {
   '/changelog': typeof ChangelogRoute
   '/docs': typeof DocsRoute
   '/login': typeof LoginRoute
+  '/mfa-enrolment': typeof MfaEnrolmentRoute
   '/status': typeof StatusRoute
   '/audit': typeof AdminAuditRoute
   '/overview': typeof AdminOverviewRoute
@@ -587,6 +595,7 @@ export interface FileRoutesById {
   '/changelog': typeof ChangelogRoute
   '/docs': typeof DocsRoute
   '/login': typeof LoginRoute
+  '/mfa-enrolment': typeof MfaEnrolmentRoute
   '/status': typeof StatusRoute
   '/_admin/audit': typeof AdminAuditRoute
   '/_admin/overview': typeof AdminOverviewRoute
@@ -658,6 +667,7 @@ export interface FileRouteTypes {
     | '/changelog'
     | '/docs'
     | '/login'
+    | '/mfa-enrolment'
     | '/status'
     | '/audit'
     | '/overview'
@@ -727,6 +737,7 @@ export interface FileRouteTypes {
     | '/changelog'
     | '/docs'
     | '/login'
+    | '/mfa-enrolment'
     | '/status'
     | '/audit'
     | '/overview'
@@ -797,6 +808,7 @@ export interface FileRouteTypes {
     | '/changelog'
     | '/docs'
     | '/login'
+    | '/mfa-enrolment'
     | '/status'
     | '/_admin/audit'
     | '/_admin/overview'
@@ -868,6 +880,7 @@ export interface RootRouteChildren {
   ChangelogRoute: typeof ChangelogRoute
   DocsRoute: typeof DocsRoute
   LoginRoute: typeof LoginRoute
+  MfaEnrolmentRoute: typeof MfaEnrolmentRoute
   StatusRoute: typeof StatusRoute
 }
 
@@ -906,6 +919,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mfa-enrolment': {
+      id: '/mfa-enrolment'
+      path: '/mfa-enrolment'
+      fullPath: '/mfa-enrolment'
+      preLoaderRoute: typeof MfaEnrolmentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/status': {
@@ -1490,6 +1510,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChangelogRoute: ChangelogRoute,
   DocsRoute: DocsRoute,
   LoginRoute: LoginRoute,
+  MfaEnrolmentRoute: MfaEnrolmentRoute,
   StatusRoute: StatusRoute,
 }
 export const routeTree = rootRouteImport

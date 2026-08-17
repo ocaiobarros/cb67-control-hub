@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { formatError } from "@/components/common/error-state";
 import { MISSING_PASSWORD, MISSING_USERNAME, submitLogin } from "@/features/auth/login-validation";
 import { env, platformMeta } from "@/config/env";
-import { isMockMode } from "@/api/client";
+import { api, isMockMode } from "@/api/client";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -29,6 +29,27 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
+/**
+ * Where an authenticated operator belongs.
+ *
+ * An administrator with no second factor is sent to enrol one rather than to
+ * the console. An account that can administer the platform on a password alone
+ * is exactly the situation the factor exists to end, so arriving at /overview
+ * without one would make the factor optional in practice.
+ *
+ * A failure to read the status sends them to the console rather than trapping
+ * them on an enrolment screen that may itself be failing: the API is already
+ * behind authentication, and being unable to check is not evidence of absence.
+ */
+async function destinationAfterLogin(): Promise<never> {
+  try {
+    const status = await api.getMfaStatus();
+    return (status.enabled ? "/overview" : "/mfa-enrolment") as never;
+  } catch {
+    return "/overview" as never;
+  }
+}
+
 function LoginPage() {
   const { user, loading, login, verifyMfa } = useAuth();
   const navigate = useNavigate();
@@ -43,7 +64,8 @@ function LoginPage() {
   const [code, setCode] = useState("");
 
   useEffect(() => {
-    if (!loading && user) void navigate({ to: "/overview" as never, replace: true });
+    if (loading || !user) return;
+    void destinationAfterLogin().then((to) => navigate({ to, replace: true }));
   }, [loading, user, navigate]);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -70,7 +92,7 @@ function LoginPage() {
           return;
         }
       }
-      await navigate({ to: "/overview" as never, replace: true });
+      await navigate({ to: await destinationAfterLogin(), replace: true });
     } catch (cause) {
       setError(formatError(cause));
     } finally {
