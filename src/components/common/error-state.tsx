@@ -1,6 +1,7 @@
 import { AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HttpError, isAuthenticationAttempt } from "@/api/http-adapter";
+import { AccessSessionExpiredError } from "@/api/access-session";
 
 /**
  * Maps transport failures to operator-facing copy. Raw fetch errors and stack
@@ -13,6 +14,15 @@ import { HttpError, isAuthenticationAttempt } from "@/api/http-adapter";
  * separates them.
  */
 export function describeError(error: unknown): { title: string; detail: string } {
+  // Checked before HttpError: an intercepted request never produced an HTTP
+  // status the app can see, and reporting it as a connectivity failure sent the
+  // operator to look at the server when they only had to sign in again.
+  if (error instanceof AccessSessionExpiredError) {
+    return {
+      title: "Sessão do Cloudflare Access expirada.",
+      detail: "Redirecionando para autenticação.",
+    };
+  }
   if (error instanceof HttpError) {
     switch (error.status) {
       case 401:

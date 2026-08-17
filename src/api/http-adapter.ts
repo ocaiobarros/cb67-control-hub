@@ -1,4 +1,11 @@
 import { env } from "@/config/env";
+import {
+  AccessSessionExpiredError,
+  browserRecoveryEnvironment,
+  clearReauthRecord,
+  isAccessInterception,
+  recoverAccessSession,
+} from "./access-session";
 import type { PlatformAdapter } from "./adapter";
 import type { Provider, TimeRange } from "@/types";
 
@@ -57,6 +64,8 @@ export function isAuthenticationAttempt(path: string | undefined): boolean {
   const normalised = withoutQuery.replace(/^\/*/, "/").replace(/\/+$/, "");
   return AUTHENTICATION_ATTEMPT_PATHS.some((p) => normalised.endsWith(p));
 }
+
+export { AccessSessionExpiredError } from "./access-session";
 
 /** Methods that change state and therefore require a CSRF token. */
 const MUTATING = new Set(["POST", "PUT", "PATCH", "DELETE"]);
@@ -137,10 +146,17 @@ async function fetchCsrfToken(): Promise<string> {
     try {
       response = await fetch(buildUrl("v1/admin/auth/csrf"), {
         credentials: "include",
+        redirect: "manual",
         headers: { Accept: "application/json" },
       });
     } catch (cause) {
       throw new CsrfError("Could not reach the CSRF token endpoint.", cause);
+    }
+    // The token fetch is the first call of every mutation, so it is where an
+    // expired Access session is usually met. Reporting it as a CSRF failure
+    // would send the operator looking for the wrong problem entirely.
+    if (isAccessInterception(response)) {
+      throw accessExpired();
     }
     if (!response.ok) {
       throw new CsrfError(`CSRF token endpoint returned ${response.status}.`);
@@ -188,6 +204,11 @@ async function send(
   return fetch(url, {
     ...init,
     credentials: "include",
+    // Stop at a redirect rather than following it. The gateway emits no 3xx of
+    // its own, so a redirect here is Cloudflare Access intercepting an expired
+    // session; following it lands on a cross-origin page with no CORS headers
+    // and the fetch rejects with a TypeError that reads as "backend down".
+    redirect: "manual",
     headers: {
       Accept: "application/json",
       ...(init?.body ? { "Content-Type": "application/json" } : {}),
@@ -197,6 +218,20 @@ async function send(
       ...(MUTATING.has(method) && token ? { "X-CSRF-Token": token } : {}),
     },
   });
+}
+
+/**
+ * Starts re-authentication and returns the error to throw.
+ *
+ * The navigation happens here rather than at each call site because every
+ * request funnels through this module; asking each query hook to recognise the
+ * condition would mean each one could forget. The error is still thrown so the
+ * UI has something truthful to render during the moment before the page leaves.
+ */
+function accessExpired(): AccessSessionExpiredError {
+  const recovery = browserRecoveryEnvironment();
+  if (recovery) recoverAccessSession(recovery);
+  return new AccessSessionExpiredError();
 }
 
 export async function request<T>(
@@ -230,10 +265,26 @@ export async function request<T>(
     }
   }
 
+  if (isAccessInterception(response)) {
+    throw accessExpired();
+  }
+
   if (!response.ok) {
     const body = await response.text().catch(() => "");
     throw new HttpError(response.status, body, undefined, path);
   }
+
+  // A response that reached the origin proves Access let it through, so any
+  // earlier recovery attempt is finished. Clearing here is what lets a genuine
+  // expiry an hour from now recover again instead of being suppressed by a
+  // stale marker.
+  // Named `recovery`, not `env`: `env` is the imported configuration used at the
+  // top of this function, and shadowing it put that binding in a temporal dead
+  // zone — every request failed with "Cannot access 'env' before
+  // initialization" rather than anything to do with Access.
+  const recovery = browserRecoveryEnvironment();
+  if (recovery) clearReauthRecord(recovery.storage);
+
   if (response.status === 204) return undefined as T;
   return (await response.json()) as T;
 }
