@@ -91,10 +91,7 @@ export const formatTime = (iso: string) =>
  * Guarding here as well as at the source, because a date that cannot be parsed
  * should never take down a screen whatever produced it.
  */
-export function formatRelativeOrNull(
-  iso: string | null | undefined,
-  now = new Date("2026-08-16T14:00:00Z"),
-): string {
+export function formatRelativeOrNull(iso: string | null | undefined, now = new Date()): string {
   if (!iso) return NOT_MEASURED;
   if (Number.isNaN(new Date(iso).getTime())) return NOT_MEASURED;
   return formatRelative(iso, now);
@@ -107,7 +104,22 @@ export function formatDateTimeOrNull(iso: string | null | undefined): string {
   return formatDateTime(iso);
 }
 
-export function formatRelative(iso: string, now = new Date("2026-08-16T14:00:00Z")): string {
+/**
+ * How long ago, relative to NOW.
+ *
+ * The default used to be a fixed instant — 16 August 2026, 14:00 UTC — written
+ * when the mock data was, so every relative time in the application was
+ * measured against a day that had already passed and drifted further every day
+ * after. An action taken a minute ago was displayed as "amanhã".
+ *
+ * It survived because nothing looks at a clock: the tests assert formatting,
+ * the mocks are generated around the same frozen instant so they agreed with
+ * it, and only a screenshot of the real console showed the wrong answer.
+ *
+ * The parameter stays so a test can pin the clock deliberately; the DEFAULT is
+ * the present, which is what a screen means by "há 2 dias".
+ */
+export function formatRelative(iso: string, now = new Date()): string {
   if (invalid(iso)) return NOT_MEASURED;
   const diffMs = new Date(iso).getTime() - now.getTime();
   const abs = Math.abs(diffMs);
@@ -149,5 +161,6 @@ export function formatDuration(seconds: number): string {
 export const formatRatio = (used: number, total: number) =>
   `${numberFmt.format(used)} / ${numberFmt.format(total)}`;
 
-export const daysUntil = (iso: string, now = new Date("2026-08-16T14:00:00Z")) =>
+/** Days between now and iso. See formatRelative on why the default is not fixed. */
+export const daysUntil = (iso: string, now = new Date()) =>
   Math.ceil((new Date(iso).getTime() - now.getTime()) / 86_400_000);

@@ -433,6 +433,19 @@ export interface AdminSession {
  * beneath it: a leaf is clamped to it, so an operator planning rotations needs
  * to see it.
  */
+/**
+ * What each certificate kind is called on screen.
+ *
+ * Defined once beside the union it names. Three screens were showing the raw
+ * enum — "client" beside four values in Portuguese, which reads as an
+ * untranslated leak of the database — while a fourth had its own private copy.
+ */
+export const CERTIFICATE_KIND_LABEL: Record<Certificate["type"], string> = {
+  client: "Cliente",
+  server: "Servidor",
+  intermediate: "Intermediária",
+};
+
 export interface CertificateAuthority {
   id: string;
   tier: "root" | "issuing";

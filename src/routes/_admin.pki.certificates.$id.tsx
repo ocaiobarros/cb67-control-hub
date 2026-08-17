@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/common/page-header";
 import { MetricCard, StatRow } from "@/components/common/metric-card";
 import { StatusBadge } from "@/components/common/status-badge";
 import { CopyButton, IdentifierCell } from "@/components/common/copy-button";
+import { CERTIFICATE_KIND_LABEL } from "@/types";
 import { ConfirmActionDialog } from "@/components/common/confirm-action-dialog";
 import { ActivityTimeline, type TimelineItem } from "@/components/common/activity-timeline";
 import { EmptyState } from "@/components/common/empty-state";
@@ -101,7 +102,13 @@ function CertificateDetail() {
           tone={remaining <= 0 ? "crit" : remaining <= 30 ? "warn" : "ok"}
           isLoading={certificate.isLoading}
         />
-        <MetricCard label="Tipo" value={record?.type ?? "—"} isLoading={certificate.isLoading} />
+        <MetricCard
+          label="Tipo"
+          // The raw enum stood here — "client" beside four values in
+          // Portuguese, which reads as an untranslated leak of the database.
+          value={record ? CERTIFICATE_KIND_LABEL[record.type] : "—"}
+          isLoading={certificate.isLoading}
+        />
         <MetricCard
           label="Emitido"
           value={record ? formatDate(record.issuedAt) : "—"}

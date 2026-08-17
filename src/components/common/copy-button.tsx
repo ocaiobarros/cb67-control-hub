@@ -43,8 +43,21 @@ export function IdentifierCell({
   className?: string | undefined;
 }) {
   return (
-    <span className={cn("inline-flex items-center gap-1", className)}>
-      <code className="mono-xs text-foreground">{value}</code>
+    /*
+      Wraps rather than overflows.
+      
+      A 64-character SHA-256 fingerprint does not fit a right-aligned row, and
+      an inline-flex whose child cannot break pushed the value past the panel
+      edge and left the copy button stranded on the line below. Seen only by
+      looking at the page: every assertion about the DOM was satisfied while
+      the operator was shown a truncated fingerprint.
+
+      The value shrinks and wraps inside its own box; the button keeps its place
+      beside it. Letting the whole row wrap instead put the button alone on a
+      third line, which reads as a mistake even when it works.
+    */
+    <span className={cn("inline-flex max-w-full items-start justify-end gap-1", className)}>
+      <code className="mono-xs min-w-0 break-all text-foreground">{value}</code>
       <CopyButton value={value} label={label} />
     </span>
   );

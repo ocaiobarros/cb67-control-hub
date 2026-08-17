@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Permitted } from "@/features/auth/guards";
 import { useAdminAction } from "@/hooks/use-admin-action";
 import { formatDate, formatDateTime, formatRelative } from "@/utils/format";
+import { CERTIFICATE_KIND_LABEL } from "@/types";
 import type { Certificate, Revocation } from "@/types";
 
 export const Route = createFileRoute("/_admin/pki/revocation")({
@@ -90,7 +91,9 @@ function RevocationPage() {
     {
       id: "type",
       header: "Tipo",
-      cell: (row) => <span className="text-xs text-muted-foreground">{row.type}</span>,
+      cell: (row) => (
+        <span className="text-xs text-muted-foreground">{CERTIFICATE_KIND_LABEL[row.type]}</span>
+      ),
       sortValue: (row) => row.type,
     },
     {

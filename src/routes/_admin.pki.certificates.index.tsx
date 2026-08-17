@@ -14,6 +14,7 @@ import { MetricCard } from "@/components/common/metric-card";
 import { StatusBadge } from "@/components/common/status-badge";
 import { ChartPanel, CategoryBarChart } from "@/components/charts/chart-panel";
 import { daysUntil, formatDate } from "@/utils/format";
+import { CERTIFICATE_KIND_LABEL } from "@/types";
 import type { Certificate } from "@/types";
 
 export const Route = createFileRoute("/_admin/pki/certificates/")({
@@ -35,12 +36,6 @@ export const Route = createFileRoute("/_admin/pki/certificates/")({
   component: CertificatesPage,
 });
 
-const TYPE_LABEL: Record<Certificate["type"], string> = {
-  client: "Cliente",
-  server: "Servidor",
-  intermediate: "Intermediário",
-};
-
 function CertificatesPage() {
   const certificates = useQuery(q.certificates());
   const authorities = useQuery(q.certificateAuthorities());
@@ -53,8 +48,8 @@ function CertificatesPage() {
     (row) => daysUntil(row.expiresAt) > 0 && daysUntil(row.expiresAt) <= 30,
   );
 
-  const byType = (Object.keys(TYPE_LABEL) as Certificate["type"][]).map((type) => ({
-    t: TYPE_LABEL[type],
+  const byType = (Object.keys(CERTIFICATE_KIND_LABEL) as Certificate["type"][]).map((type) => ({
+    t: CERTIFICATE_KIND_LABEL[type],
     value: rows.filter((row) => row.type === type).length,
   }));
 
@@ -73,7 +68,9 @@ function CertificatesPage() {
     {
       id: "type",
       header: "Tipo",
-      cell: (row) => <StatusBadge status={row.type} tone="info" label={TYPE_LABEL[row.type]} />,
+      cell: (row) => (
+        <StatusBadge status={row.type} tone="info" label={CERTIFICATE_KIND_LABEL[row.type]} />
+      ),
       sortValue: (row) => row.type,
     },
     {
