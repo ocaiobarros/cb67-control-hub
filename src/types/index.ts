@@ -12,15 +12,24 @@ export type Environment = "production" | "staging" | "development";
 export type EntityStatus =
   "active" | "disabled" | "revoked" | "expired" | "pending" | "suspended" | "grace";
 
+export type HealthStatus = "healthy" | "degraded" | "unavailable" | "disabled" | "maintenance";
+
 /**
- * `unknown` is not a hedge, it is the accurate answer for a component that is
- * configured but has not yet been observed. The API broker does not exist, so
- * no request has crossed any endpoint; reporting "healthy" would assert a
- * measurement that was never taken, and "unavailable" would assert a failure
- * that was never seen.
+ * Health as reported by a component whose behaviour is MEASURED rather than
+ * declared.
+ *
+ * `unknown` is not a hedge: it is the accurate answer for something configured
+ * but never observed. The API broker does not exist, so no request has crossed
+ * any endpoint — "healthy" would assert a measurement never taken and
+ * "unavailable" a failure never seen.
+ *
+ * Deliberately a SEPARATE type rather than a sixth member of HealthStatus. That
+ * union is shared by infrastructure, providers, certificates, the database and
+ * more; widening it would oblige every one of those domains to answer a
+ * question only this one asked. Whether to widen it is the frontend contract
+ * owner's decision; this type is what the API domain uses in the meantime.
  */
-export type HealthStatus =
-  "healthy" | "degraded" | "unavailable" | "disabled" | "maintenance" | "unknown";
+export type ObservedHealthStatus = HealthStatus | "unknown";
 
 export type PlatformHealth = "healthy" | "degraded" | "critical" | "maintenance";
 
@@ -126,7 +135,8 @@ export interface ApiEndpoint {
   path: string;
   version: string;
   scope: string;
-  status: HealthStatus;
+  /** May be "unknown": see ObservedHealthStatus. */
+  status: ObservedHealthStatus;
   /** A count: zero requests really is zero. */
   requests24h: number;
   /**
@@ -192,7 +202,8 @@ export interface RateLimitRule {
   currentUsage: number;
   rateLimited: number;
   headroom: number;
-  status: HealthStatus;
+  /** May be "unknown" for a limit that has never been exercised. */
+  status: ObservedHealthStatus;
 }
 
 export interface QuotaRecord {
