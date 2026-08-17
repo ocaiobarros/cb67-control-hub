@@ -33,9 +33,17 @@ export interface Paged<T> {
   total: number;
 }
 
+/**
+ * A point on a time series.
+ *
+ * Series values are nullable because an interval in which nothing happened has
+ * no measurement: an hour that served no request has no mean latency, and
+ * plotting 0 would put a point on the chart at 0 ms. Charts and tooltips must
+ * handle the gap rather than be handed a number that was never taken.
+ */
 export interface MetricPoint {
   t: string;
-  [series: string]: number | string;
+  [series: string]: number | string | null;
 }
 
 export interface MetricSeries {
@@ -191,7 +199,11 @@ export interface QuotaRecord {
   id: string;
   applicationName: string;
   api: string;
-  rateLimitPerMin: number;
+  /**
+   * Null when the application has no wildcard rate-limit rule. 0 would be a
+   * concrete limit permitting nothing, rather than the absence of one.
+   */
+  rateLimitPerMin: number | null;
   monthlyQuota: number;
   used: number;
   /**

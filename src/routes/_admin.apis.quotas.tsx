@@ -76,8 +76,12 @@ function QuotasPage() {
     {
       id: "rate",
       header: "Taxa / min",
-      cell: (row) => <span className="tabular">{formatNumber(row.rateLimitPerMin)}</span>,
-      sortValue: (row) => row.rateLimitPerMin,
+      cell: (row) => (
+        <span className="tabular">
+          {row.rateLimitPerMin === null ? NOT_MEASURED : formatNumber(row.rateLimitPerMin)}
+        </span>
+      ),
+      sortValue: (row) => row.rateLimitPerMin ?? -1,
       align: "right",
     },
     {
