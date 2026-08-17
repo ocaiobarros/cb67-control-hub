@@ -22,6 +22,7 @@ import { AppLink } from "@/components/common/app-link";
 import { breadcrumbsFor } from "@/config/navigation";
 import { useAuth } from "@/features/auth/auth-context";
 import { useTheme } from "@/features/theme/theme-context";
+import { isMockMode } from "@/api/client";
 import { env } from "@/config/env";
 import { cn } from "@/lib/utils";
 
@@ -92,7 +93,13 @@ export function Topbar({
         <Badge variant="outline" className="mono-xs hidden md:inline-flex">
           {env.environment.toUpperCase()}
         </Badge>
-        {env.useMockApi && (
+        {/*
+          Keyed on the adapter actually selected, not on the flag that asked.
+          A production build with VITE_USE_MOCK_API=true is correctly forced onto
+          the real API, and this badge claimed the data was mocked — a banner
+          asserting something the platform had just refused to do.
+        */}
+        {isMockMode && (
           <Badge
             variant="outline"
             className="mono-xs hidden border-warn/40 bg-warn/10 text-warn md:inline-flex"
