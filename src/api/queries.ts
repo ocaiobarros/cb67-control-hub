@@ -90,6 +90,11 @@ export const q = {
 
   certificates: () =>
     queryOptions({ queryKey: ["certificates"], queryFn: () => api.listCertificates() }),
+  certificateAuthorities: () =>
+    queryOptions({
+      queryKey: ["certificate-authorities"],
+      queryFn: () => api.listCertificateAuthorities(),
+    }),
   certificate: (id: string) =>
     queryOptions({ queryKey: ["certificate", id], queryFn: () => api.getCertificate(id) }),
 

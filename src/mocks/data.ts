@@ -16,6 +16,7 @@ import type {
   BackupJob,
   BackupRun,
   Certificate,
+  CertificateAuthority,
   ChangelogEntry,
   CredentialMetadata,
   Customer,
@@ -1408,8 +1409,33 @@ export const MockSessions: AdminSession[] = [
 
 /* ------------------------------------------------------------------ PKI */
 
+export const MockCertificateAuthorities: CertificateAuthority[] = [
+  {
+    id: "ca-root",
+    tier: "root",
+    subject: "CN=CB67 Labs Root CA,O=CB67 Labs",
+    serial: "2C:5C:2D:86:05:ED:B0:88:14:84:D4:19:0C:F9:82:DE",
+    fingerprint: "a".repeat(64),
+    notBefore: iso(-1),
+    notAfter: iso(3650),
+    status: "active",
+  },
+  {
+    id: "ca-issuing",
+    tier: "issuing",
+    subject: "CN=CB67 Labs Issuing CA,O=CB67 Labs",
+    serial: "5D:A4:F4:1A:A7:40:1A:75:AF:15:36:48:16:92:58:FA",
+    fingerprint: "b".repeat(64),
+    notBefore: iso(-1),
+    notAfter: iso(1095),
+    status: "active",
+  },
+];
+
 export const MockCertificates: Certificate[] = [
   {
+    certificatePem: "-----BEGIN CERTIFICATE-----\nMIIBmock...\n-----END CERTIFICATE-----\n",
+    chainPem: "-----BEGIN CERTIFICATE-----\nMIIBchain...\n-----END CERTIFICATE-----\n",
     id: "cert-1",
     subject: "CN=terere-prod-001,O=CB67 Labs",
     serial: "3F72A1",

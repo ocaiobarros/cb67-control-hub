@@ -5,7 +5,7 @@ import { q } from "@/api/queries";
 import { PageHeader } from "@/components/common/page-header";
 import { MetricCard, StatRow } from "@/components/common/metric-card";
 import { StatusBadge } from "@/components/common/status-badge";
-import { IdentifierCell } from "@/components/common/copy-button";
+import { CopyButton, IdentifierCell } from "@/components/common/copy-button";
 import { ConfirmActionDialog } from "@/components/common/confirm-action-dialog";
 import { ActivityTimeline, type TimelineItem } from "@/components/common/activity-timeline";
 import { EmptyState } from "@/components/common/empty-state";
@@ -113,6 +113,42 @@ function CertificateDetail() {
           isLoading={certificate.isLoading}
         />
       </div>
+
+      {/*
+        The certificate itself, so the operator can deploy what they issued.
+        Issuance used to complete and leave them with a key at a path and no way
+        to obtain the certificate that goes with it — the browser test had to
+        read PostgreSQL, which should have been the tell.
+
+        The PRIVATE KEY is deliberately not here and never will be: it is
+        written by the signing service to a file on the host, which is what the
+        rotation policy on this screen means by "as chaves nunca transitam pela
+        interface".
+      */}
+      {record?.certificatePem && (
+        <section className="panel p-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h3 className="text-sm font-semibold">Certificado</h3>
+            <div className="flex gap-2">
+              <CopyButton value={record.certificatePem} label="certificado" />
+              {record.chainPem && (
+                <CopyButton
+                  value={record.certificatePem + record.chainPem}
+                  label="certificado com a cadeia"
+                />
+              )}
+            </div>
+          </div>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Copie o certificado, ou o certificado com a cadeia para apresentar na conexão. A chave
+            privada não passa por esta interface: o serviço assinante a deixa no servidor para
+            coleta.
+          </p>
+          <pre className="mono-xs mt-3 max-h-56 overflow-auto rounded-md border border-border bg-muted/40 p-3">
+            {record.certificatePem}
+          </pre>
+        </section>
+      )}
 
       <div className="grid gap-4 xl:grid-cols-2">
         <section className="panel p-4">

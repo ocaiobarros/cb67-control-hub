@@ -415,6 +415,7 @@ export const httpAdapter: PlatformAdapter = {
   listSessions: () => request("v1/admin/iam/sessions"),
 
   listCertificates: () => request("v1/admin/pki/certificates"),
+  listCertificateAuthorities: () => request("v1/admin/pki/authorities"),
   getCertificate: (id) => request(`v1/admin/pki/certificates/${id}`),
 
   getSecurityOverview: (r) => request("v1/admin/security/overview", range(r)),

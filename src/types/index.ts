@@ -426,8 +426,36 @@ export interface AdminSession {
 
 /* ---------- PKI ---------- */
 
+/**
+ * One tier of the internal certificate authority.
+ *
+ * Shown because the issuing CA's expiry is a ceiling on every certificate
+ * beneath it: a leaf is clamped to it, so an operator planning rotations needs
+ * to see it.
+ */
+export interface CertificateAuthority {
+  id: string;
+  tier: "root" | "issuing";
+  subject: string;
+  serial: string;
+  fingerprint: string;
+  notBefore: string;
+  notAfter: string;
+  status: EntityStatus;
+}
+
 export interface Certificate {
   id: string;
+  /**
+   * The certificate itself, on the single-certificate endpoint only.
+   *
+   * A certificate is public — handing it out is its purpose — and without it
+   * the operator received a private key at a path and no certificate to pair
+   * with it. Absent from listings, where a hundred PEM blocks buy nothing.
+   */
+  certificatePem?: string;
+  /** The chain to present alongside it. A leaf alone does not verify. */
+  chainPem?: string;
   subject: string;
   serial: string;
   clientId: string;

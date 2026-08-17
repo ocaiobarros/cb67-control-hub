@@ -1,4 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Permitted } from "@/features/auth/guards";
+import { useAdminAction } from "@/hooks/use-admin-action";
+import { FormDialog } from "@/components/common/form-dialog";
+import { StatRow } from "@/components/common/metric-card";
 import { useQuery } from "@tanstack/react-query";
 import { q } from "@/api/queries";
 import { PageHeader, SectionTitle } from "@/components/common/page-header";
@@ -36,6 +43,9 @@ const TYPE_LABEL: Record<Certificate["type"], string> = {
 
 function CertificatesPage() {
   const certificates = useQuery(q.certificates());
+  const authorities = useQuery(q.certificateAuthorities());
+  const action = useAdminAction();
+  const [issuing, setIssuing] = useState(false);
   const navigate = useNavigate();
   const rows = certificates.data ?? [];
 
@@ -118,7 +128,57 @@ function CertificatesPage() {
       <PageHeader
         title="Certificados"
         description="Todo cliente de máquina se autentica com um certificado emitido pela autoridade certificadora interna. As chaves privadas nunca saem do host emissor."
+        actions={
+          <Permitted permission="pki.write">
+            <Button size="sm" onClick={() => setIssuing(true)}>
+              <Plus className="size-4" aria-hidden />
+              Emitir certificado
+            </Button>
+          </Permitted>
+        }
       />
+
+      {/*
+        The chain the page's own description refers to and never showed. The
+        issuing CA's expiry is a ceiling on every certificate beneath it — a
+        leaf is clamped to it — so an operator planning rotations has to be able
+        to see it without reading a file on the host.
+      */}
+      <section className="rounded-lg border border-border p-4">
+        <SectionTitle
+          title="Autoridade certificadora interna"
+          description="Nenhuma chave privada é acessível por esta interface; a emissão ocorre no serviço assinante."
+        />
+        {authorities.isError ? (
+          <p className="mt-3 text-xs text-muted-foreground">
+            Não foi possível ler a cadeia de certificação.
+          </p>
+        ) : (authorities.data ?? []).length === 0 ? (
+          <p className="mt-3 text-xs text-muted-foreground">
+            {authorities.isLoading
+              ? "Carregando…"
+              : "A autoridade certificadora ainda não foi criada neste host."}
+          </p>
+        ) : (
+          <dl className="mt-3">
+            {(authorities.data ?? []).map((ca) => (
+              <StatRow
+                key={ca.id}
+                label={ca.tier === "root" ? "Raiz" : "Emissora"}
+                value={
+                  <span className="flex flex-wrap items-center gap-2">
+                    <span className="text-sm">{ca.subject}</span>
+                    <StatusBadge status={ca.status} />
+                    <span className="mono-xs text-muted-foreground">
+                      expira {formatDate(ca.notAfter)}
+                    </span>
+                  </span>
+                }
+              />
+            ))}
+          </dl>
+        )}
+      </section>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard label="Certificados" value={rows.length} isLoading={certificates.isLoading} />
@@ -171,6 +231,51 @@ function CertificatesPage() {
           }}
         />
       </div>
+
+      <FormDialog
+        open={issuing}
+        onOpenChange={setIssuing}
+        title="Emitir certificado"
+        description="A chave é gerada pelo serviço assinante e fica no servidor para coleta. Ela não é exibida aqui e não transita por esta interface."
+        submitLabel="Emitir certificado"
+        fields={[
+          {
+            kind: "text",
+            name: "clientId",
+            label: "Identidade",
+            placeholder: "terere-prod-001",
+            hint: "O nome que o certificado autentica. Letras, dígitos, '-', '_' e '.', de 3 a 64 caracteres.",
+            required: true,
+            maxLength: 64,
+          },
+          {
+            kind: "select",
+            name: "kind",
+            label: "Tipo",
+            required: true,
+            options: [
+              { value: "client", label: "Cliente — autentica uma instalação junto à API" },
+              { value: "server", label: "Servidor — apresenta um nome a quem conecta" },
+            ],
+          },
+          {
+            kind: "number",
+            name: "validityDays",
+            label: "Validade (dias)",
+            min: 1,
+            max: 825,
+            defaultValue: 365,
+            hint: "Nunca ultrapassa a validade da emissora: um certificado que sobreviva à sua autoridade é recusado por todo cliente.",
+          },
+        ]}
+        onSubmit={async (values) => {
+          await action.mutateAsync({
+            action: "certificate.issue",
+            resourceId: "",
+            payload: values,
+          });
+        }}
+      />
     </div>
   );
 }

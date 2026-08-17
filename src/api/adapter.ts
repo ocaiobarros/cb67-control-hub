@@ -11,6 +11,7 @@ import type {
   BackupJob,
   BackupRun,
   Certificate,
+  CertificateAuthority,
   ChangelogEntry,
   CredentialMetadata,
   Customer,
@@ -156,6 +157,7 @@ export interface PlatformAdapter {
   listSessions(): Promise<AdminSession[]>;
 
   listCertificates(): Promise<Certificate[]>;
+  listCertificateAuthorities(): Promise<CertificateAuthority[]>;
   getCertificate(id: string): Promise<Certificate>;
 
   getSecurityOverview(range: TimeRange): Promise<SecurityOverview>;

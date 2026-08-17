@@ -299,6 +299,9 @@ export const mockAdapter: PlatformAdapter = {
   async listCertificates() {
     return delay(M.MockCertificates);
   },
+  async listCertificateAuthorities() {
+    return delay(M.MockCertificateAuthorities);
+  },
   async getCertificate(id) {
     const cert = M.MockCertificates.find((c) => c.id === id || c.serial === id);
     if (!cert) throw new Error("Certificate not found");
