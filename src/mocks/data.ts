@@ -612,10 +612,20 @@ export const MockApiErrorGroups: ApiErrorGroup[] = [
   },
 ];
 
+/**
+ * Mirrors what the backend actually sends.
+ *
+ * No "internal" scope: it would have to be derived by subtracting provider time
+ * from overall, and subtracting one percentile from another is not a percentile
+ * of the difference. The backend omits it until the broker records its own
+ * histogram, and a mock that shows it rehearses a screen that will never exist.
+ *
+ * max is null for the same reason — the broker does not record a maximum, and
+ * the histogram cannot supply one.
+ */
 export const MockLatency: LatencyBreakdown[] = [
-  { scope: "overall", p50: 62, p90: 74, p95: 87, p99: 164, max: 1820 },
-  { scope: "internal", p50: 11, p90: 18, p95: 24, p99: 41, max: 260 },
-  { scope: "provider", p50: 48, p90: 61, p95: 71, p99: 138, max: 1610 },
+  { scope: "overall", p50: 62, p90: 74, p95: 87, p99: 164, max: null },
+  { scope: "provider", p50: 48, p90: 61, p95: 71, p99: 138, max: null },
 ];
 
 export const MockRateLimits: RateLimitRule[] = MockApplications.slice(0, 5).map((app, i) => ({
@@ -639,19 +649,19 @@ export const MockRateLimits: RateLimitRule[] = MockApplications.slice(0, 5).map(
   // Derived, not chosen: headroom is the complement of usage, and picking both
   // independently produced rows where they summed to 114%.
   headroom: Math.max(0, 100 - [86.4, 71.2, 24, 43.1, 19][i]!),
-  status: (["healthy", "healthy", "healthy", "degraded", "healthy"] as const)[i]!,
+  // Derived by the same rule the backend applies: any rejection at all is
+  // degraded, as is usage above 90% of the allowance. Choosing the status
+  // independently produced rows marked healthy while reporting rejections.
+  status: app.rateLimited > 0 || [86.4, 71.2, 24, 43.1, 19][i]! > 90 ? "degraded" : "healthy",
 }));
 
 export const MockQuotas: QuotaRecord[] = MockApplications.slice(0, 5).map((app, i) => ({
   id: `q-${i}`,
   applicationName: app.name,
-  api: [
-    "Geração de IA",
-    "Geocodificação de Mapas",
-    "Embeddings de IA",
-    "Rotas de Mapas",
-    "Validação de Licença",
-  ][i]!,
+  // The backend's quota record is application-wide and always sends the
+  // wildcard. Naming a specific API here rehearsed a per-API quota the platform
+  // does not have.
+  api: "*",
   rateLimitPerMin: [1200, 900, 600, 480, 1800][i]!,
   monthlyQuota: app.monthlyQuota,
   used: app.quotaUsed,

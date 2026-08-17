@@ -36,13 +36,33 @@ function RateLimitsPage() {
   const [target, setTarget] = useState<RateLimitRule | null>(null);
 
   const rows = rateLimits.data ?? [];
-  const throttled = rows.reduce((sum, row) => sum + row.rateLimited, 0);
+
+  // Rules OVERLAP: a request on one surface counts towards that surface's rule
+  // and towards the application's wildcard rule. Summing rateLimited across
+  // rows therefore counted a single rejection once per matching rule.
+  //
+  // One row per application: the wildcard already covers everything, so it is
+  // the whole figure where it exists. Where it does not, the specific rules do
+  // not overlap each other and can be summed.
+  const perApplication = new Map<string, number>();
+  for (const row of rows) {
+    const current = perApplication.get(row.applicationName);
+    if (row.api === "*") {
+      perApplication.set(row.applicationName, row.rateLimited);
+    } else if (current === undefined) {
+      perApplication.set(row.applicationName, row.rateLimited);
+    } else if (!rows.some((r) => r.applicationName === row.applicationName && r.api === "*")) {
+      perApplication.set(row.applicationName, current + row.rateLimited);
+    }
+  }
+
+  const throttled = [...perApplication.values()].reduce((sum, n) => sum + n, 0);
   const atRisk = rows.filter((row) => row.headroom < 20);
 
-  const chart = [...rows]
-    .sort((a, b) => b.rateLimited - a.rateLimited)
+  const chart = [...perApplication.entries()]
+    .sort((a, b) => b[1] - a[1])
     .slice(0, 8)
-    .map((row) => ({ t: row.applicationName, value: row.rateLimited }));
+    .map(([applicationName, rateLimited]) => ({ t: applicationName, value: rateLimited }));
 
   const columns: Column<RateLimitRule>[] = [
     {
