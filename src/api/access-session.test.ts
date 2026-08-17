@@ -437,3 +437,39 @@ describe("E and F — other failures are not reported as Access expiry", () => {
     expect(messages.size).toBe(4);
   });
 });
+
+describe("the document identity survives module re-evaluation", () => {
+  test("a re-evaluated module reuses the id already on the window", async () => {
+    // Hot module replacement re-evaluates this file inside the SAME document.
+    // A module-scoped id changed while the page stayed put, and an in-flight
+    // request from before the reload would then clear a marker written after
+    // it — reinstating the race in development.
+    const host = globalThis as unknown as { window?: unknown };
+    const original = host.window;
+    host.window = { location: { href: ADMIN_URL } };
+    try {
+      const first = await import(`./access-session.ts?hmr=${Math.random()}`);
+      const second = await import(`./access-session.ts?hmr=${Math.random()}`);
+      expect(typeof first.DOCUMENT_ID).toBe("string");
+      expect(first.DOCUMENT_ID.length).toBeGreaterThan(8);
+      expect(second.DOCUMENT_ID).toBe(first.DOCUMENT_ID);
+    } finally {
+      host.window = original;
+    }
+  });
+
+  test("a different document gets a different id", async () => {
+    const host = globalThis as unknown as { window?: unknown };
+    const original = host.window;
+    try {
+      host.window = { location: { href: ADMIN_URL } };
+      const a = await import(`./access-session.ts?doc=a${Math.random()}`);
+      // A new document is a new window object with nothing carried over.
+      host.window = { location: { href: ADMIN_URL } };
+      const b = await import(`./access-session.ts?doc=b${Math.random()}`);
+      expect(b.DOCUMENT_ID).not.toBe(a.DOCUMENT_ID);
+    } finally {
+      host.window = original;
+    }
+  });
+});

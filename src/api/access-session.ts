@@ -73,9 +73,9 @@ export interface ReauthRecord {
 /**
  * Identity of the document currently running.
  *
- * Generated once per module load, and a module is loaded once per document, so
- * this is exactly "this page" — including after the Access round trip, which
- * produces a new document and therefore a new value.
+ * Generated once per document — see the implementation for why it is anchored
+ * on `window` rather than on module scope. After the Access round trip the
+ * document is new and so is this value.
  *
  * It replaces comparing the marker's timestamp against performance.timeOrigin.
  * Those two came from different clock bases: the marker used Date.now() and the
@@ -84,15 +84,43 @@ export interface ReauthRecord {
  * itself. A slow success would then clear a recovery still in flight and reopen
  * the very race the marker exists to prevent. An identity cannot drift.
  */
-export const DOCUMENT_ID = (() => {
+const DOCUMENT_ID_KEY = Symbol.for("cb67.access.documentId");
+
+function newDocumentId(): string {
   try {
     if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
       return crypto.randomUUID();
     }
   } catch {
-    /* fall through to the arithmetic form */
+    /* randomUUID is unavailable over plain HTTP; fall through */
   }
   return `d${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`;
+}
+
+/**
+ * Anchored on `window`, not on module scope.
+ *
+ * Module scope is per-EVALUATION, and hot module replacement re-evaluates this
+ * file inside the SAME document. A module-scoped id therefore changed while the
+ * page stayed put, and an in-flight request from before the reload would clear a
+ * marker written after it — reinstating the slow-success race during
+ * development. The invariant is meant to be "this document", so it is stored
+ * where a document lives.
+ *
+ * A registered Symbol survives re-evaluation and does not collide with anything
+ * else on window.
+ */
+export const DOCUMENT_ID: string = (() => {
+  if (typeof window === "undefined") {
+    // Server rendering: a fresh realm per render, and nothing here navigates.
+    return newDocumentId();
+  }
+  const host = window as unknown as Record<symbol, string | undefined>;
+  const existing = host[DOCUMENT_ID_KEY];
+  if (typeof existing === "string") return existing;
+  const created = newDocumentId();
+  host[DOCUMENT_ID_KEY] = created;
+  return created;
 })();
 
 /**
