@@ -137,7 +137,7 @@ function RateLimitsPage() {
       id: "actions",
       header: "",
       cell: (row) => (
-        <Permitted permission="apis:write">
+        <Permitted permission="apis.write">
           <Button
             variant="outline"
             size="sm"

@@ -169,7 +169,7 @@ function LicenseDetail() {
         description="As concessões são de curta duração e assinadas; suspender ou revogar uma licença tem efeito na próxima renovação da instalação, ou imediatamente se ela estiver on-line."
         meta={record ? <StatusBadge status={record.status} /> : undefined}
         actions={
-          <Permitted permission="licensing:write">
+          <Permitted permission="licensing.write">
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={() => setPending("suspend")}>
                 Suspender
@@ -202,7 +202,7 @@ function LicenseDetail() {
         />
         <MetricCard
           label="Última validação"
-          value={record ? formatRelative(record.lastValidationAt) : "—"}
+          value={formatRelativeOrNull(record?.lastValidationAt ?? null)}
           isLoading={license.isLoading}
         />
       </div>

@@ -93,7 +93,7 @@ function AlertsPage() {
       header: "",
       cell: (row) =>
         row.state === "firing" ? (
-          <Permitted permission="observability:write">
+          <Permitted permission="observability.write">
             <Button
               variant="outline"
               size="sm"

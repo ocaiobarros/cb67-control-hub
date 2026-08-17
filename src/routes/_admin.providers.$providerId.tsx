@@ -185,7 +185,7 @@ function ProviderDetail() {
       id: "actions",
       header: "",
       cell: (row) => (
-        <Permitted permission="providers:write">
+        <Permitted permission="providers.write">
           <Button
             variant="outline"
             size="sm"

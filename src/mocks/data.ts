@@ -1066,9 +1066,13 @@ export const MockLicenses: License[] = [
     status: "pending",
     startsAt: iso(-3),
     expiresAt: iso(362),
-    installations: 1,
+    // Issued three days ago and never activated, so nothing has validated it.
+    // The absence is null, not an empty string and not an invented timestamp:
+    // the mock has to exercise the same shape the backend serves, or it hides
+    // the null path from every screen that renders it.
+    installations: 0,
     maxInstallations: 3,
-    lastValidationAt: iso(-1, 9),
+    lastValidationAt: null,
     features: ["Roteamento"],
   },
   {

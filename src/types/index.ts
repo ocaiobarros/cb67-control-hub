@@ -314,7 +314,16 @@ export interface License {
   expiresAt: string;
   installations: number;
   maxInstallations: number;
-  lastValidationAt: string;
+  /**
+   * Null until an installation has validated this licence.
+   *
+   * "Never validated" is not a time. It was typed as `string`, which left the
+   * backend a choice between an empty string and a fabricated timestamp: the
+   * first makes `new Date("")` NaN and throws in `Intl`, the second invents
+   * data. `Installation.lastSeen` already models the same absence as null in
+   * this file, and this now matches it. See decision D-035.
+   */
+  lastValidationAt: string | null;
   features: string[];
 }
 

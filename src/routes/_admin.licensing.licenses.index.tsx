@@ -5,7 +5,7 @@ import { PageHeader, SectionTitle } from "@/components/common/page-header";
 import { DataTable, type Column } from "@/components/common/data-table";
 import { MetricCard } from "@/components/common/metric-card";
 import { StatusBadge } from "@/components/common/status-badge";
-import { daysUntil, formatDate, formatNumber, formatRelative } from "@/utils/format";
+import { daysUntil, formatDate, formatNumber, formatRelativeOrNull } from "@/utils/format";
 import type { License } from "@/types";
 
 export const Route = createFileRoute("/_admin/licensing/licenses/")({
@@ -96,10 +96,10 @@ function LicensesPage() {
       header: "Última validação",
       cell: (row) => (
         <span className="mono-xs text-muted-foreground">
-          {formatRelative(row.lastValidationAt)}
+          {formatRelativeOrNull(row.lastValidationAt)}
         </span>
       ),
-      sortValue: (row) => row.lastValidationAt,
+      sortValue: (row) => row.lastValidationAt ?? undefined,
       align: "right",
     },
     {

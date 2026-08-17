@@ -86,7 +86,7 @@ function ChecksumsPage() {
       id: "actions",
       header: "",
       cell: (row) => (
-        <Permitted permission="backups:write">
+        <Permitted permission="backups.write">
           <Button
             variant="outline"
             size="sm"

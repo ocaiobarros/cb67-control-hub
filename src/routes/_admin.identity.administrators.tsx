@@ -90,7 +90,7 @@ function AdministratorsPage() {
       id: "actions",
       header: "",
       cell: (row) => (
-        <Permitted permission="identity:write">
+        <Permitted permission="identity.write">
           <Button
             variant="outline"
             size="sm"

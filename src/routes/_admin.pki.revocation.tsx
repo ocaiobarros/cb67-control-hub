@@ -104,7 +104,7 @@ function RevocationPage() {
       id: "actions",
       header: "",
       cell: (row) => (
-        <Permitted permission="pki:write">
+        <Permitted permission="pki.write">
           <Button
             variant="destructive"
             size="sm"

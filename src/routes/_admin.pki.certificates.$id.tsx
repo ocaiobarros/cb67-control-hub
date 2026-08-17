@@ -79,7 +79,7 @@ function CertificateDetail() {
         description="A rotação emite um novo certificado para o mesmo sujeito e mantém o anterior válido até sua expiração. A revogação é imediata e irreversível."
         meta={record ? <StatusBadge status={record.status} /> : undefined}
         actions={
-          <Permitted permission="pki:write">
+          <Permitted permission="pki.write">
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={() => setPending("rotate")}>
                 Rotacionar
