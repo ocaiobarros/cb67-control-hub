@@ -37,18 +37,19 @@ export function chooseAdapterKind(
   environment: string,
   useMockApi: boolean,
 ): "http" | "mock" {
-  // Two independent reasons to refuse, because either alone fails open.
+  // Mocks are OPT-IN, and that is the property that makes this fail closed.
   //
-  // `isProductionBuild` is Vite's own import.meta.env.PROD: true for every
-  // `vite build`, set by the bundler, impossible to forget. This is the one that
-  // matters. An earlier version keyed only on VITE_CB67_ENVIRONMENT ===
-  // "production", and both of that variable's failure modes point the wrong way
-  // — it DEFAULTS to "development", and a typo like "prod" does not match. A
-  // production build with the variable missing or misspelled would have shipped
-  // fabricated data, reachable by forgetting one environment variable.
+  // Two earlier versions tried to detect production and refuse there. Both
+  // failed open, because every default pointed at invented data: the flag
+  // defaulted to true, the environment defaulted to "development", and an
+  // artifact built with `--mode development` and deployed to production has
+  // PROD=false. Three defaults, all towards fiction, guarded by a condition
+  // someone had to remember to satisfy.
   //
-  // The declared environment stays as a second gate, for a build that is not
-  // Vite-production but is deployed as production anyway.
+  // The flag now defaults to FALSE, so anything that has not explicitly asked
+  // for mock data gets the real API. The production checks remain because they
+  // are cheap and because an explicit request for mocks in a production build is
+  // a mistake worth overriding rather than honouring.
   if (isProductionBuild) return "http";
   if (environment === "production") return "http";
   return useMockApi ? "mock" : "http";

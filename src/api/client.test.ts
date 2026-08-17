@@ -16,6 +16,21 @@ import { api, chooseAdapterKind, isMockMode, mockRefusedInProduction } from "./c
  * is a second gate, not the only one.
  */
 describe("adapter selection fails closed", () => {
+  test("nothing reaches the mock without asking for it", () => {
+    // The property that actually makes this safe. Two earlier versions detected
+    // production and refused there, and both failed open: the flag defaulted to
+    // true, the environment defaulted to "development", and a `--mode
+    // development` artifact deployed to production has PROD=false. Every
+    // default pointed at invented data.
+    for (const isProd of [true, false]) {
+      for (const environment of ["", "development", "staging", "prod", "production"]) {
+        expect(`${isProd}/${environment}: ${chooseAdapterKind(isProd, environment, false)}`).toBe(
+          `${isProd}/${environment}: http`,
+        );
+      }
+    }
+  });
+
   test("a production BUILD refuses the mock, whatever the variables say", () => {
     // This is the case that was open: a production build whose custom variables
     // were never set.
