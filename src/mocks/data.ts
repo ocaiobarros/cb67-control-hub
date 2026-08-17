@@ -720,45 +720,6 @@ export const MockQuotas: QuotaRecord[] = MockApplications.slice(0, 5).map((app, 
 
 /* ------------------------------------------------------------------ Providers */
 
-export const MockProviders: Provider[] = [
-  {
-    id: "openai",
-    name: "OpenAI",
-    status: "healthy",
-    requests24h: 41288,
-    errors24h: 52,
-    rateLimited24h: 118,
-    p95Ms: 910,
-    projects: 4,
-    credentials: 4,
-    lastSuccessAt: iso(0, 13),
-  },
-  {
-    id: "gemini",
-    name: "Google Gemini",
-    status: "degraded",
-    requests24h: 18422,
-    errors24h: 210,
-    rateLimited24h: 402,
-    p95Ms: 620,
-    projects: 3,
-    credentials: 3,
-    lastSuccessAt: iso(0, 13),
-  },
-  {
-    id: "google-maps",
-    name: "Google Maps",
-    status: "healthy",
-    requests24h: 37134,
-    errors24h: 41,
-    rateLimited24h: 63,
-    p95Ms: 180,
-    projects: 3,
-    credentials: 5,
-    lastSuccessAt: iso(0, 13),
-  },
-];
-
 export const MockProviderProjects: ProviderProject[] = [
   {
     id: "pp-1",
@@ -830,7 +791,9 @@ export const MockProviderProjects: ProviderProject[] = [
     status: "disabled",
     requests24h: 0,
     rateLimited24h: 0,
-    quotaUsage: 0,
+    // Null, not 0: the backend returns null when nothing has been consumed. 0%
+    // claims a measurement against the provider's allowance that never happened.
+    quotaUsage: null,
   },
   {
     id: "pp-7",
@@ -922,6 +885,72 @@ export const MockProducts: LicenseProduct[] = [
     status: "pending",
   },
 ];
+
+/**
+ * Totals are DERIVED from the project and credential lists, not chosen.
+ *
+ * Every provider statistics row belongs to a project, so a provider's requests
+ * are the sum of its projects' requests by construction. Picking both
+ * independently gave OpenAI 41,288 requests across "4 projects" while listing
+ * three that summed to 31,306 - three numbers the backend could never produce
+ * together.
+ *
+ * Errors and rate limits are a fixed share of the derived total, so the error
+ * rate stays where the status classification expects it. Status is derived by
+ * the backend's own rule: degraded above 5%.
+ */
+const PROVIDER_SHAPE: Record<
+  Provider["id"],
+  { name: string; p95Ms: number; errorRate: number; rateLimitedRate: number; lastSuccessAt: string }
+> = {
+  openai: {
+    name: "OpenAI",
+    p95Ms: 910,
+    errorRate: 0.008,
+    rateLimitedRate: 0.004,
+    lastSuccessAt: iso(0, 13),
+  },
+  gemini: {
+    name: "Google Gemini",
+    p95Ms: 620,
+    errorRate: 0.011,
+    rateLimitedRate: 0.022,
+    lastSuccessAt: iso(0, 13),
+  },
+  "google-maps": {
+    name: "Google Maps",
+    p95Ms: 180,
+    errorRate: 0.003,
+    rateLimitedRate: 0.001,
+    lastSuccessAt: iso(0, 13),
+  },
+};
+
+export const MockProviders: Provider[] = (Object.keys(PROVIDER_SHAPE) as Provider["id"][]).map(
+  (id) => {
+    const shape = PROVIDER_SHAPE[id];
+    const projects = MockProviderProjects.filter((p) => p.providerId === id);
+    const requests24h = projects.reduce((sum, p) => sum + p.requests24h, 0);
+    const errors24h = Math.round(requests24h * shape.errorRate);
+    return {
+      id,
+      name: shape.name,
+      status: (requests24h === 0
+        ? "unknown"
+        : errors24h / requests24h > 0.05
+          ? "degraded"
+          : "healthy") as Provider["status"],
+      requests24h,
+      errors24h,
+      rateLimited24h: projects.reduce((sum, p) => sum + p.rateLimited24h, 0),
+      p95Ms: shape.p95Ms,
+      projects: projects.length,
+      credentials: MockCredentials.filter((c) => c.providerId === id && c.status !== "revoked")
+        .length,
+      lastSuccessAt: shape.lastSuccessAt,
+    };
+  },
+);
 
 export const MockCustomers: Customer[] = [
   {

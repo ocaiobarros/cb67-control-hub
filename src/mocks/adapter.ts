@@ -218,9 +218,12 @@ export const mockAdapter: PlatformAdapter = {
   },
   async getProviderSeries(providerId: Provider["id"], range) {
     const key = providerId === "google-maps" ? "maps" : providerId;
+    // "value" is the series key the chart reads and what the backend sends.
+    // Emitting "latency" produced a well-formed response the chart rendered as
+    // empty — the same defect already fixed on the API Management series.
     const points = M.MockCharts.providerLatency(range).map((p) => ({
       t: p.t,
-      latency: p[key] as number,
+      value: p[key] ?? null,
     }));
     return delay(points);
   },
