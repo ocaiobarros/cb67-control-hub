@@ -1915,6 +1915,46 @@ export const MockChangelog: ChangelogEntry[] = [
   },
 ];
 
+/**
+ * An HOURLY series, for endpoints whose aggregates are bucketed by hour.
+ *
+ * buildSeries spaces points by RANGE_POINTS, which is minutes for short ranges
+ * and days for long ones. API Management latency comes from
+ * gateway.api_endpoint_stats, which groups exclusively by bucket_hour, so the
+ * backend can only ever emit hourly points. A mock with a different cadence
+ * rehearses a chart the real data cannot fill.
+ *
+ * A range shorter than an hour still yields one point, matching the backend,
+ * which floors its window at the bucket width rather than returning nothing.
+ */
+export function buildHourlySeries(
+  range: TimeRange,
+  seriesSpec: Record<string, { base: number; spread: number; decimals?: number }>,
+  seed = 7,
+): MetricPoint[] {
+  const HOURS: Record<TimeRange, number> = {
+    "15m": 1,
+    "1h": 1,
+    "6h": 6,
+    "24h": 24,
+    "7d": 24 * 7,
+    "30d": 24 * 30,
+  };
+  const count = HOURS[range];
+  const rand = seeded(seed);
+  const end = Date.UTC(2026, 7, 16, 14, 0, 0);
+  return Array.from({ length: count }, (_, i) => {
+    const t = new Date(end - (count - 1 - i) * 3_600_000).toISOString();
+    const point: MetricPoint = { t };
+    for (const [key, cfg] of Object.entries(seriesSpec)) {
+      const wave = Math.sin((i / Math.max(1, count)) * Math.PI * 2) * cfg.spread * 0.5;
+      const noise = (rand() - 0.5) * cfg.spread;
+      point[key] = Number(Math.max(0, cfg.base + wave + noise).toFixed(cfg.decimals ?? 0));
+    }
+    return point;
+  });
+}
+
 export const MockCharts = {
   requests: (range: TimeRange) => buildSeries(range, { requests: { base: 1600, spread: 700 } }, 3),
   latency: (range: TimeRange) =>
@@ -1933,7 +1973,8 @@ export const MockCharts = {
    * percentiles. MockCharts.latency emits p50/p95/p99 for the screens that want
    * them, and feeding it here left that chart with nothing renderable.
    */
-  apiLatency: (range: TimeRange) => buildSeries(range, { value: { base: 62, spread: 24 } }, 7),
+  apiLatency: (range: TimeRange) =>
+    buildHourlySeries(range, { value: { base: 62, spread: 24 } }, 7),
   errors: (range: TimeRange) =>
     buildSeries(
       range,
