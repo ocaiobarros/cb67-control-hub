@@ -23,6 +23,8 @@ import {
   formatNumber,
   formatPercent,
   formatRelative,
+  formatMsOrNull,
+  formatPercentOrNull,
 } from "@/utils/format";
 import type { Instance } from "@/types";
 
@@ -148,13 +150,15 @@ function ApplicationDetailPage() {
             <MetricCard label="Requisições 30d" value={formatCompact(app.requests30d)} />
             <MetricCard
               label="Taxa de erro"
-              value={formatPercent(app.errorRate)}
-              tone={app.errorRate > 1 ? "warn" : "ok"}
+              value={formatPercentOrNull(app.errorRate)}
+              // No measurement, no verdict: a green card would announce a clean
+              // application that has never served a request.
+              tone={app.errorRate === null ? "neutral" : app.errorRate > 1 ? "warn" : "ok"}
               hint={`${formatNumber(app.errors30d)} requisições com falha`}
             />
             <MetricCard
               label="p95 / p99"
-              value={`${formatMs(app.p95Ms)} / ${formatMs(app.p99Ms)}`}
+              value={`${formatMsOrNull(app.p95Ms)} / ${formatMsOrNull(app.p99Ms)}`}
             />
             <MetricCard
               label="Limitadas por taxa"

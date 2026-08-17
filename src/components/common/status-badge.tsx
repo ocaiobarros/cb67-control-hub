@@ -58,6 +58,7 @@ const TONE_MAP: Record<string, StatusTone> = {
   investigating: "crit",
   info: "info",
   disabled: "neutral",
+  unknown: "neutral",
   debug: "neutral",
 };
 

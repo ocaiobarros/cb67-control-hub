@@ -7,7 +7,7 @@ import { MetricCard, StatRow } from "@/components/common/metric-card";
 import { DataTable, type Column } from "@/components/common/data-table";
 import { ChartPanel, TimeSeriesChart } from "@/components/charts/chart-panel";
 import { TimeRangeSelect } from "@/components/common/time-range-select";
-import { formatMs } from "@/utils/format";
+import { formatMs, formatMsOrNull, NOT_MEASURED } from "@/utils/format";
 import type { ApiEndpoint, LatencyBreakdown, TimeRange } from "@/types";
 
 export const Route = createFileRoute("/_admin/apis/latency")({
@@ -32,6 +32,19 @@ const SCOPE_LABEL: Record<LatencyBreakdown["scope"], string> = {
   provider: "Provedor upstream",
 };
 
+/**
+ * A share of a total, or absence.
+ *
+ * Both terms must be measured, and the denominator must be non-zero: without
+ * either the result is not a percentage of anything. The previous form
+ * required only that both objects existed, which said nothing about whether
+ * their percentiles had values.
+ */
+function sharePercent(part: number | null, whole: number | null): string {
+  if (part === null || whole === null || whole === 0) return NOT_MEASURED;
+  return `${((part / whole) * 100).toFixed(1)}%`;
+}
+
 function LatencyPage() {
   const [range, setRange] = useState<TimeRange>("24h");
   const latency = useQuery(q.latency(range));
@@ -52,8 +65,8 @@ function LatencyPage() {
     ...(["p50", "p90", "p95", "p99", "max"] as const).map<Column<LatencyBreakdown>>((key) => ({
       id: key,
       header: key === "max" ? "max" : key,
-      cell: (row) => <span className="tabular">{formatMs(row[key])}</span>,
-      sortValue: (row) => row[key],
+      cell: (row) => <span className="tabular">{formatMsOrNull(row[key])}</span>,
+      sortValue: (row) => row[key] ?? -1,
       align: "right",
     })),
   ];
@@ -72,8 +85,8 @@ function LatencyPage() {
     {
       id: "p95",
       header: "p95",
-      cell: (row) => <span className="tabular">{formatMs(row.p95Ms)}</span>,
-      sortValue: (row) => row.p95Ms,
+      cell: (row) => <span className="tabular">{formatMsOrNull(row.p95Ms)}</span>,
+      sortValue: (row) => row.p95Ms ?? -1,
       align: "right",
     },
   ];
@@ -89,24 +102,24 @@ function LatencyPage() {
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
           label="p50"
-          value={overall ? formatMs(overall.p50) : "—"}
+          value={formatMsOrNull(overall?.p50 ?? null)}
           isLoading={latency.isLoading}
         />
         <MetricCard
           label="p95"
-          value={overall ? formatMs(overall.p95) : "—"}
-          tone={overall && overall.p95 > 800 ? "warn" : "ok"}
+          value={formatMsOrNull(overall?.p95 ?? null)}
+          tone={overall?.p95 != null && overall.p95 > 800 ? "warn" : "ok"}
           isLoading={latency.isLoading}
         />
         <MetricCard
           label="p99"
-          value={overall ? formatMs(overall.p99) : "—"}
-          tone={overall && overall.p99 > 2000 ? "crit" : "neutral"}
+          value={formatMsOrNull(overall?.p99 ?? null)}
+          tone={overall?.p99 != null && overall.p99 > 2000 ? "crit" : "neutral"}
           isLoading={latency.isLoading}
         />
         <MetricCard
           label="Máximo"
-          value={overall ? formatMs(overall.max) : "—"}
+          value={formatMsOrNull(overall?.max ?? null)}
           hint="Requisição concluída mais lenta"
           isLoading={latency.isLoading}
         />
@@ -148,15 +161,11 @@ function LatencyPage() {
           <dl className="mt-2">
             <StatRow
               label="Parcela da plataforma"
-              value={
-                internal && overall ? `${((internal.p95 / overall.p95) * 100).toFixed(1)}%` : "—"
-              }
+              value={sharePercent(internal?.p95 ?? null, overall?.p95 ?? null)}
             />
             <StatRow
               label="Parcela do provedor"
-              value={
-                provider && overall ? `${((provider.p95 / overall.p95) * 100).toFixed(1)}%` : "—"
-              }
+              value={sharePercent(provider?.p95 ?? null, overall?.p95 ?? null)}
             />
             <StatRow label="Janela" value={range} />
             <StatRow label="Origem do percentil" value="Registros de requisição (provisório)" />
@@ -173,7 +182,13 @@ function LatencyPage() {
           description="Classificados por p95 nas últimas 24 horas."
         />
         <DataTable
-          data={[...(endpoints.data ?? [])].sort((a, b) => b.p95Ms - a.p95Ms).slice(0, 10)}
+          // Only endpoints with a measured p95 can be ranked by it. Coercing a
+          // null to 0 would seat every unobserved endpoint at the fast end of a
+          // table whose whole purpose is to name the slow ones.
+          data={[...(endpoints.data ?? [])]
+            .filter((e): e is typeof e & { p95Ms: number } => e.p95Ms !== null)
+            .sort((a, b) => b.p95Ms - a.p95Ms)
+            .slice(0, 10)}
           columns={slowest}
           rowKey={(row) => row.id}
           isLoading={endpoints.isLoading}

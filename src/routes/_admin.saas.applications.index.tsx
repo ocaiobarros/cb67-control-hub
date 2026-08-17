@@ -7,7 +7,14 @@ import { DataTable, type Column } from "@/components/common/data-table";
 import { StatusBadge } from "@/components/common/status-badge";
 import { MetricCard } from "@/components/common/metric-card";
 import { Badge } from "@/components/ui/badge";
-import { formatCompact, formatMs, formatPercent, formatRelative } from "@/utils/format";
+import {
+  formatCompact,
+  formatMs,
+  formatMsOrNull,
+  formatPercent,
+  formatPercentOrNull,
+  formatRelative,
+} from "@/utils/format";
 import type { Application } from "@/types";
 
 export const Route = createFileRoute("/_admin/saas/applications/")({
@@ -74,18 +81,20 @@ function ApplicationsPage() {
       id: "errorRate",
       header: "Taxa de erros",
       cell: (row) => (
-        <span className={row.errorRate > 1 ? "tabular text-warn" : "tabular"}>
-          {formatPercent(row.errorRate)}
+        <span className={(row.errorRate ?? 0) > 1 ? "tabular text-warn" : "tabular"}>
+          {formatPercentOrNull(row.errorRate)}
         </span>
       ),
-      sortValue: (row) => row.errorRate,
+      // Unmeasured sorts as -1 so it groups apart from a genuine 0%, which is a
+      // different fact about the application.
+      sortValue: (row) => row.errorRate ?? -1,
       align: "right",
     },
     {
       id: "p95",
       header: "p95",
-      cell: (row) => <span className="tabular">{formatMs(row.p95Ms)}</span>,
-      sortValue: (row) => row.p95Ms,
+      cell: (row) => <span className="tabular">{formatMsOrNull(row.p95Ms)}</span>,
+      sortValue: (row) => row.p95Ms ?? -1,
       align: "right",
     },
     {

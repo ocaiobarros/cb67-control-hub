@@ -5,7 +5,13 @@ import { PageHeader, SectionTitle } from "@/components/common/page-header";
 import { DataTable, type Column } from "@/components/common/data-table";
 import { MetricCard, UsageCard } from "@/components/common/metric-card";
 import { StatusBadge } from "@/components/common/status-badge";
-import { formatCompact, formatDate, formatNumber, formatPercent } from "@/utils/format";
+import {
+  formatCompact,
+  formatDate,
+  formatNumber,
+  formatPercent,
+  NOT_MEASURED,
+} from "@/utils/format";
 import type { QuotaRecord } from "@/types";
 
 export const Route = createFileRoute("/_admin/apis/quotas")({
@@ -28,11 +34,19 @@ function usagePct(row: QuotaRecord) {
   return row.monthlyQuota > 0 ? (row.used / row.monthlyQuota) * 100 : 0;
 }
 
-function forecastTone(row: QuotaRecord) {
-  const pct = row.monthlyQuota > 0 ? (row.forecast / row.monthlyQuota) * 100 : 0;
-  if (pct >= 100) return "crit" as const;
-  if (pct >= 85) return "warn" as const;
-  return "ok" as const;
+/**
+ * The tone of a forecast, or null when there is no forecast to judge.
+ *
+ * A null forecast means the period is too young to project from, or nothing has
+ * been consumed. Treating that as 0% and colouring it green announced "within
+ * quota" about an application nobody has measured.
+ */
+function forecastTone(row: QuotaRecord): "crit" | "warn" | "ok" | null {
+  if (row.forecast === null || row.monthlyQuota <= 0) return null;
+  const pct = (row.forecast / row.monthlyQuota) * 100;
+  if (pct >= 100) return "crit";
+  if (pct >= 85) return "warn";
+  return "ok";
 }
 
 function QuotasPage() {
@@ -41,7 +55,10 @@ function QuotasPage() {
 
   const totalQuota = rows.reduce((sum, row) => sum + row.monthlyQuota, 0);
   const totalUsed = rows.reduce((sum, row) => sum + row.used, 0);
-  const overForecast = rows.filter((row) => row.forecast > row.monthlyQuota);
+  // Only a real forecast can exceed a quota. An absent one is not a breach.
+  const overForecast = rows.filter(
+    (row) => row.forecast !== null && row.forecast > row.monthlyQuota,
+  );
   const top = [...rows].sort((a, b) => usagePct(b) - usagePct(a)).slice(0, 3);
 
   const columns: Column<QuotaRecord>[] = [
@@ -95,10 +112,10 @@ function QuotasPage() {
                 : "tabular"
           }
         >
-          {formatCompact(row.forecast)}
+          {row.forecast === null ? NOT_MEASURED : formatCompact(row.forecast)}
         </span>
       ),
-      sortValue: (row) => row.forecast,
+      sortValue: (row) => row.forecast ?? -1,
       align: "right",
     },
     {
@@ -107,22 +124,26 @@ function QuotasPage() {
       cell: (row) => (
         <StatusBadge
           status={
-            forecastTone(row) === "crit"
-              ? "critical"
-              : forecastTone(row) === "warn"
-                ? "warn"
-                : "healthy"
+            forecastTone(row) === null
+              ? "unknown"
+              : forecastTone(row) === "crit"
+                ? "critical"
+                : forecastTone(row) === "warn"
+                  ? "warn"
+                  : "healthy"
           }
           label={
-            forecastTone(row) === "crit"
-              ? "Vai exceder"
-              : forecastTone(row) === "warn"
-                ? "Próximo do limite"
-                : "Dentro da cota"
+            forecastTone(row) === null
+              ? "Sem previsão"
+              : forecastTone(row) === "crit"
+                ? "Vai exceder"
+                : forecastTone(row) === "warn"
+                  ? "Próximo do limite"
+                  : "Dentro da cota"
           }
         />
       ),
-      sortValue: (row) => row.forecast / Math.max(1, row.monthlyQuota),
+      sortValue: (row) => (row.forecast ?? -1) / Math.max(1, row.monthlyQuota),
       align: "right",
     },
     {

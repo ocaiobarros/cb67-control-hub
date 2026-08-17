@@ -12,7 +12,15 @@ export type Environment = "production" | "staging" | "development";
 export type EntityStatus =
   "active" | "disabled" | "revoked" | "expired" | "pending" | "suspended" | "grace";
 
-export type HealthStatus = "healthy" | "degraded" | "unavailable" | "disabled" | "maintenance";
+/**
+ * `unknown` is not a hedge, it is the accurate answer for a component that is
+ * configured but has not yet been observed. The API broker does not exist, so
+ * no request has crossed any endpoint; reporting "healthy" would assert a
+ * measurement that was never taken, and "unavailable" would assert a failure
+ * that was never seen.
+ */
+export type HealthStatus =
+  "healthy" | "degraded" | "unavailable" | "disabled" | "maintenance" | "unknown";
 
 export type PlatformHealth = "healthy" | "degraded" | "critical" | "maintenance";
 
@@ -53,8 +61,10 @@ export interface Application {
   apiClientId: string;
   licenseStatus: EntityStatus;
   requests30d: number;
-  errorRate: number;
-  p95Ms: number;
+  /** Null when no request was measured. See ApiEndpoint.errorRate. */
+  errorRate: number | null;
+  /** Null when there is no sample, or the quantile is beyond the histogram. */
+  p95Ms: number | null;
   lastSeen: string;
   certificateStatus: EntityStatus;
   certificateExpiresAt: string;
@@ -64,7 +74,8 @@ export interface Application {
   quotaUsed: number;
   rateLimited: number;
   errors30d: number;
-  p99Ms: number;
+  /** Null when there is no sample, or the quantile is beyond the histogram. */
+  p99Ms: number | null;
 }
 
 export interface Instance {
@@ -108,9 +119,16 @@ export interface ApiEndpoint {
   version: string;
   scope: string;
   status: HealthStatus;
+  /** A count: zero requests really is zero. */
   requests24h: number;
-  p95Ms: number;
-  errorRate: number;
+  /**
+   * Null when there is no sample, and ALSO when the sample exists but the
+   * quantile falls beyond the largest histogram bucket. 0 would say
+   * "instantaneous"; null says "not measured".
+   */
+  p95Ms: number | null;
+  /** Null when no request was measured — a rate over nothing is undefined. */
+  errorRate: number | null;
 }
 
 export interface ApiRequestRecord {
@@ -132,21 +150,28 @@ export interface ApiErrorGroup {
   statusClass: "4xx" | "5xx" | "timeout" | "provider";
   status: string;
   count: number;
-  ratePerMin: number;
-  trend: number;
+  /** Null when the observed span is shorter than a minute: no rate to derive. */
+  ratePerMin: number | null;
+  /** Null when the previous hour had none — change from zero is undefined. */
+  trend: number | null;
   firstSeen: string;
   lastSeen: string;
   affectedClients: number;
   affectedEndpoints: string[];
 }
 
+/**
+ * Every percentile is nullable. A quantile over an empty sample has no value,
+ * and one beyond the largest histogram bucket is censored rather than capped at
+ * the bound. `max` is null until the broker records it; it is not inferred.
+ */
 export interface LatencyBreakdown {
   scope: "overall" | "internal" | "provider";
-  p50: number;
-  p90: number;
-  p95: number;
-  p99: number;
-  max: number;
+  p50: number | null;
+  p90: number | null;
+  p95: number | null;
+  p99: number | null;
+  max: number | null;
 }
 
 export interface RateLimitRule {
@@ -169,7 +194,12 @@ export interface QuotaRecord {
   rateLimitPerMin: number;
   monthlyQuota: number;
   used: number;
-  forecast: number;
+  /**
+   * Null while the period is too young to project from, and null when nothing
+   * has been consumed. 0 would assert a forecast of no usage, which is a
+   * different statement from declining to forecast.
+   */
+  forecast: number | null;
   resetsAt: string;
 }
 

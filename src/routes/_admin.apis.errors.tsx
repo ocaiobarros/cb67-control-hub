@@ -6,7 +6,13 @@ import { DataTable, type Column } from "@/components/common/data-table";
 import { MetricCard } from "@/components/common/metric-card";
 import { StatusBadge } from "@/components/common/status-badge";
 import { ChartPanel, CategoryBarChart } from "@/components/charts/chart-panel";
-import { formatCompact, formatDateTime, formatNumber, formatRelative } from "@/utils/format";
+import {
+  formatCompact,
+  formatDateTime,
+  formatNumber,
+  formatRelative,
+  NOT_MEASURED,
+} from "@/utils/format";
 import type { ApiErrorGroup } from "@/types";
 
 export const Route = createFileRoute("/_admin/apis/errors")({
@@ -88,20 +94,30 @@ function ApiErrorsPage() {
     {
       id: "rate",
       header: "Por minuto",
-      cell: (row) => <span className="tabular">{row.ratePerMin.toFixed(2)}</span>,
-      sortValue: (row) => row.ratePerMin,
+      cell: (row) => (
+        <span className="tabular">
+          {row.ratePerMin === null ? NOT_MEASURED : row.ratePerMin.toFixed(2)}
+        </span>
+      ),
+      sortValue: (row) => row.ratePerMin ?? -1,
       align: "right",
     },
     {
       id: "trend",
       header: "Tendência",
-      cell: (row) => (
-        <span className={row.trend > 0 ? "tabular text-crit" : "tabular text-ok"}>
-          {row.trend > 0 ? "+" : ""}
-          {row.trend.toFixed(1)}%
-        </span>
-      ),
-      sortValue: (row) => row.trend,
+      cell: (row) =>
+        // Null means the previous hour had none of this error, so there is no
+        // baseline to compare against. Showing "0.0%" would report no change
+        // for a group that went from nothing to something.
+        row.trend === null ? (
+          <span className="tabular text-muted-foreground">{NOT_MEASURED}</span>
+        ) : (
+          <span className={row.trend > 0 ? "tabular text-crit" : "tabular text-ok"}>
+            {row.trend > 0 ? "+" : ""}
+            {row.trend.toFixed(1)}%
+          </span>
+        ),
+      sortValue: (row) => row.trend ?? Number.NEGATIVE_INFINITY,
       align: "right",
     },
     {

@@ -39,7 +39,24 @@ export const formatCompact = (value: number) =>
 
 export const formatPercent = (value: number, digits = 2) => `${value.toFixed(digits)}%`;
 
+/**
+ * What is shown where a measurement does not exist.
+ *
+ * The backend now returns null for a percentile over an empty sample, an error
+ * rate over no requests, a rate whose observed span is too short, and a trend
+ * from a zero baseline. Rendering those as "0 ms" or "0.00%" would put a
+ * measurement on screen that was never taken — which is the whole reason they
+ * became nullable.
+ */
+export const NOT_MEASURED = "—";
+
+export const formatPercentOrNull = (value: number | null, digits = 2) =>
+  value === null ? NOT_MEASURED : formatPercent(value, digits);
+
 export const formatMs = (value: number) => `${numberFmt.format(Math.round(value))} ms`;
+
+export const formatMsOrNull = (value: number | null) =>
+  value === null ? NOT_MEASURED : formatMs(value);
 
 export const formatDateTime = (iso: string) => dateTimeFmt.format(new Date(iso));
 export const formatDate = (iso: string) => dateFmt.format(new Date(iso));

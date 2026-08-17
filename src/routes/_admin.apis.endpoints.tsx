@@ -6,7 +6,14 @@ import { DataTable, type Column } from "@/components/common/data-table";
 import { StatusBadge } from "@/components/common/status-badge";
 import { MetricCard } from "@/components/common/metric-card";
 import { MethodBadge } from "@/components/common/method-badge";
-import { formatCompact, formatMs, formatPercent } from "@/utils/format";
+import {
+  formatCompact,
+  formatMs,
+  formatPercent,
+  formatMsOrNull,
+  formatPercentOrNull,
+  NOT_MEASURED,
+} from "@/utils/format";
 import type { ApiEndpoint } from "@/types";
 
 export const Route = createFileRoute("/_admin/apis/endpoints")({
@@ -62,19 +69,21 @@ function EndpointsPage() {
     {
       id: "p95Ms",
       header: "p95",
-      cell: (row) => <span className="tabular">{formatMs(row.p95Ms)}</span>,
-      sortValue: (row) => row.p95Ms,
+      cell: (row) => <span className="tabular">{formatMsOrNull(row.p95Ms)}</span>,
+      // Unmeasured sorts below every measured value rather than alongside a
+      // genuine 0 ms, which would be a different and untrue claim.
+      sortValue: (row) => row.p95Ms ?? -1,
       align: "right",
     },
     {
       id: "errorRate",
       header: "Taxa de erro",
       cell: (row) => (
-        <span className={row.errorRate > 1 ? "tabular text-warn" : "tabular"}>
-          {formatPercent(row.errorRate)}
+        <span className={(row.errorRate ?? 0) > 1 ? "tabular text-warn" : "tabular"}>
+          {formatPercentOrNull(row.errorRate)}
         </span>
       ),
-      sortValue: (row) => row.errorRate,
+      sortValue: (row) => row.errorRate ?? -1,
       align: "right",
     },
     {
@@ -86,7 +95,11 @@ function EndpointsPage() {
     },
   ];
 
-  const slowest = [...rows].sort((a, b) => b.p95Ms - a.p95Ms)[0];
+  // Only endpoints with a measured p95 can be ranked by it. Including the
+  // unmeasured ones would let an endpoint that has served nothing be announced
+  // as the fastest, or — with a null coerced to 0 — as the slowest.
+  const measured = rows.filter((r): r is typeof r & { p95Ms: number } => r.p95Ms !== null);
+  const slowest = [...measured].sort((a, b) => b.p95Ms - a.p95Ms)[0];
 
   return (
     <div className="space-y-6">
@@ -110,7 +123,7 @@ function EndpointsPage() {
         />
         <MetricCard
           label="p95 mais lento"
-          value={slowest ? formatMs(slowest.p95Ms) : "—"}
+          value={slowest ? formatMs(slowest.p95Ms) : NOT_MEASURED}
           hint={slowest?.path}
           isLoading={endpoints.isLoading}
         />
