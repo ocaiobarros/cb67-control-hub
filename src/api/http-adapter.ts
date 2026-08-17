@@ -48,21 +48,49 @@ export class HttpError extends Error {
 }
 
 /**
- * Endpoints where a 401 means "these credentials are wrong", not "your session
- * ended". Matched by suffix so a base path or an API prefix does not change the
- * classification.
+ * Endpoints where a 401 means "what you just submitted was rejected", not "your
+ * session ended".
+ *
+ * Compared as whole normalised paths rather than by suffix. Suffix matching
+ * would classify any future `/legacy/auth/login` the same way regardless of what
+ * it did, and these are the adapter's own paths — it knows them exactly.
  */
-const AUTHENTICATION_ATTEMPT_PATHS = ["/auth/login", "/auth/mfa/verify"];
+const AUTHENTICATION_ATTEMPT_PATHS = new Set(["/v1/admin/auth/login", "/v1/admin/auth/mfa/verify"]);
 
-/** True when a 401 from this path is a rejected credential, not a lost session. */
+/** Normalises an adapter path for comparison: one leading slash, no query, no fragment, no trailing slash. */
+function normalisePath(path: string): string {
+  const withoutFragment = path.split("#")[0] ?? "";
+  const withoutQuery = withoutFragment.split("?")[0] ?? "";
+  return withoutQuery.replace(/^\/*/, "/").replace(/(.)\/+$/, "$1");
+}
+
+/** True when a 401 from this path is a rejected submission, not a lost session. */
 export function isAuthenticationAttempt(path: string | undefined): boolean {
   if (!path) return false;
-  // Strip the query string and any trailing slash, and guarantee a single
-  // leading one, so "/auth/login", "auth/login/" and "auth/login?next=/x" are
-  // classified the same way.
-  const withoutQuery = path.split("?")[0] ?? "";
-  const normalised = withoutQuery.replace(/^\/*/, "/").replace(/\/+$/, "");
-  return AUTHENTICATION_ATTEMPT_PATHS.some((p) => normalised.endsWith(p));
+  return AUTHENTICATION_ATTEMPT_PATHS.has(normalisePath(path));
+}
+
+/**
+ * Contractual error code carried in the response body, when there is one.
+ *
+ * The status alone under-describes what happened: the backend answers 401 for a
+ * wrong password, a wrong TOTP code and an expired MFA challenge alike, and
+ * those need different words. The code is part of the wire contract, so reading
+ * it is not guesswork.
+ */
+export function errorCode(body: unknown): string | null {
+  if (typeof body !== "string" || body === "") return null;
+  try {
+    const parsed: unknown = JSON.parse(body);
+    if (typeof parsed === "object" && parsed !== null) {
+      const code = (parsed as { code?: unknown }).code;
+      return typeof code === "string" ? code : null;
+    }
+  } catch {
+    // A non-JSON body is not a contract violation worth surfacing here; the
+    // status-based classification still applies.
+  }
+  return null;
 }
 
 export { AccessSessionExpiredError } from "./access-session";
@@ -283,7 +311,7 @@ export async function request<T>(
   // zone — every request failed with "Cannot access 'env' before
   // initialization" rather than anything to do with Access.
   const recovery = browserRecoveryEnvironment();
-  if (recovery) clearReauthRecord(recovery.storage);
+  if (recovery) clearReauthRecord(recovery.storage, recovery.pageLoadedAt);
 
   if (response.status === 204) return undefined as T;
   return (await response.json()) as T;

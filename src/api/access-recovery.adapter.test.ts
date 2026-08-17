@@ -42,7 +42,7 @@ function stubFetch(handler: (call: Call) => Response) {
   }) as typeof globalThis.fetch;
 }
 
-function fakeBrowser() {
+function fakeBrowser(timeOrigin = 0) {
   const navigations: string[] = [];
   const store = new Map<string, string>();
   const win = {
@@ -56,9 +56,20 @@ function fakeBrowser() {
       setItem: (k: string, v: string) => void store.set(k, v),
       removeItem: (k: string) => void store.delete(k),
     },
+    // When this document started loading. A page that came back from the Access
+    // round trip is a NEW document with a later origin, which is how a finished
+    // recovery is told apart from one still in flight.
+    performance: { timeOrigin },
   };
   (globalThis as { window?: unknown }).window = win;
-  return { navigations, store };
+  return {
+    navigations,
+    store,
+    /** Simulates the browser returning from Access with a fresh document. */
+    reload: () => {
+      win.performance.timeOrigin = Date.now() + 1;
+    },
+  };
 }
 
 async function loadAdapter() {
@@ -103,9 +114,11 @@ describe("A — Access valid and CB67 session valid", () => {
     await expect(httpAdapter.currentUser()).resolves.toMatchObject({ role: "owner" });
   });
 
-  test("a successful response clears any earlier recovery marker", async () => {
-    const { store } = fakeBrowser();
-    store.set("cb67:access-reauth", JSON.stringify({ href: "x", at: 1 }));
+  test("a successful response clears a marker left by a completed recovery", async () => {
+    // timeOrigin is later than the marker, so the marker belongs to a previous
+    // document: the recovery finished and the browser came back.
+    const { store } = fakeBrowser(5_000);
+    store.set("cb67:access-reauth", JSON.stringify({ key: "x", at: 1 }));
 
     const { httpAdapter } = await loadAdapter();
     stubFetch(() => jsonResponse({ role: "owner" }));
@@ -191,24 +204,47 @@ describe("C — Access expired during use", () => {
 });
 
 describe("D — Access renewed", () => {
-  test("after a successful call, a later expiry can navigate again", async () => {
-    const { navigations } = fakeBrowser();
+  test("after a successful call on the returned page, a later expiry navigates again", async () => {
+    const browser = fakeBrowser();
     const { httpAdapter } = await loadAdapter();
 
     let intercept = true;
     stubFetch(() => (intercept ? opaqueRedirect() : jsonResponse({ role: "owner" })));
 
     await httpAdapter.currentUser().catch(() => undefined);
-    expect(navigations).toHaveLength(1);
+    expect(browser.navigations).toHaveLength(1);
 
-    // The operator signed in to Access and came back.
+    // The operator signed in to Access; the browser comes back with a NEW
+    // document, which is what makes the old marker clearable.
+    browser.reload();
     intercept = false;
     await httpAdapter.currentUser();
 
     // A genuine expiry later must not be suppressed by the stale marker.
     intercept = true;
     await httpAdapter.currentUser().catch(() => undefined);
-    expect(navigations).toHaveLength(2);
+    expect(browser.navigations).toHaveLength(2);
+  });
+
+  test("a slow success from the SAME document does not clear a recovery in flight", async () => {
+    // The race the guard exists for: a request issued while Access was still
+    // valid lands after a later one was intercepted. Clearing on it would
+    // re-arm the loop.
+    const browser = fakeBrowser(Date.now() - 10_000);
+    const { httpAdapter } = await loadAdapter();
+
+    let intercept = true;
+    stubFetch(() => (intercept ? opaqueRedirect() : jsonResponse({ role: "owner" })));
+
+    await httpAdapter.currentUser().catch(() => undefined);
+    expect(browser.navigations).toHaveLength(1);
+
+    intercept = false;
+    await httpAdapter.currentUser(); // the slow 200 arrives, same document
+
+    intercept = true;
+    await httpAdapter.currentUser().catch(() => undefined);
+    expect(browser.navigations).toHaveLength(1);
   });
 });
 

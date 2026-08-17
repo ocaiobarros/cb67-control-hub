@@ -63,8 +63,31 @@ export function isAccessInterception(response: Pick<Response, "type" | "status">
 }
 
 export interface ReauthRecord {
-  href: string;
+  /** Origin and pathname only — see routeKey. */
+  key: string;
   at: number;
+}
+
+/**
+ * The identity a recovery attempt is remembered under.
+ *
+ * Origin and pathname only. Keying on the full href let a fragment or a
+ * throwaway query parameter count as "a different page", so a router that
+ * updates either one could take a fresh attempt every time and defeat the
+ * cooldown entirely.
+ */
+export function routeKey(href: string): string {
+  try {
+    const url = new URL(href);
+    // A trailing slash does not make it a different page, and treating it as one
+    // would hand a router that adds or drops it an unlimited supply of attempts.
+    // Root keeps its slash so the key is never empty.
+    const path = url.pathname.replace(/(.)\/+$/, "$1");
+    return url.origin + path;
+  } catch {
+    // A caller that passes something unparseable still gets a stable key.
+    return href;
+  }
 }
 
 /**
@@ -83,7 +106,11 @@ export function shouldReauthenticate(
   previous: ReauthRecord | null,
 ): boolean {
   if (!previous) return true;
-  if (previous.href !== href) return true;
+  if (previous.key !== routeKey(href)) return true;
+  // A clock that moved backwards would otherwise make the elapsed time negative
+  // and suppress recovery until it caught up — potentially for hours. A marker
+  // from the future is a marker that cannot be trusted, so it is discarded.
+  if (now < previous.at) return true;
   return now - previous.at >= REAUTH_COOLDOWN_MS;
 }
 
@@ -95,7 +122,7 @@ export function readReauthRecord(storage: Pick<Storage, "getItem">): ReauthRecor
     if (
       typeof parsed === "object" &&
       parsed !== null &&
-      typeof (parsed as ReauthRecord).href === "string" &&
+      typeof (parsed as ReauthRecord).key === "string" &&
       typeof (parsed as ReauthRecord).at === "number"
     ) {
       return parsed as ReauthRecord;
@@ -117,8 +144,25 @@ export function writeReauthRecord(storage: Pick<Storage, "setItem">, record: Rea
   }
 }
 
-export function clearReauthRecord(storage: Pick<Storage, "removeItem">): void {
+/**
+ * Clears the marker, but only when it predates this page load.
+ *
+ * Clearing unconditionally on every successful response was a race: a slow
+ * request issued while Access was still valid could land AFTER a later request
+ * had been intercepted and written its marker, wipe it, and let the next
+ * interception navigate again — the loop the marker exists to prevent.
+ *
+ * A marker written by the page currently running is a recovery in flight and
+ * must survive. One written before this page loaded means the navigation
+ * happened and the browser came back, so it has done its job.
+ */
+export function clearReauthRecord(
+  storage: Pick<Storage, "getItem" | "removeItem">,
+  pageLoadedAt: number,
+): void {
   try {
+    const record = readReauthRecord(storage);
+    if (record && record.at >= pageLoadedAt) return;
     storage.removeItem(REAUTH_MARKER);
   } catch {
     /* see writeReauthRecord */
@@ -130,6 +174,34 @@ export interface RecoveryEnvironment {
   now: number;
   storage: Pick<Storage, "getItem" | "setItem" | "removeItem">;
   navigate: (href: string) => void;
+  /**
+   * When this document started loading. A marker at or after this instant
+   * belongs to the current page and is still in flight.
+   */
+  pageLoadedAt: number;
+}
+
+/**
+ * Storage that discards everything, used when the real one is unreachable.
+ *
+ * Reading `window.sessionStorage` can itself throw SecurityError — a document
+ * with an opaque origin, or third-party storage blocked by policy — and that
+ * throw happens before any of the guarded methods are called. Without this the
+ * error escaped instead of the recovery running, so a browser configuration
+ * unrelated to Access would have stranded the operator entirely.
+ */
+const NULL_STORAGE: Pick<Storage, "getItem" | "setItem" | "removeItem"> = {
+  getItem: () => null,
+  setItem: () => undefined,
+  removeItem: () => undefined,
+};
+
+function safeSessionStorage(): Pick<Storage, "getItem" | "setItem" | "removeItem"> {
+  try {
+    return window.sessionStorage ?? NULL_STORAGE;
+  } catch {
+    return NULL_STORAGE;
+  }
 }
 
 export type RecoveryOutcome = "navigated" | "suppressed";
@@ -144,7 +216,7 @@ export function recoverAccessSession(env: RecoveryEnvironment): RecoveryOutcome 
   if (!shouldReauthenticate(env.href, env.now, previous)) {
     return "suppressed";
   }
-  writeReauthRecord(env.storage, { href: env.href, at: env.now });
+  writeReauthRecord(env.storage, { key: routeKey(env.href), at: env.now });
   // Navigating to the CURRENT url: Access gates the hostname, so it intercepts
   // this navigation, authenticates, and returns here by itself.
   env.navigate(env.href);
@@ -160,7 +232,16 @@ export function browserRecoveryEnvironment(): RecoveryEnvironment | null {
   return {
     href: window.location.href,
     now: Date.now(),
-    storage: window.sessionStorage,
+    storage: safeSessionStorage(),
+    // timeOrigin is when THIS document started loading, which is exactly the
+    // boundary between "a recovery this page started" and "a recovery that has
+    // already completed and brought us back here".
+    //
+    // Read from `window`, not the global: after the Access round trip the
+    // document is new and carries a new origin, and taking it from the window
+    // is what lets that be observed rather than assumed.
+    pageLoadedAt:
+      typeof window.performance?.timeOrigin === "number" ? window.performance.timeOrigin : 0,
     navigate: (href) => {
       window.location.assign(href);
     },

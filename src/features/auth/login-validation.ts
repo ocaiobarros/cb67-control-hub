@@ -27,7 +27,21 @@ export function credentialProblem(username: string, password: string): string | 
 }
 
 export type LoginOutcome<T> =
-  { ok: true; result: T } | { ok: false; message: string; sent: boolean };
+  | { ok: true; result: T }
+  | {
+      ok: false;
+      message: string;
+      /**
+       * Whether the login call was invoked at all.
+       *
+       * Deliberately NOT called `sent`: an earlier name claimed the network had
+       * been reached, which this cannot know — `login` may throw before any
+       * request goes out, on a configuration or URL failure. What is reliable
+       * is the negative: `attempted: false` means the preconditions stopped it
+       * and nothing was invoked.
+       */
+      attempted: boolean;
+    };
 
 /**
  * Applies the preconditions and then performs the login.
@@ -36,8 +50,7 @@ export type LoginOutcome<T> =
  * username returns the same 401 as a wrong password, so sending it would report
  * "usuário ou senha inválidos" to someone who simply left a field blank.
  *
- * `sent` reports whether the network was reached, so a caller — and a test —
- * can tell a rejected precondition from a rejected credential.
+ * `attempted` distinguishes a rejected precondition from a rejected credential.
  */
 export async function submitLogin<T>(
   input: { username: string; password: string },
@@ -46,11 +59,11 @@ export async function submitLogin<T>(
 ): Promise<LoginOutcome<T>> {
   const problem = credentialProblem(input.username, input.password);
   if (problem) {
-    return { ok: false, message: problem, sent: false };
+    return { ok: false, message: problem, attempted: false };
   }
   try {
     return { ok: true, result: await login(input) };
   } catch (cause) {
-    return { ok: false, message: describe(cause), sent: true };
+    return { ok: false, message: describe(cause), attempted: true };
   }
 }

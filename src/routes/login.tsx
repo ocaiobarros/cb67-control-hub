@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatError } from "@/components/common/error-state";
-import { submitLogin } from "@/features/auth/login-validation";
+import { MISSING_PASSWORD, MISSING_USERNAME, submitLogin } from "@/features/auth/login-validation";
 import { env, platformMeta } from "@/config/env";
 import { isMockMode } from "@/api/client";
 
@@ -92,7 +92,11 @@ function LoginPage() {
           </p>
         </div>
 
-        <form onSubmit={onSubmit} className="liquid-modal edge-light space-y-4 rounded-3xl p-6">
+        <form
+          onSubmit={onSubmit}
+          noValidate
+          className="liquid-modal edge-light space-y-4 rounded-3xl p-6"
+        >
           {awaitingCode ? (
             <div className="space-y-1.5">
               <Label htmlFor="code">Código de verificação</Label>
@@ -118,6 +122,9 @@ function LoginPage() {
                   id="username"
                   name="username"
                   autoComplete="username"
+                  required
+                  aria-invalid={error === MISSING_USERNAME}
+                  aria-describedby={error ? "login-error" : undefined}
                   value={username}
                   onChange={(event) => setUsername(event.target.value)}
                 />
@@ -129,6 +136,9 @@ function LoginPage() {
                   name="password"
                   type="password"
                   autoComplete="current-password"
+                  required
+                  aria-invalid={error === MISSING_PASSWORD}
+                  aria-describedby={error ? "login-error" : undefined}
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                 />
@@ -137,7 +147,7 @@ function LoginPage() {
           )}
 
           {error && (
-            <p role="alert" className="text-sm text-crit">
+            <p id="login-error" role="alert" className="text-sm text-crit">
               {error}
             </p>
           )}

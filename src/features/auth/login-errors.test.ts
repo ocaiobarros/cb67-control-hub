@@ -201,7 +201,7 @@ describe("required fields are validated before anything is sent", () => {
     expect(credentialProblem("caio", "s3nha")).toBeNull();
   });
 
-  test("no request is sent when a field is empty", async () => {
+  test("nothing is invoked when a field is empty", async () => {
     let attempts = 0;
     const login = async () => {
       attempts += 1;
@@ -210,7 +210,7 @@ describe("required fields are validated before anything is sent", () => {
 
     const blankUser = await submitLogin({ username: "", password: "x" }, login, () => "unused");
     expect(blankUser.ok).toBe(false);
-    expect(blankUser.ok === false && blankUser.sent).toBe(false);
+    expect(blankUser.ok === false && blankUser.attempted).toBe(false);
     expect(blankUser.ok === false && blankUser.message).toBe(MISSING_USERNAME);
 
     const blankPassword = await submitLogin(
@@ -219,7 +219,7 @@ describe("required fields are validated before anything is sent", () => {
       () => "unused",
     );
     expect(blankPassword.ok).toBe(false);
-    expect(blankPassword.ok === false && blankPassword.sent).toBe(false);
+    expect(blankPassword.ok === false && blankPassword.attempted).toBe(false);
     expect(blankPassword.ok === false && blankPassword.message).toBe(MISSING_PASSWORD);
 
     expect(attempts).toBe(0);
@@ -236,7 +236,7 @@ describe("required fields are validated before anything is sent", () => {
 
     expect(attempts).toBe(1);
     expect(outcome.ok).toBe(false);
-    expect(outcome.ok === false && outcome.sent).toBe(true);
+    expect(outcome.ok === false && outcome.attempted).toBe(true);
     expect(outcome.ok === false && outcome.message).toBe("Usuário ou senha inválidos.");
   });
 

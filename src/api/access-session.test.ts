@@ -7,6 +7,7 @@ import {
   isAccessInterception,
   readReauthRecord,
   recoverAccessSession,
+  routeKey,
   shouldReauthenticate,
   writeReauthRecord,
   type RecoveryEnvironment,
@@ -50,6 +51,7 @@ function environment(overrides?: Partial<RecoveryEnvironment>) {
   const env: RecoveryEnvironment = {
     href: ADMIN_URL,
     now: 1_000_000,
+    pageLoadedAt: 0,
     storage,
     navigate: (href) => void navigations.push(href),
     ...overrides,
@@ -126,7 +128,7 @@ describe("C — an expired Access session navigates for re-authentication", () =
     const { env, storage } = environment();
     recoverAccessSession(env);
     const record = readReauthRecord(storage);
-    expect(record?.href).toBe(ADMIN_URL);
+    expect(record?.key).toBe("https://admin.cb67labs.api.br/overview");
     expect(record?.at).toBe(1_000_000);
   });
 });
@@ -196,14 +198,32 @@ describe("G — recovery never loops", () => {
 
   test("shouldReauthenticate is the whole loop rule, stated directly", () => {
     const at = 500;
+    const key = routeKey(ADMIN_URL);
     expect(shouldReauthenticate(ADMIN_URL, at, null)).toBe(true);
-    expect(shouldReauthenticate(ADMIN_URL, at, { href: ADMIN_URL, at })).toBe(false);
-    expect(shouldReauthenticate(ADMIN_URL, at + REAUTH_COOLDOWN_MS, { href: ADMIN_URL, at })).toBe(
-      true,
-    );
-    expect(
-      shouldReauthenticate("https://admin.cb67labs.api.br/x", at, { href: ADMIN_URL, at }),
-    ).toBe(true);
+    expect(shouldReauthenticate(ADMIN_URL, at, { key, at })).toBe(false);
+    expect(shouldReauthenticate(ADMIN_URL, at + REAUTH_COOLDOWN_MS, { key, at })).toBe(true);
+    expect(shouldReauthenticate("https://admin.cb67labs.api.br/x", at, { key, at })).toBe(true);
+  });
+
+  test("a fragment or a throwaway query parameter does not buy a fresh attempt", () => {
+    // Keying on the full href let a router that touches either one take an
+    // unlimited number of attempts, which defeated the cooldown entirely.
+    const at = 500;
+    const key = routeKey(ADMIN_URL);
+    for (const href of [
+      `${ADMIN_URL}#panel-a`,
+      `${ADMIN_URL}#panel-b`,
+      `${ADMIN_URL}?t=1`,
+      `${ADMIN_URL}?t=2`,
+      `${ADMIN_URL}/`,
+    ]) {
+      expect(`${href}: ${shouldReauthenticate(href, at + 1, { key, at })}`).toBe(`${href}: false`);
+    }
+  });
+
+  test("a clock that moved backwards does not suppress recovery indefinitely", () => {
+    const key = routeKey(ADMIN_URL);
+    expect(shouldReauthenticate(ADMIN_URL, 100, { key, at: 10_000 })).toBe(true);
   });
 });
 
@@ -217,19 +237,45 @@ describe("D — once Access is renewed the guard resets", () => {
     recoverAccessSession(env);
     expect(readReauthRecord(storage)).not.toBeNull();
 
-    // What the adapter does after any response that reached the origin.
-    clearReauthRecord(storage);
+    // What the adapter does after any response that reached the origin. The
+    // page-load instant is later than the marker, so the marker predates this
+    // page and is cleared.
+    clearReauthRecord(storage, env.now + 1);
     expect(readReauthRecord(storage)).toBeNull();
   });
 
   test("after renewal a later expiry recovers immediately, not after a cooldown", () => {
     const { env, navigations, storage } = environment();
     recoverAccessSession(env);
-    clearReauthRecord(storage); // the operator came back and a request succeeded
+    // The operator came back: this page loaded AFTER the marker was written.
+    clearReauthRecord(storage, env.now + 1);
 
     const later = recoverAccessSession({ ...env, storage, now: env.now + 1_000 });
     expect(later).toBe("navigated");
     expect(navigations).toHaveLength(2);
+  });
+});
+
+describe("a recovery in flight is not erased by a slow earlier request", () => {
+  test("a marker written by THIS page survives a late success", () => {
+    // The race: a request issued while Access was still valid lands after a
+    // later one was intercepted, and clearing unconditionally wiped the marker
+    // the interception had just written — re-enabling the loop.
+    const pageLoadedAt = 1_000;
+    const { env, storage } = environment({ now: 2_000 });
+
+    recoverAccessSession(env);
+    clearReauthRecord(storage, pageLoadedAt); // the slow 200 arrives
+
+    expect(readReauthRecord(storage)).not.toBeNull();
+    expect(shouldReauthenticate(ADMIN_URL, 2_500, readReauthRecord(storage))).toBe(false);
+  });
+
+  test("a marker from BEFORE this page loaded is cleared", () => {
+    const { storage } = environment();
+    writeReauthRecord(storage, { key: routeKey(ADMIN_URL), at: 500 });
+    clearReauthRecord(storage, 1_000); // this page loaded after that marker
+    expect(readReauthRecord(storage)).toBeNull();
   });
 });
 
@@ -246,6 +292,7 @@ describe("the loop guard degrades rather than blocking recovery", () => {
       recoverAccessSession({
         href: ADMIN_URL,
         now: 1,
+        pageLoadedAt: 0,
         storage,
         navigate: (h) => void nav.push(h),
       });
@@ -255,11 +302,37 @@ describe("the loop guard degrades rather than blocking recovery", () => {
   });
 
   test("a marker of the wrong shape is ignored", () => {
-    const storage = memoryStorage({ [REAUTH_MARKER]: JSON.stringify({ href: 7, at: "soon" }) });
+    const storage = memoryStorage({ [REAUTH_MARKER]: JSON.stringify({ key: 7, at: "soon" }) });
     expect(readReauthRecord(storage)).toBeNull();
   });
 
-  test("storage that throws does not prevent recovery", () => {
+  test("a storage property that throws on access does not prevent recovery", () => {
+    // Reading window.sessionStorage can itself throw SecurityError, before any
+    // guarded method runs. That escaped and stranded the operator over a browser
+    // setting that had nothing to do with Access.
+    const hostile = {} as { sessionStorage: Storage };
+    Object.defineProperty(hostile, "sessionStorage", {
+      get() {
+        throw new Error("SecurityError");
+      },
+    });
+    expect(() => hostile.sessionStorage).toThrow();
+    // browserRecoveryEnvironment substitutes a discarding store in this case;
+    // the equivalent here is that recovery still navigates with such a store.
+    const nav: string[] = [];
+    expect(
+      recoverAccessSession({
+        href: ADMIN_URL,
+        now: 1,
+        pageLoadedAt: 0,
+        storage: { getItem: () => null, setItem: () => undefined, removeItem: () => undefined },
+        navigate: (h) => void nav.push(h),
+      }),
+    ).toBe("navigated");
+    expect(nav).toHaveLength(1);
+  });
+
+  test("storage whose methods throw does not prevent recovery", () => {
     const throwing = {
       getItem: () => {
         throw new Error("blocked");
@@ -278,6 +351,7 @@ describe("the loop guard degrades rather than blocking recovery", () => {
       recoverAccessSession({
         href: ADMIN_URL,
         now: 1,
+        pageLoadedAt: 0,
         storage: throwing,
         navigate: (h) => void nav.push(h),
       }),
@@ -287,9 +361,9 @@ describe("the loop guard degrades rather than blocking recovery", () => {
 
   test("writeReauthRecord and clearReauthRecord round-trip", () => {
     const storage = memoryStorage();
-    writeReauthRecord(storage, { href: ADMIN_URL, at: 42 });
-    expect(readReauthRecord(storage)).toEqual({ href: ADMIN_URL, at: 42 });
-    clearReauthRecord(storage);
+    writeReauthRecord(storage, { key: routeKey(ADMIN_URL), at: 42 });
+    expect(readReauthRecord(storage)).toEqual({ key: routeKey(ADMIN_URL), at: 42 });
+    clearReauthRecord(storage, 100);
     expect(readReauthRecord(storage)).toBeNull();
   });
 });

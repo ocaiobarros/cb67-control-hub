@@ -1,7 +1,35 @@
 import { AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { HttpError, isAuthenticationAttempt } from "@/api/http-adapter";
+import { HttpError, errorCode, isAuthenticationAttempt } from "@/api/http-adapter";
 import { AccessSessionExpiredError } from "@/api/access-session";
+
+/**
+ * Copy for a 401, which the backend uses for several unrelated situations.
+ *
+ * The contractual error code is consulted first. Classifying on the path alone
+ * told an operator who mistyped their TOTP code that their username or password
+ * was wrong — after the password step had already succeeded, which makes the
+ * message not merely unhelpful but false.
+ */
+function describeUnauthorized(error: HttpError): { title: string; detail: string } {
+  switch (errorCode(error.body)) {
+    case "mfa_code_invalid":
+      return {
+        title: "Código de verificação inválido.",
+        detail: "Confira o código do autenticador e tente novamente.",
+      };
+    case "mfa_challenge_expired":
+      return {
+        title: "Verificação em duas etapas expirada.",
+        detail: "Entre novamente para recomeçar.",
+      };
+    default:
+      break;
+  }
+  return isAuthenticationAttempt(error.path)
+    ? { title: "Usuário ou senha inválidos.", detail: "" }
+    : { title: "Sessão expirada.", detail: "Entre novamente para continuar." };
+}
 
 /**
  * Maps transport failures to operator-facing copy. Raw fetch errors and stack
@@ -26,12 +54,7 @@ export function describeError(error: unknown): { title: string; detail: string }
   if (error instanceof HttpError) {
     switch (error.status) {
       case 401:
-        return isAuthenticationAttempt(error.path)
-          ? { title: "Usuário ou senha inválidos.", detail: "" }
-          : {
-              title: "Sessão expirada.",
-              detail: "Entre novamente para continuar.",
-            };
+        return describeUnauthorized(error);
       case 403:
         return {
           title: "Acesso negado",
