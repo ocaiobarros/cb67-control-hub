@@ -501,11 +501,20 @@ export const MockApiRequests: ApiRequestRecord[] = Array.from({ length: 120 }, (
   };
 });
 
+/**
+ * Shapes match what the backend emits field for field.
+ *
+ * id and status are the numeric status text, because that is what
+ * ListErrorGroups produces — it groups by status and uses the code as the key.
+ * Decorated values like "429 Too Many Requests" rehearsed a response the API
+ * cannot return, so the mock was testing a screen against data no backend would
+ * ever send it.
+ */
 export const MockApiErrorGroups: ApiErrorGroup[] = [
   {
-    id: "err-401",
+    id: "401",
     statusClass: "4xx",
-    status: "401 Unauthorized",
+    status: "401",
     count: 13,
     ratePerMin: 0.4,
     trend: -12,
@@ -515,9 +524,9 @@ export const MockApiErrorGroups: ApiErrorGroup[] = [
     affectedEndpoints: ["/v1/ai/generate", "/v1/licenses/lease"],
   },
   {
-    id: "err-403",
+    id: "403",
     statusClass: "4xx",
-    status: "403 Forbidden",
+    status: "403",
     count: 5,
     ratePerMin: 0.1,
     trend: 4,
@@ -527,9 +536,9 @@ export const MockApiErrorGroups: ApiErrorGroup[] = [
     affectedEndpoints: ["/v1/maps/routes"],
   },
   {
-    id: "err-404",
+    id: "404",
     statusClass: "4xx",
-    status: "404 Not Found",
+    status: "404",
     count: 22,
     ratePerMin: 0.6,
     trend: 0,
@@ -539,9 +548,9 @@ export const MockApiErrorGroups: ApiErrorGroup[] = [
     affectedEndpoints: ["/v1/ai/embeddings"],
   },
   {
-    id: "err-409",
+    id: "409",
     statusClass: "4xx",
-    status: "409 Conflict",
+    status: "409",
     count: 3,
     ratePerMin: 0.05,
     trend: -50,
@@ -551,9 +560,9 @@ export const MockApiErrorGroups: ApiErrorGroup[] = [
     affectedEndpoints: ["/v1/licenses/lease"],
   },
   {
-    id: "err-422",
+    id: "422",
     statusClass: "4xx",
-    status: "422 Unprocessable",
+    status: "422",
     count: 41,
     ratePerMin: 1.1,
     trend: 18,
@@ -563,9 +572,9 @@ export const MockApiErrorGroups: ApiErrorGroup[] = [
     affectedEndpoints: ["/v1/ai/generate", "/v1/maps/geocode"],
   },
   {
-    id: "err-429",
+    id: "429",
     statusClass: "4xx",
-    status: "429 Too Many Requests",
+    status: "429",
     count: 338,
     ratePerMin: 9.2,
     trend: 27,
@@ -575,9 +584,13 @@ export const MockApiErrorGroups: ApiErrorGroup[] = [
     affectedEndpoints: ["/v1/ai/generate", "/v1/maps/geocode", "/v1/maps/routes"],
   },
   {
-    id: "err-5xx",
+    // 500, not 502: the backend classifies 502 as "provider", so a group with
+    // statusClass "5xx" and status 502 is a pairing it cannot produce — and
+    // there was already a 502 group below, while the backend groups BY status
+    // and so can only ever emit one per code.
+    id: "500",
     statusClass: "5xx",
-    status: "502 Bad Gateway",
+    status: "500",
     count: 9,
     ratePerMin: 0.2,
     trend: -30,
@@ -587,9 +600,9 @@ export const MockApiErrorGroups: ApiErrorGroup[] = [
     affectedEndpoints: ["/v1/ai/generate"],
   },
   {
-    id: "err-timeout",
+    id: "504",
     statusClass: "timeout",
-    status: "Upstream timeout",
+    status: "504",
     count: 17,
     ratePerMin: 0.4,
     trend: 61,
@@ -599,9 +612,9 @@ export const MockApiErrorGroups: ApiErrorGroup[] = [
     affectedEndpoints: ["/v1/maps/routes"],
   },
   {
-    id: "err-provider",
+    id: "502",
     statusClass: "provider",
-    status: "Provedor rejeitou a requisição",
+    status: "502",
     count: 28,
     ratePerMin: 0.7,
     trend: 8,
@@ -628,32 +641,68 @@ export const MockLatency: LatencyBreakdown[] = [
   { scope: "provider", p50: 48, p90: 61, p95: 71, p99: 138, max: null },
 ];
 
-export const MockRateLimits: RateLimitRule[] = MockApplications.slice(0, 5).map((app, i) => ({
-  id: `rl-${i}`,
-  applicationName: app.name,
-  api: [
-    "Geração de IA",
-    "Geocodificação de Mapas",
-    "Embeddings de IA",
-    "Rotas de Mapas",
-    "Validação de Licença",
-  ][i]!,
-  rps: [20, 15, 10, 8, 30][i]!,
-  rpm: [1200, 900, 600, 480, 1800][i]!,
-  daily: [200000, 120000, 80000, 40000, 300000][i]!,
-  // Percentages of the daily allowance, matching what the backend sends and
-  // what the column renders. These were counts, so the mock displayed "864.0%"
-  // — a mock that shows an impossible value is a worse rehearsal than none.
-  currentUsage: [86.4, 71.2, 24, 43.1, 19][i]!,
-  rateLimited: app.rateLimited,
-  // Derived, not chosen: headroom is the complement of usage, and picking both
-  // independently produced rows where they summed to 114%.
-  headroom: Math.max(0, 100 - [86.4, 71.2, 24, 43.1, 19][i]!),
-  // Derived by the same rule the backend applies: any rejection at all is
-  // degraded, as is usage above 90% of the allowance. Choosing the status
-  // independently produced rows marked healthy while reporting rejections.
-  status: app.rateLimited > 0 || [86.4, 71.2, 24, 43.1, 19][i]! > 90 ? "degraded" : "healthy",
-}));
+/**
+ * A wildcard rule per application, plus two API-specific rules.
+ *
+ * The wildcard is not decoration: the backend's quota record takes its
+ * rateLimitPerMin from the application's `*` rule, so a mock with only specific
+ * rules produced quotas whose rate limit could not have come from anywhere.
+ * The specific rules are here so per-rule attribution is rehearsed too — a
+ * request on one surface counts towards that surface and towards the wildcard.
+ */
+const RATE_LIMIT_USAGE = [86.4, 71.2, 24, 43.1, 19];
+
+export const MockRateLimits: RateLimitRule[] = [
+  ...MockApplications.slice(0, 5).map((app, i) => ({
+    id: `rl-${i}`,
+    applicationName: app.name,
+    api: "*",
+    rps: [20, 15, 10, 8, 30][i]!,
+    rpm: [1200, 900, 600, 480, 1800][i]!,
+    daily: [200000, 120000, 80000, 40000, 300000][i]!,
+    // Percentages of the daily allowance, matching what the backend sends and
+    // what the column renders. These were counts, so the mock displayed
+    // "864.0%" — a mock showing an impossible value is a worse rehearsal than
+    // no mock at all.
+    currentUsage: RATE_LIMIT_USAGE[i]!,
+    rateLimited: app.rateLimited,
+    // Derived, not chosen: headroom is the complement of usage, and picking
+    // both independently produced rows summing to 114%.
+    headroom: Math.max(0, 100 - RATE_LIMIT_USAGE[i]!),
+    // Derived by the rule the backend applies: any rejection, or usage above
+    // 90%, is degraded. Choosing it independently marked rows healthy while
+    // they reported rejections.
+    status: (app.rateLimited > 0 || RATE_LIMIT_USAGE[i]! > 90
+      ? "degraded"
+      : "healthy") as RateLimitRule["status"],
+  })),
+  // Two surface-specific rules. Their usage is a subset of the wildcard's,
+  // because a request counted for a surface is also counted for the wildcard.
+  {
+    id: "rl-specific-ai",
+    applicationName: MockApplications[0]!.name,
+    api: "ai",
+    rps: 12,
+    rpm: 700,
+    daily: 120000,
+    currentUsage: 58.2,
+    rateLimited: 0,
+    headroom: Math.max(0, 100 - 58.2),
+    status: "healthy" as RateLimitRule["status"],
+  },
+  {
+    id: "rl-specific-maps",
+    applicationName: MockApplications[1]!.name,
+    api: "maps",
+    rps: 9,
+    rpm: 500,
+    daily: 70000,
+    currentUsage: 12.5,
+    rateLimited: 0,
+    headroom: Math.max(0, 100 - 12.5),
+    status: "healthy" as RateLimitRule["status"],
+  },
+];
 
 export const MockQuotas: QuotaRecord[] = MockApplications.slice(0, 5).map((app, i) => ({
   id: `q-${i}`,
@@ -1878,6 +1927,13 @@ export const MockCharts = {
       },
       11,
     ),
+  /**
+   * The API Management latency chart reads a single series named "value",
+   * because that is what the backend sends: one mean per hour, not a bundle of
+   * percentiles. MockCharts.latency emits p50/p95/p99 for the screens that want
+   * them, and feeding it here left that chart with nothing renderable.
+   */
+  apiLatency: (range: TimeRange) => buildSeries(range, { value: { base: 62, spread: 24 } }, 7),
   errors: (range: TimeRange) =>
     buildSeries(
       range,

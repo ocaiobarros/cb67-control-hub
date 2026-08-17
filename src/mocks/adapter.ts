@@ -192,7 +192,7 @@ export const mockAdapter: PlatformAdapter = {
     return delay(M.MockApiErrorGroups);
   },
   async getLatency(range) {
-    return delay({ breakdown: M.MockLatency, series: M.MockCharts.latency(range) });
+    return delay({ breakdown: M.MockLatency, series: M.MockCharts.apiLatency(range) });
   },
   async listRateLimits() {
     return delay(M.MockRateLimits);
