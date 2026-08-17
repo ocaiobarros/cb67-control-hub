@@ -41,6 +41,38 @@ function describeUnauthorized(error: HttpError): { title: string; detail: string
  * in again — which is what they were already trying to do. The request path
  * separates them.
  */
+/**
+ * The gateway's own explanation, when it wrote one for the operator.
+ *
+ * Used only for the statuses that mean "you asked for something impossible"
+ * (400, 409, 422). For 401, 403 and 5xx the curated text stays: those messages
+ * are about the session or the server, where a backend string is either less
+ * useful than the app's own or says more than an error should.
+ */
+function serverMessage(error: HttpError): string | null {
+  // The adapter carries the body as raw TEXT, not as parsed JSON, so this has
+  // to parse it. Reading it as an object returned null for every error and the
+  // gateway's explanation was replaced by a generic sentence on every screen —
+  // which is how a licence rejected for a real, stated reason showed up as
+  // "alguns campos foram rejeitados".
+  let body: unknown = error.body;
+  if (typeof body === "string") {
+    const text = body.trim();
+    if (text === "") return null;
+    try {
+      body = JSON.parse(text);
+    } catch {
+      // Not JSON. A raw error page is not something to show an operator.
+      return null;
+    }
+  }
+  if (typeof body !== "object" || body === null) return null;
+  const message = (body as { message?: unknown }).message;
+  if (typeof message !== "string") return null;
+  const trimmed = message.trim();
+  return trimmed === "" ? null : trimmed;
+}
+
 export function describeError(error: unknown): { title: string; detail: string } {
   // Checked before HttpError: an intercepted request never produced an HTTP
   // status the app can see, and reporting it as a connectivity failure sent the
@@ -62,15 +94,24 @@ export function describeError(error: unknown): { title: string; detail: string }
         };
       case 404:
         return { title: "Não encontrado", detail: "O recurso solicitado não existe mais." };
+      case 400:
+        return {
+          title: "Requisição inválida",
+          detail: serverMessage(error) ?? "Os dados enviados não foram aceitos.",
+        };
       case 409:
         return {
           title: "Conflito",
-          detail: "O recurso foi alterado. Recarregue e tente novamente.",
+          detail: serverMessage(error) ?? "O recurso foi alterado. Recarregue e tente novamente.",
         };
       case 422:
         return {
           title: "Requisição inválida",
-          detail: "Alguns campos foram rejeitados pelo servidor.",
+          // The gateway answers a rejected write with the sentence the operator
+          // needs — which plan belongs to another product, which code is
+          // already taken. Replacing it with "alguns campos foram rejeitados"
+          // discarded the only part that said what to change.
+          detail: serverMessage(error) ?? "Alguns campos foram rejeitados pelo servidor.",
         };
       case 429:
         return {

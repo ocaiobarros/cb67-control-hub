@@ -1,3 +1,9 @@
+import { useState } from "react";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Permitted } from "@/features/auth/guards";
+import { useAdminAction } from "@/hooks/use-admin-action";
+import { FormDialog } from "@/components/common/form-dialog";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { q } from "@/api/queries";
@@ -27,6 +33,10 @@ export const Route = createFileRoute("/_admin/licensing/licenses/")({
 function LicensesPage() {
   const licenses = useQuery(q.licenses());
   const navigate = useNavigate();
+  const customers = useQuery(q.customers());
+  const plans = useQuery(q.plans());
+  const action = useAdminAction();
+  const [creating, setCreating] = useState(false);
   const rows = licenses.data ?? [];
 
   const columns: Column<License>[] = [
@@ -120,6 +130,14 @@ function LicensesPage() {
       <PageHeader
         title="Licenças"
         description="Uma licença vincula um cliente e um produto a um plano e um teto de instalações. Selecione uma linha para inspecionar instalações, concessões e histórico de revogações."
+        actions={
+          <Permitted permission="licensing.write">
+            <Button size="sm" onClick={() => setCreating(true)}>
+              <Plus className="size-4" aria-hidden />
+              Emitir licença
+            </Button>
+          </Permitted>
+        }
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -162,6 +180,61 @@ function LicensesPage() {
           }}
         />
       </div>
+
+      <FormDialog
+        open={creating}
+        onOpenChange={setCreating}
+        title="Emitir licença"
+        description="A chave é gerada pelo servidor. A licença nasce ativa, válida a partir de agora."
+        submitLabel="Emitir licença"
+        fields={[
+          {
+            kind: "select",
+            name: "customerId",
+            label: "Cliente",
+            required: true,
+            options: (customers.data ?? []).map((c) => ({ value: c.id, label: c.name })),
+            emptyHint: "Nenhum cliente cadastrado. Crie um cliente antes de emitir uma licença.",
+          },
+          {
+            // The product is derived from the plan rather than chosen
+            // separately: a plan belongs to exactly one product, and offering
+            // both would let the operator pick a pair the database refuses.
+            kind: "select",
+            name: "planId",
+            label: "Plano",
+            required: true,
+            hint: "O produto é determinado pelo plano.",
+            options: (plans.data ?? []).map((p) => ({
+              value: p.id,
+              label: `${p.productName} · ${p.name} — ${p.maxInstallations} instalação(ões)`,
+            })),
+            emptyHint: "Nenhum plano cadastrado. Crie um plano antes de emitir uma licença.",
+          },
+          {
+            kind: "number",
+            name: "durationDays",
+            label: "Validade (dias)",
+            min: 1,
+            max: 3650,
+            defaultValue: 365,
+          },
+        ]}
+        onSubmit={async (values) => {
+          const plan = (plans.data ?? []).find((p) => p.id === values["planId"]);
+          if (!plan) throw new Error("Selecione um plano.");
+          const created = await action.mutateAsync({
+            action: "license.create",
+            resourceId: "",
+            payload: { ...values, productId: plan.productId },
+          });
+          // Open what was just issued, so the operator sees the generated key
+          // instead of hunting for it in the list.
+          if (created.resourceId) {
+            void navigate({ to: `/licensing/licenses/${created.resourceId}` as never });
+          }
+        }}
+      />
     </div>
   );
 }

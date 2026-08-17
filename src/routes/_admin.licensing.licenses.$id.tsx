@@ -9,6 +9,7 @@ import { StatusBadge } from "@/components/common/status-badge";
 import { IdentifierCell } from "@/components/common/copy-button";
 import { ConfirmActionDialog } from "@/components/common/confirm-action-dialog";
 import { ActivityTimeline, type TimelineItem } from "@/components/common/activity-timeline";
+import { describeError } from "@/components/common/error-state";
 import { EmptyState } from "@/components/common/empty-state";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -47,9 +48,12 @@ function LicenseDetail() {
   const license = useQuery(q.license(id));
   const installations = useQuery(q.installations());
   const leases = useQuery(q.leases());
-  const audit = useQuery(q.auditEvents());
+  // Asked for this licence's events specifically. The trail is bounded, so an
+  // unfiltered fetch narrowed in the browser stops containing an older
+  // licence's history as soon as 500 newer events exist anywhere.
+  const audit = useQuery(q.auditEvents(id));
   const action = useAdminAction();
-  const [pending, setPending] = useState<"suspend" | "revoke" | null>(null);
+  const [pending, setPending] = useState<"suspend" | "revoke" | "reactivate" | null>(null);
 
   const record = license.data;
   const bound = (installations.data ?? []).filter((row) => row.licenseKey === record?.key);
@@ -169,16 +173,44 @@ function LicenseDetail() {
         description="As concessões são de curta duração e assinadas; suspender ou revogar uma licença tem efeito na próxima renovação da instalação, ou imediatamente se ela estiver on-line."
         meta={record ? <StatusBadge status={record.status} /> : undefined}
         actions={
-          <Permitted permission="licensing.write">
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => setPending("suspend")}>
-                Suspender
-              </Button>
-              <Button variant="destructive" size="sm" onClick={() => setPending("revoke")}>
-                Revogar
-              </Button>
-            </div>
-          </Permitted>
+          /*
+            Each control is gated on the permission the GATEWAY demands for it,
+            not on one permission for the group. Revoking has its own —
+            `license.revoke` — precisely so a role can be trusted to suspend a
+            licence without being trusted to end one, and gating the whole group
+            on `licensing.write` broke that both ways: it showed Revogar to
+            someone who would only ever get a 403, and hid it from someone
+            holding exactly the permission for it.
+
+            They are also offered according to the state the licence is in. A
+            Suspend button on a suspended licence, or anything at all on a
+            revoked one, is a control whose only outcome is a refusal.
+          */
+          <div className="flex gap-2">
+            <Permitted permission="licensing.write">
+              <>
+                {record && (record.status === "active" || record.status === "grace") && (
+                  <Button variant="outline" size="sm" onClick={() => setPending("suspend")}>
+                    Suspender
+                  </Button>
+                )}
+                {record && (record.status === "suspended" || record.status === "pending") && (
+                  <Button variant="outline" size="sm" onClick={() => setPending("reactivate")}>
+                    Reativar
+                  </Button>
+                )}
+              </>
+            </Permitted>
+            <Permitted permission="license.revoke">
+              <>
+                {record && record.status !== "revoked" && (
+                  <Button variant="destructive" size="sm" onClick={() => setPending("revoke")}>
+                    Revogar
+                  </Button>
+                )}
+              </>
+            </Permitted>
+          </div>
         }
       />
 
@@ -279,7 +311,14 @@ function LicenseDetail() {
           />
         </TabsContent>
         <TabsContent value="activity" className="mt-4">
-          <ActivityTimeline items={timeline} />
+          {audit.isError ? (
+            <EmptyState
+              message="Trilha de auditoria indisponível"
+              hint={describeError(audit.error).detail}
+            />
+          ) : (
+            <ActivityTimeline items={timeline} />
+          )}
         </TabsContent>
       </Tabs>
 
@@ -288,11 +327,20 @@ function LicenseDetail() {
         onOpenChange={(open) => {
           if (!open) setPending(null);
         }}
-        title={pending === "revoke" ? "Revogar licença" : "Suspender licença"}
+        title={
+          pending === "revoke"
+            ? "Revogar licença"
+            : pending === "reactivate"
+              ? "Reativar licença"
+              : "Suspender licença"
+        }
+        destructive={pending !== "reactivate"}
         warning={
           pending === "revoke"
             ? "A revogação é permanente. Toda instalação vinculada deixa de receber concessões e a chave de licença nunca poderá ser reativada."
-            : "A suspensão bloqueia a emissão de novas concessões. As instalações continuam funcionando até que a concessão atual expire."
+            : pending === "reactivate"
+              ? "A licença volta a emitir concessões nas próximas renovações. Uma licença vencida não pode ser reativada sem estender a validade."
+              : "A suspensão bloqueia a emissão de novas concessões. As instalações continuam funcionando até que a concessão atual expire."
         }
         details={
           record
@@ -303,13 +351,19 @@ function LicenseDetail() {
               ]
             : undefined
         }
-        confirmLabel={pending === "revoke" ? "Revogar licença" : "Suspender licença"}
+        confirmLabel={
+          pending === "revoke"
+            ? "Revogar licença"
+            : pending === "reactivate"
+              ? "Reativar licença"
+              : "Suspender licença"
+        }
         requireTypedValue={pending === "revoke" ? record?.key : undefined}
         environmentNotice="O backend reverifica a autorização e registra a operação na trilha de auditoria."
         onConfirm={async () => {
           if (!record || !pending) return;
           await action.mutateAsync({
-            action: pending === "revoke" ? "license.revoke" : "license.suspend",
+            action: `license.${pending}`,
             resourceId: record.id,
           });
           setPending(null);

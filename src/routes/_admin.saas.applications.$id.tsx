@@ -53,7 +53,9 @@ function ApplicationDetailPage() {
   const { id } = Route.useParams();
   const application = useQuery(q.application(id));
   const instances = useQuery(q.instances(id));
-  const audit = useQuery(q.auditEvents());
+  // Narrowed to this application: the trail is bounded, so an unfiltered
+  // fetch stops containing an older record's history.
+  const audit = useQuery(q.auditEvents(id));
   const action = useAdminAction();
   const [pending, setPending] = useState<null | "suspend" | "rotate">(null);
 

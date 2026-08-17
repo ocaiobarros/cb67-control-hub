@@ -432,7 +432,8 @@ export const httpAdapter: PlatformAdapter = {
   listBackupRuns: () => request("v1/admin/backups/history"),
   listRestoreTests: () => request("v1/admin/backups/restore-tests"),
 
-  listAuditEvents: () => request("v1/admin/audit"),
+  listAuditEvents: (resource) =>
+    request("v1/admin/audit", resource ? { query: { resource } } : undefined),
 
   getPublicStatus: () => request("v1/public/status"),
   getChangelog: () => request("v1/public/changelog"),

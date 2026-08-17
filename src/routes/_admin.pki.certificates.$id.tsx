@@ -36,7 +36,9 @@ export const Route = createFileRoute("/_admin/pki/certificates/$id")({
 function CertificateDetail() {
   const { id } = Route.useParams();
   const certificate = useQuery(q.certificate(id));
-  const audit = useQuery(q.auditEvents());
+  // Narrowed to this certificate: the trail is bounded, so an unfiltered
+  // fetch stops containing an older record's history.
+  const audit = useQuery(q.auditEvents(id));
   const action = useAdminAction();
   const [pending, setPending] = useState<"rotate" | "revoke" | null>(null);
 

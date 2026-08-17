@@ -353,6 +353,9 @@ export interface Lease {
 
 export interface LicensePlan {
   id: string;
+  /** The product this plan belongs to. Two products may both have a "Starter". */
+  productId: string;
+  productName: string;
   name: string;
   code: string;
   maxInstallations: number;

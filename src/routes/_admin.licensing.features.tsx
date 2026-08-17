@@ -1,3 +1,9 @@
+import { useState } from "react";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Permitted } from "@/features/auth/guards";
+import { useAdminAction } from "@/hooks/use-admin-action";
+import { FormDialog } from "@/components/common/form-dialog";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { q } from "@/api/queries";
@@ -25,6 +31,8 @@ export const Route = createFileRoute("/_admin/licensing/features")({
 
 function FeaturesPage() {
   const features = useQuery(q.features());
+  const action = useAdminAction();
+  const [creating, setCreating] = useState(false);
   const rows = features.data ?? [];
 
   const columns: Column<LicenseFeature>[] = [
@@ -78,6 +86,14 @@ function FeaturesPage() {
       <PageHeader
         title="Recursos de Licença"
         description="Os recursos são os direitos atômicos embutidos em cada concessão assinada. Os produtos os lêem em tempo de execução para habilitar capacidades."
+        actions={
+          <Permitted permission="licensing.write">
+            <Button size="sm" onClick={() => setCreating(true)}>
+              <Plus className="size-4" aria-hidden />
+              Novo recurso
+            </Button>
+          </Permitted>
+        }
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -116,6 +132,43 @@ function FeaturesPage() {
           pageSize={15}
         />
       </div>
+
+      <FormDialog
+        open={creating}
+        onOpenChange={setCreating}
+        title="Novo recurso"
+        description="O código é lido pelo produto em tempo de execução e não pode ser alterado depois."
+        submitLabel="Criar recurso"
+        fields={[
+          {
+            kind: "text",
+            name: "code",
+            label: "Código",
+            placeholder: "agendamento",
+            hint: "Minúsculas, números e hífen. De 3 a 40 caracteres.",
+            required: true,
+            maxLength: 40,
+          },
+          {
+            kind: "text",
+            name: "name",
+            label: "Nome",
+            placeholder: "Agendamento",
+            required: true,
+            maxLength: 120,
+          },
+          {
+            kind: "textarea",
+            name: "description",
+            label: "Descrição",
+            placeholder: "O que este recurso habilita no produto.",
+            maxLength: 400,
+          },
+        ]}
+        onSubmit={async (values) => {
+          await action.mutateAsync({ action: "feature.create", resourceId: "", payload: values });
+        }}
+      />
     </div>
   );
 }

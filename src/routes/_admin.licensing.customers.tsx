@@ -1,3 +1,9 @@
+import { useState } from "react";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Permitted } from "@/features/auth/guards";
+import { useAdminAction } from "@/hooks/use-admin-action";
+import { FormDialog } from "@/components/common/form-dialog";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { q } from "@/api/queries";
@@ -26,6 +32,8 @@ export const Route = createFileRoute("/_admin/licensing/customers")({
 
 function CustomersPage() {
   const customers = useQuery(q.customers());
+  const action = useAdminAction();
+  const [creating, setCreating] = useState(false);
   const rows = customers.data ?? [];
 
   const columns: Column<Customer>[] = [
@@ -85,6 +93,14 @@ function CustomersPage() {
       <PageHeader
         title="Clientes de Licenças"
         description="Contrapartes comerciais do serviço de licenciamento. Os registros de clientes não armazenam dados de pagamento; a cobrança fica fora da plataforma."
+        actions={
+          <Permitted permission="licensing.write">
+            <Button size="sm" onClick={() => setCreating(true)}>
+              <Plus className="size-4" aria-hidden />
+              Novo cliente
+            </Button>
+          </Permitted>
+        }
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -123,6 +139,35 @@ function CustomersPage() {
           pageSize={15}
         />
       </div>
+
+      <FormDialog
+        open={creating}
+        onOpenChange={setCreating}
+        title="Novo cliente"
+        description="A contraparte comercial a quem as licenças serão emitidas."
+        submitLabel="Criar cliente"
+        fields={[
+          {
+            kind: "text",
+            name: "name",
+            label: "Nome",
+            placeholder: "Clínica Ômega",
+            required: true,
+            maxLength: 160,
+          },
+          {
+            kind: "text",
+            name: "externalRef",
+            label: "Referência externa",
+            placeholder: "CNPJ, código do ERP ou contrato",
+            hint: "Opcional. Este registro não armazena dados de pagamento.",
+            maxLength: 120,
+          },
+        ]}
+        onSubmit={async (values) => {
+          await action.mutateAsync({ action: "customer.create", resourceId: "", payload: values });
+        }}
+      />
     </div>
   );
 }

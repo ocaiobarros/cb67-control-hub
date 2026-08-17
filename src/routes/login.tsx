@@ -116,6 +116,18 @@ function LoginPage() {
 
         <form
           onSubmit={onSubmit}
+          /*
+           * POST, even though this handler always calls preventDefault.
+           *
+           * The page is server-rendered, so the form is on screen and looks
+           * interactive before React hydrates. A submit in that window — Enter
+           * pressed on a slow connection — is handled natively, and a form with
+           * no method defaults to GET: the password lands in the address bar,
+           * in browser history, and in the Referer of whatever loads next.
+           * Found by driving the real page in a browser; nothing in the unit
+           * tests could see it.
+           */
+          method="post"
           noValidate
           className="liquid-modal edge-light space-y-4 rounded-3xl p-6"
         >

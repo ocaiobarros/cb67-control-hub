@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/features/auth/auth-context";
 import { api } from "@/api/client";
 import type { MfaEnrolment } from "@/api/adapter";
@@ -49,8 +49,19 @@ function MfaEnrolmentPage() {
     if (!loading && !user) void navigate({ to: "/login" as never, replace: true });
   }, [loading, user, navigate]);
 
+  // Begun once per visit.
+  //
+  // The effect depends on `user`, and confirming the enrolment changes `user`
+  // — so it fired a second beginMfaEnrolment on the way out, which the gateway
+  // correctly refused with 409 because the account was now enrolled. Harmless,
+  // but it put a rejected request in the operator's very first minute and an
+  // error in the log for something that had just succeeded.
+  const enrolmentRequested = useRef(false);
+
   useEffect(() => {
     if (loading || !user) return;
+    if (enrolmentRequested.current) return;
+    enrolmentRequested.current = true;
     let active = true;
     setStarting(true);
     api

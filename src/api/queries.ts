@@ -125,7 +125,13 @@ export const q = {
   restoreTests: () =>
     queryOptions({ queryKey: ["restore-tests"], queryFn: () => api.listRestoreTests() }),
 
-  auditEvents: () => queryOptions({ queryKey: ["audit"], queryFn: () => api.listAuditEvents() }),
+  auditEvents: (resource?: string) =>
+    queryOptions({
+      // The resource is part of the key: two records must not share one cached
+      // trail.
+      queryKey: ["audit", resource ?? "all"],
+      queryFn: () => api.listAuditEvents(resource),
+    }),
 
   publicStatus: () =>
     queryOptions({ queryKey: ["public-status"], queryFn: () => api.getPublicStatus() }),

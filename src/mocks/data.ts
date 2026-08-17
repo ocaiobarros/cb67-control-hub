@@ -1131,6 +1131,8 @@ export const MockLeases: Lease[] = MockInstallations.map((inst, i) => ({
 export const MockPlans: LicensePlan[] = [
   {
     id: "plan-free",
+    productId: "prod-terere",
+    productName: "Tereré Money",
     name: "Free",
     code: "FREE",
     maxInstallations: 1,
@@ -1140,6 +1142,8 @@ export const MockPlans: LicensePlan[] = [
   },
   {
     id: "plan-starter",
+    productId: "prod-terere",
+    productName: "Tereré Money",
     name: "Starter",
     code: "STARTER",
     maxInstallations: 2,
@@ -1149,6 +1153,8 @@ export const MockPlans: LicensePlan[] = [
   },
   {
     id: "plan-pro",
+    productId: "prod-terere",
+    productName: "Tereré Money",
     name: "Professional",
     code: "PRO",
     maxInstallations: 5,
@@ -1158,6 +1164,8 @@ export const MockPlans: LicensePlan[] = [
   },
   {
     id: "plan-ent",
+    productId: "prod-terere",
+    productName: "Tereré Money",
     name: "Enterprise",
     code: "ENT",
     maxInstallations: 25,

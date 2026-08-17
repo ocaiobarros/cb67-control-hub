@@ -1,3 +1,9 @@
+import { useState } from "react";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Permitted } from "@/features/auth/guards";
+import { useAdminAction } from "@/hooks/use-admin-action";
+import { FormDialog } from "@/components/common/form-dialog";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { q } from "@/api/queries";
@@ -26,6 +32,8 @@ export const Route = createFileRoute("/_admin/licensing/products")({
 
 function ProductsPage() {
   const products = useQuery(q.products());
+  const action = useAdminAction();
+  const [creating, setCreating] = useState(false);
   const rows = products.data ?? [];
 
   const columns: Column<LicenseProduct>[] = [
@@ -79,6 +87,14 @@ function ProductsPage() {
       <PageHeader
         title="Produtos Licenciados"
         description="Um produto define a unidade licenciável: suas versões suportadas, os planos sob os quais pode ser vendido e os recursos que esses planos desbloqueiam."
+        actions={
+          <Permitted permission="licensing.write">
+            <Button size="sm" onClick={() => setCreating(true)}>
+              <Plus className="size-4" aria-hidden />
+              Novo produto
+            </Button>
+          </Permitted>
+        }
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -117,6 +133,48 @@ function ProductsPage() {
           pageSize={15}
         />
       </div>
+
+      <FormDialog
+        open={creating}
+        onOpenChange={setCreating}
+        title="Novo produto"
+        description="O código identifica o produto nas concessões e não pode ser alterado depois."
+        submitLabel="Criar produto"
+        fields={[
+          {
+            kind: "text",
+            name: "code",
+            label: "Código",
+            placeholder: "terere-money",
+            hint: "Minúsculas, números e hífen. De 3 a 40 caracteres.",
+            required: true,
+            maxLength: 40,
+          },
+          {
+            kind: "text",
+            name: "name",
+            label: "Nome",
+            placeholder: "Tereré Money",
+            required: true,
+            maxLength: 120,
+          },
+          {
+            kind: "text",
+            name: "version",
+            label: "Primeira versão",
+            placeholder: "1.0.0",
+            hint: "Um produto sem versão não pode ser associado a uma instalação.",
+            maxLength: 40,
+          },
+        ]}
+        onSubmit={async (values) => {
+          await action.mutateAsync({
+            action: "product.create",
+            resourceId: "",
+            payload: values,
+          });
+        }}
+      />
     </div>
   );
 }

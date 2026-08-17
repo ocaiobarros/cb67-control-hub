@@ -173,7 +173,9 @@ export interface PlatformAdapter {
   listBackupRuns(): Promise<BackupRun[]>;
   listRestoreTests(): Promise<RestoreTest[]>;
 
-  listAuditEvents(): Promise<AuditEvent[]>;
+  /** Narrowed to one resource when given: the trail is bounded, so an
+   *  unfiltered fetch eventually stops containing an older record's history. */
+  listAuditEvents(resource?: string): Promise<AuditEvent[]>;
 
   getPublicStatus(): Promise<{ services: PublicServiceStatus[]; incidents: Incident[] }>;
   getChangelog(): Promise<ChangelogEntry[]>;
@@ -186,5 +188,6 @@ export interface PlatformAdapter {
     action: string;
     resourceId: string;
     payload?: Record<string, unknown>;
-  }): Promise<{ accepted: boolean; message: string }>;
+    /** Set by creations, so the caller can open what it just made. */
+  }): Promise<{ accepted: boolean; message: string; resourceId?: string }>;
 }
