@@ -58,9 +58,27 @@ export const formatMs = (value: number) => `${numberFmt.format(Math.round(value)
 export const formatMsOrNull = (value: number | null) =>
   value === null ? NOT_MEASURED : formatMs(value);
 
-export const formatDateTime = (iso: string) => dateTimeFmt.format(new Date(iso));
-export const formatDate = (iso: string) => dateFmt.format(new Date(iso));
-export const formatTime = (iso: string) => timeFmt.format(new Date(iso));
+/**
+ * Date formatters that report absence instead of throwing.
+ *
+ * Intl throws RangeError on an invalid Date, so a single unparseable value took
+ * a whole page down. That happened twice: an empty string for "never happened"
+ * on the provider pages, and again on the application detail for a certificate
+ * that has never been issued.
+ *
+ * Guarding inside the formatter as well as at the source, because a screen
+ * should not depend on every producer getting a date right — and the pattern has
+ * already recurred.
+ */
+const invalid = (iso: string | null | undefined): boolean =>
+  !iso || Number.isNaN(new Date(iso).getTime());
+
+export const formatDateTime = (iso: string) =>
+  invalid(iso) ? NOT_MEASURED : dateTimeFmt.format(new Date(iso));
+export const formatDate = (iso: string) =>
+  invalid(iso) ? NOT_MEASURED : dateFmt.format(new Date(iso));
+export const formatTime = (iso: string) =>
+  invalid(iso) ? NOT_MEASURED : timeFmt.format(new Date(iso));
 
 /**
  * Relative time, or absence.
@@ -90,6 +108,7 @@ export function formatDateTimeOrNull(iso: string | null | undefined): string {
 }
 
 export function formatRelative(iso: string, now = new Date("2026-08-16T14:00:00Z")): string {
+  if (invalid(iso)) return NOT_MEASURED;
   const diffMs = new Date(iso).getTime() - now.getTime();
   const abs = Math.abs(diffMs);
   const units: [Intl.RelativeTimeFormatUnit, number][] = [

@@ -19,6 +19,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   formatCompact,
   formatDateTime,
+  formatDateTimeOrNull,
   formatMs,
   formatNumber,
   formatPercent,
@@ -198,7 +199,7 @@ function ApplicationDetailPage() {
                       <span className="flex items-center gap-2">
                         <StatusBadge status={app.certificateStatus} />
                         <span className="mono-xs text-muted-foreground">
-                          exp. {formatDateTime(app.certificateExpiresAt)}
+                          exp. {formatDateTimeOrNull(app.certificateExpiresAt)}
                         </span>
                       </span>
                     }

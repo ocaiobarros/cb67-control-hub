@@ -4,58 +4,67 @@ import { api, chooseAdapterKind, isMockMode, mockRefusedInProduction } from "./c
 /**
  * Production must never serve invented data.
  *
- * VITE_USE_MOCK_API defaults to TRUE, so a production build with the variable
- * missing or misspelled would have selected the mock adapter and shown an
- * operator fabricated quota usage, error rates and licence counts with nothing
- * on screen to indicate it. That is worse than an outage, because an outage is
- * visible.
+ * The first version of this rule keyed only on VITE_CB67_ENVIRONMENT ===
+ * "production", and BOTH of that variable's failure modes point the wrong way:
+ * it defaults to "development", and a typo like "prod" does not match. A
+ * production build with the variable missing or misspelled would therefore have
+ * shipped fabricated quota usage, error rates and licence counts — reachable by
+ * forgetting one environment variable, with nothing on screen to say so.
  *
- * The rule is tested as a pure function. Testing it by reloading the module
- * graph did not work: `env` is read once at load and cached, so the second case
- * reused the first one's environment and passed for the wrong reason.
+ * The authority is now Vite's own import.meta.env.PROD, which the bundler sets
+ * for every `vite build` and which nobody can forget. The declared environment
+ * is a second gate, not the only one.
  */
-describe("adapter selection", () => {
-  test("production refuses the mock however the flag is set", () => {
-    expect(chooseAdapterKind("production", true)).toBe("http");
-    expect(chooseAdapterKind("production", false)).toBe("http");
+describe("adapter selection fails closed", () => {
+  test("a production BUILD refuses the mock, whatever the variables say", () => {
+    // This is the case that was open: a production build whose custom variables
+    // were never set.
+    expect(chooseAdapterKind(true, "development", true)).toBe("http");
+    expect(chooseAdapterKind(true, "", true)).toBe("http");
+    expect(chooseAdapterKind(true, "prod", true)).toBe("http");
+    expect(chooseAdapterKind(true, "production", true)).toBe("http");
   });
 
-  test("the dangerous default is covered", () => {
-    // An unset VITE_USE_MOCK_API arrives here as `true`. A production deploy
-    // that simply forgot the variable would have looked perfectly healthy while
-    // showing numbers nobody measured.
-    expect(chooseAdapterKind("production", true)).toBe("http");
+  test("a declared production environment refuses it too", () => {
+    // For a build that is not Vite-production but is deployed as production.
+    expect(chooseAdapterKind(false, "production", true)).toBe("http");
+  });
+
+  test("a misspelled environment in a non-production build is not silently trusted", () => {
+    // "prod" is not "production". In a development build that is harmless and
+    // visible; the protection that matters is the build flag above.
+    expect(chooseAdapterKind(false, "prod", true)).toBe("mock");
   });
 
   test("development honours the flag in both directions", () => {
-    expect(chooseAdapterKind("development", true)).toBe("mock");
-    expect(chooseAdapterKind("development", false)).toBe("http");
+    expect(chooseAdapterKind(false, "development", true)).toBe("mock");
+    expect(chooseAdapterKind(false, "development", false)).toBe("http");
   });
 
-  test("staging is deliberately not protected", () => {
-    // Only "production" is. A staging environment that wants mocks is a
-    // legitimate arrangement, and saying so makes it a choice rather than an
-    // oversight.
-    expect(chooseAdapterKind("staging", true)).toBe("mock");
+  test("staging keeps its mocks unless built for production", () => {
+    expect(chooseAdapterKind(false, "staging", true)).toBe("mock");
+    expect(chooseAdapterKind(true, "staging", true)).toBe("http");
   });
 
-  test("an unrecognised environment is treated as non-production", () => {
-    // Conservative in the direction that matters: an unknown environment is not
-    // silently granted production's protection, so a typo in the variable is
-    // visible in development rather than hidden.
-    expect(chooseAdapterKind("prod", true)).toBe("mock");
+  test("every combination that could ship to an operator resolves to http", () => {
+    // Exhaustive over the build flag, so no combination is left to inspection.
+    for (const environment of ["", "production", "prod", "staging", "development", "PRODUCTION"]) {
+      for (const useMock of [true, false]) {
+        expect(`${environment}/${useMock}: ${chooseAdapterKind(true, environment, useMock)}`).toBe(
+          `${environment}/${useMock}: http`,
+        );
+      }
+    }
   });
 });
 
 describe("this build", () => {
   test("does not use the mock", () => {
-    // The deployed build is production. If this ever fails, the Control Center
-    // is showing invented data to an operator.
     expect(api.kind).toBe("http");
     expect(isMockMode).toBe(false);
   });
 
-  test("does not have a production build asking for mocks", () => {
+  test("is not a production build asking for mocks", () => {
     expect(mockRefusedInProduction).toBe(false);
   });
 });

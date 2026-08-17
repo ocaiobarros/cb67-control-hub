@@ -32,13 +32,32 @@ import type { PlatformAdapter } from "./adapter";
  * at load and cached, so the second case in a suite silently reused the first
  * one's environment — a test that could not fail for the right reason.
  */
-export function chooseAdapterKind(environment: string, useMockApi: boolean): "http" | "mock" {
+export function chooseAdapterKind(
+  isProductionBuild: boolean,
+  environment: string,
+  useMockApi: boolean,
+): "http" | "mock" {
+  // Two independent reasons to refuse, because either alone fails open.
+  //
+  // `isProductionBuild` is Vite's own import.meta.env.PROD: true for every
+  // `vite build`, set by the bundler, impossible to forget. This is the one that
+  // matters. An earlier version keyed only on VITE_CB67_ENVIRONMENT ===
+  // "production", and both of that variable's failure modes point the wrong way
+  // — it DEFAULTS to "development", and a typo like "prod" does not match. A
+  // production build with the variable missing or misspelled would have shipped
+  // fabricated data, reachable by forgetting one environment variable.
+  //
+  // The declared environment stays as a second gate, for a build that is not
+  // Vite-production but is deployed as production anyway.
+  if (isProductionBuild) return "http";
   if (environment === "production") return "http";
   return useMockApi ? "mock" : "http";
 }
 
 function selectAdapter(): PlatformAdapter {
-  return chooseAdapterKind(env.environment, env.useMockApi) === "mock" ? mockAdapter : httpAdapter;
+  return chooseAdapterKind(import.meta.env.PROD, env.environment, env.useMockApi) === "mock"
+    ? mockAdapter
+    : httpAdapter;
 }
 
 /**
@@ -48,7 +67,8 @@ function selectAdapter(): PlatformAdapter {
  * a deployment mistake, and the operator should be told the configuration is
  * wrong even though the platform is right to ignore it.
  */
-export const mockRefusedInProduction = env.environment === "production" && env.useMockApi;
+export const mockRefusedInProduction =
+  (import.meta.env.PROD || env.environment === "production") && env.useMockApi;
 
 export const api: PlatformAdapter = selectAdapter();
 

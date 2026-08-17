@@ -85,7 +85,8 @@ export interface Application {
   /** Null when never seen. */
   lastSeen: string | null;
   certificateStatus: EntityStatus;
-  certificateExpiresAt: string;
+  /** Null until PKI issues a certificate. */
+  certificateExpiresAt: string | null;
   allowedServices: string[];
   blockedServices: string[];
   monthlyQuota: number;
